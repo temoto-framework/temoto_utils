@@ -6,7 +6,7 @@
 int main(int argc, char **argv)
 {
   // Check if arguments were provided
-  if (argc != 2)
+  if (argc != 3)
   {
     std::cout << "Invalid number of arguments" << std::endl;
     return 1;
@@ -14,20 +14,20 @@ int main(int argc, char **argv)
 
   // Get the name of the package
   const std::string temoto_ws_name = std::string(argv[1]);
-  const std::string base_path = ros::package::getPath(ROS_PACKAGE_NAME);
-  const std::string temoto_ws_path = base_path + "/../" + temoto_ws_name + "/";
+  const std::string temoto_ws_path = std::string(argv[2]) + "/" + temoto_ws_name + "/";
+  const std::string temoto_ws_gen_pkg_path = ros::package::getPath(ROS_PACKAGE_NAME);
   const std::string temoto_ws_package_path = temoto_ws_path + temoto_ws_name + "/";
 
   /*
    * IMPORT THE TEMPLATES
    */ 
-  tp::TemplateContainer t_cmakelists = tp::TemplateContainer(base_path + "/templates/temoto_ws_cmakelists.xml");
-  tp::TemplateContainer t_packagexml = tp::TemplateContainer(base_path + "/templates/temoto_ws_packagexml.xml");
-  tp::TemplateContainer t_action_config = tp::TemplateContainer(base_path + "/templates/temoto_ws_action_config.xml");
-  tp::TemplateContainer t_temoto_launch = tp::TemplateContainer(base_path + "/templates/temoto_ws_temoto_launch.xml");
-  tp::TemplateContainer t_aa_launch = tp::TemplateContainer(base_path + "/templates/temoto_ws_aa_launch.xml");
-  tp::TemplateContainer t_components = tp::TemplateContainer(base_path + "/templates/temoto_ws_components.xml");
-  tp::TemplateContainer t_console_conf = tp::TemplateContainer(base_path + "/templates/temoto_ws_console_conf.xml");
+  tp::TemplateContainer t_cmakelists = tp::TemplateContainer(temoto_ws_gen_pkg_path + "/templates/temoto_ws_cmakelists.xml");
+  tp::TemplateContainer t_packagexml = tp::TemplateContainer(temoto_ws_gen_pkg_path + "/templates/temoto_ws_packagexml.xml");
+  tp::TemplateContainer t_action_config = tp::TemplateContainer(temoto_ws_gen_pkg_path + "/templates/temoto_ws_action_config.xml");
+  tp::TemplateContainer t_temoto_launch = tp::TemplateContainer(temoto_ws_gen_pkg_path + "/templates/temoto_ws_temoto_launch.xml");
+  tp::TemplateContainer t_aa_launch = tp::TemplateContainer(temoto_ws_gen_pkg_path + "/templates/temoto_ws_aa_launch.xml");
+  tp::TemplateContainer t_components = tp::TemplateContainer(temoto_ws_gen_pkg_path + "/templates/temoto_ws_components.xml");
+  tp::TemplateContainer t_console_conf = tp::TemplateContainer(temoto_ws_gen_pkg_path + "/templates/temoto_ws_console_conf.xml");
 
   /*
    * CREATE TEMOTO WS PACKAGE DIRECTORY STRUCTURE
