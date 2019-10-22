@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>temoto_utils</name>
+  <version>0.0.0</version>
+  <description>The temoto_utils package</description>
+
+  <maintainer email="valner.robert@ut.ee">Robert Valner</maintainer>
+  <license>Apache 2.0</license>
+  <url type="website">https://temoto-telerobotics.github.io</url>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>temoto_action_assistant</build_depend>
+  <build_depend>temoto_workspace_generator</build_depend>
+  <build_export_depend>temoto_action_assistant</build_export_depend>
+  <build_export_depend>temoto_workspace_generator</build_export_depend>
+  <exec_depend>temoto_action_assistant</exec_depend>
+  <exec_depend>temoto_workspace_generator</exec_depend>
+
+  <!-- The export tag contains other, unspecified, tags -->
+  <export>
+    <!-- Other tools can request additional information be placed here -->
+    <metapackage/>
+  </export>
+</package>
