@@ -2,7 +2,7 @@
 <package format="2">
   <name>temoto_workspace_generator</name>
   <version>0.0.0</version>
-  <description>The temoto package</description>
+  <description>The temoto_workspace_generator package</description>
 
   <maintainer email="robert.valner@ut.ee">Robert Valner</maintainer>
 
@@ -17,6 +17,8 @@
 
   <build_export_depend>roscpp</build_export_depend>
   <build_export_depend>rospy</build_export_depend>
+  <build_export_depend>roslib</build_export_depend>
+  <build_export_depend>file_template_parser</build_export_depend>
 
   <exec_depend>roscpp</exec_depend>
   <exec_depend>rospy</exec_depend>
