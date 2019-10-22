@@ -1,0 +1,19 @@
+<?xml version="1.0" ?>
+
+<f_template extension=".test">
+
+  <arg name="comment" default="" />
+  <body>
+
+<![CDATA[
+  /* * * * * * * * * * * * * * 
+   *                          
+   * ===> $(arg comment) <===
+   *                          
+   * * * * * * * * * * * * * */
+]]>
+
+  </body>
+</f_template>
+
+

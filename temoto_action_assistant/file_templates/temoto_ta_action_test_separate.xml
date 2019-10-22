@@ -1,0 +1,19 @@
+<?xml version="1.0" ?>
+
+<f_template extension=".launch">
+
+  <arg name="ta_package_name" default="ta_noname" />
+  <body>
+
+<![CDATA[<launch>
+  <arg name="umrf_base_path" default="$(find $(arg ta_package_name))/test"/>
+  <arg name="umrf_graph_file" default="umrf_graph.txt"/>
+  <arg name="wake_word" default="temoto_ws"/>
+
+  <node name="parser_node" pkg="temoto_action_engine" type="parser_node" output="screen"
+        args="$(arg umrf_base_path) $(arg umrf_graph_file) $(arg wake_word)"/>
+</launch>]]>
+
+  </body>
+
+</f_template>

@@ -1,0 +1,9 @@
+<launch>
+  <arg name="ta_path" default="~/"/>
+  <arg name="ft_path" default="~/"/>
+  <arg name="du_path" default="~/"/>
+
+  <!-- Run -->
+  <node pkg="temoto_action_assistant" type="temoto_action_assistant" name="temoto_action_assistant"
+        output="screen"  required="true" args="--ta_path $(arg ta_path) --ft_path $(arg ft_path) --du_path $(arg du_path)"/>
+</launch>

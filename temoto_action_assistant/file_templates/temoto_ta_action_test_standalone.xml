@@ -1,0 +1,21 @@
+<?xml version="1.0" ?>
+
+<f_template extension=".launch">
+
+  <arg name="ta_package_name" default="ta_noname" />
+  <body>
+
+<![CDATA[<launch>
+  <arg name="umrf_file" default="$(find $(arg ta_package_name))/test/invoker_umrf.json"/>
+  <arg name="wake_word" default="$(arg ta_package_name)"/>
+  <arg name="action_path" default="$(find $(arg ta_package_name))"/>
+
+  <node name="temoto_action_engine" pkg="temoto_action_engine" type="action_engine_node" output="screen"
+        args="--sa $(arg action_path) 
+              --d $(arg umrf_file) 
+              --mw $(arg wake_word)"/>
+</launch>]]>
+
+  </body>
+
+</f_template>

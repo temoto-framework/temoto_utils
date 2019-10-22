@@ -1,0 +1,15 @@
+<?xml version="1.0" ?>
+
+<f_template extension=".test">
+
+  <arg name="param_type" default="INVALID_TYPE" />
+  <arg name="param_name_us" default="INVALID_NAME" />
+  <body>
+
+<![CDATA[$(arg param_type) $(arg param_name_us);
+]]>
+
+  </body>
+</f_template>
+
+

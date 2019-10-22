@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+
+<f_template extension=".txt">
+
+  <arg name="umrf_name" default="err_noname_err" />
+  <body>
+
+<![CDATA[$(arg umrf_name)]]>
+
+  </body>
+
+</f_template>
+
+

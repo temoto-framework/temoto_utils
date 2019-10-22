@@ -1,0 +1,66 @@
+<?xml version="1.0" ?>
+
+<f_template extension=".test">
+
+  <arg name="ta_class_name" default="err_noname_err" />
+  <arg name="ta_package_name" default="err_noname_err" />
+  <arg name="ta_class_body" default="" />
+  <body>
+
+<![CDATA[
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
+ *
+ *  The basis of this file has been automatically generated
+ *  by the TeMoto action package generator. Modify this file
+ *  as you wish but please note:
+ *
+ *    WE HIGHLIY RECOMMEND TO REFER TO THE TeMoto ACTION
+ *    IMPLEMENTATION TUTORIAL IF YOU ARE UNFAMILIAR WITH
+ *    THE PROCESS OF CREATING CUSTOM TeMoto ACTION PACKAGES
+ *    
+ *  because there are plenty of components that should not be
+ *  modified or which do not make sence at the first glance.
+ *
+ *  See TeMoto documentation & tutorials at: 
+ *    https://temoto-telerobotics.github.io
+ *
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+/* REQUIRED BY TEMOTO */
+#include <class_loader/class_loader.hpp>
+#include "$(arg ta_package_name)/temoto_action.h"
+#include "$(arg ta_package_name)/macros.h"
+
+/* 
+ * ACTION IMPLEMENTATION of $(arg ta_class_name) 
+ */
+class $(arg ta_class_name) : public TemotoAction
+{
+public:
+
+// Constructor. REQUIRED BY TEMOTO
+$(arg ta_class_name)()
+{
+  // ---> YOUR CONSTRUCTION ROUTINES HERE <--- //
+  std::cout << __func__ << " constructed\n";
+}
+$(arg ta_class_body)
+
+// Destructor
+~$(arg ta_class_name)()
+{
+  // ---> YOUR CONSTRUCTION ROUTINES HERE <--- //
+  TEMOTO_PRINT_OF("Destructor", getUmrfPtr()->getName());
+}
+
+}; // $(arg ta_class_name) class
+
+/* REQUIRED BY CLASS LOADER */
+CLASS_LOADER_REGISTER_CLASS($(arg ta_class_name), ActionBase);
+]]>
+
+  </body>
+
+</f_template>
+
+

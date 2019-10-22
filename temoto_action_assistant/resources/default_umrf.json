@@ -1,0 +1,5 @@
+{
+  "name": "my_action",
+  "package_name": "ta_new_action", 
+  "effect": "synchronous"
+}

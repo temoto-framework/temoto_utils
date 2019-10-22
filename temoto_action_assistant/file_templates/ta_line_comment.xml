@@ -1,0 +1,15 @@
+<?xml version="1.0" ?>
+
+<f_template extension=".test">
+
+  <arg name="comment" default="" />
+  <arg name="whitespace" default="" />
+  <body>
+
+<![CDATA[$(arg whitespace)// $(arg comment)
+]]>
+
+  </body>
+</f_template>
+
+
