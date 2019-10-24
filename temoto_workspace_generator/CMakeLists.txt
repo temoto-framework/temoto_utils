@@ -28,3 +28,6 @@ add_dependencies(generate_workspace
 target_link_libraries(generate_workspace
   ${catkin_LIBRARIES}
 )
+install(TARGETS generate_workspace
+  RUNTIME DESTINATION ${CATKIN_GLOBAL_BIN_DESTINATION}
+)

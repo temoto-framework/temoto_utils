@@ -39,6 +39,12 @@ add_definitions(-DQT_NO_KEYWORDS)
 catkin_package(
   INCLUDE_DIRS
     include
+  CATKIN_DEPENDS
+    roscpp
+    roslib
+    std_msgs
+    file_template_parser
+    temoto_action_engine
 )
 
 # Header files that need Qt Moc pre-processing for use with Qt signals, etc:
