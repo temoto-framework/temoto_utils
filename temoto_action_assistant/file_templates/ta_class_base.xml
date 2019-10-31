@@ -50,7 +50,7 @@ $(arg ta_class_body)
 ~$(arg ta_class_name)()
 {
   // ---> YOUR CONSTRUCTION ROUTINES HERE <--- //
-  TEMOTO_PRINT_OF("Destructor", getUmrfPtr()->getName());
+  TEMOTO_INFO("Action instance destructed");
 }
 
 }; // $(arg ta_class_name) class
