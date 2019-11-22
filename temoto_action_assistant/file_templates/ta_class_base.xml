@@ -41,7 +41,6 @@ public:
 // Constructor. REQUIRED BY TEMOTO
 $(arg ta_class_name)()
 {
-  // ---> YOUR CONSTRUCTION ROUTINES HERE <--- //
   std::cout << __func__ << " constructed\n";
 }
 $(arg ta_class_body)
@@ -49,7 +48,6 @@ $(arg ta_class_body)
 // Destructor
 ~$(arg ta_class_name)()
 {
-  // ---> YOUR CONSTRUCTION ROUTINES HERE <--- //
   TEMOTO_INFO("Action instance destructed");
 }
 
