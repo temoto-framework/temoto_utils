@@ -1,3 +1,6 @@
 [submodule "file_template_parser"]
 	path = file_template_parser
 	url = https://github.com/ut-ims-robotics/file_template_parser
+[submodule "rviz_plugin_manager"]
+	path = rviz_plugin_manager
+	url = https://github.com/UTNuclearRoboticsPublic/rviz_plugin_manager
