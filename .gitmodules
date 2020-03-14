@@ -4,3 +4,6 @@
 [submodule "rviz_plugin_manager"]
 	path = rviz_plugin_manager
 	url = https://github.com/UTNuclearRoboticsPublic/rviz_plugin_manager
+[submodule "yaml-cpp"]
+	path = yaml-cpp
+	url = https://github.com/temoto-telerobotics/yaml-cpp
