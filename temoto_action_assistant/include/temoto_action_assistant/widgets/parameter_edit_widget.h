@@ -43,10 +43,13 @@ public:
   // ******************************************************************************************
 
   /// Constructor
-  ParameterEditWidget(QWidget* parent);
+  ParameterEditWidget(QWidget* parent, std::map<std::string, std::string>* custom_parameter_map);
 
   /// Focus given
   void focusGiven(QTreeWidgetItem* tree_item_ptr);
+
+  /// Creates a context based menu
+  void createRightClickMenu(const QPoint& pos);
 
   // ******************************************************************************************
   // Qt Components
@@ -68,6 +71,8 @@ private Q_SLOTS:
   /// Modify the type variable
   void modifyType(const QString &text);
 
+  void addTypeDialog();
+
 Q_SIGNALS:
 
   // ******************************************************************************************
@@ -82,6 +87,7 @@ private:
 
   /// Points to the active element of the interface tree
   UmrfTreeData tree_data_;
+  std::map<std::string, std::string>* custom_parameter_map_;
   QTreeWidgetItem* tree_item_ptr_;
 
 

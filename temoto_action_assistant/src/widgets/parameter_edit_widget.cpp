@@ -22,6 +22,8 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QFormLayout>
+#include <QMenu>
+#include <QInputDialog>
 
 namespace temoto_action_assistant
 {
@@ -29,8 +31,9 @@ namespace temoto_action_assistant
 // ******************************************************************************************
 // Constructor
 // ******************************************************************************************
-ParameterEditWidget::ParameterEditWidget(QWidget *parent)
+ParameterEditWidget::ParameterEditWidget(QWidget *parent, std::map<std::string, std::string>* custom_parameter_map)
 : QWidget(parent)
+, custom_parameter_map_(custom_parameter_map)
 {
   // TODO: add a description element to the widget
 
@@ -46,12 +49,14 @@ ParameterEditWidget::ParameterEditWidget(QWidget *parent)
    */
   parameter_type_field_ = new QComboBox(this);
   parameter_type_field_->setMaximumWidth(400);
+  parameter_type_field_->setContextMenuPolicy(Qt::CustomContextMenu);
   parameter_form_layout->addRow("Type:", parameter_type_field_);
 
   connect(parameter_type_field_, SIGNAL(highlighted(QString)), this, SLOT(modifyType(QString)));
+  connect(parameter_type_field_, &QTreeWidget::customContextMenuRequested, this, &ParameterEditWidget::createRightClickMenu);
 
   // Add items to the combo box
-  for (auto parameter_type : action_parameter::PARAMETER_MAP)
+  for (auto parameter_type : *custom_parameter_map_)
   {
     parameter_type_field_->addItem(parameter_type.first.c_str());
   }
@@ -120,5 +125,42 @@ void ParameterEditWidget::focusGiven(QTreeWidgetItem* tree_item_ptr)
   parameter_type_field_->setCurrentIndex(index);
 }
 
+// ******************************************************************************************
+// 
+// ******************************************************************************************
+void ParameterEditWidget::createRightClickMenu(const QPoint& pos)
+{ 
+  QMenu menu(this);
+  
+  QAction* add_parameter_action = new QAction(tr("&ADD Parameter Type"), this);
+  add_parameter_action->setIcon(this->style()->standardIcon(this->style()->SP_DialogApplyButton));
+  connect(add_parameter_action, SIGNAL(triggered()), this, SLOT(addTypeDialog()));
+  menu.addAction(add_parameter_action);
+
+  // Create the menu where the cursor is
+  QPoint pt(pos);
+  menu.exec(parameter_type_field_->mapToGlobal(pos));
+}
+
+// ******************************************************************************************
+// 
+// ******************************************************************************************
+void ParameterEditWidget::addTypeDialog()
+{
+  bool ok_clicked;
+  QString text = QInputDialog::getText(this
+  , tr("Add Custom Parameter")
+  , tr("Enter custom parametr type:")
+  , QLineEdit::Normal
+  , tr("<MY_PARAM>")
+  , &ok_clicked);
+
+  if (ok_clicked && !text.isEmpty())
+  {
+    std::cout << "Adding custom parameter type: " << text.toStdString() << std::endl;
+    (*custom_parameter_map_)[text.toStdString()] = text.toStdString();
+    parameter_type_field_->addItem(text.toStdString().c_str());
+  }
+}
 
 } // temoto_action_assistant namespace

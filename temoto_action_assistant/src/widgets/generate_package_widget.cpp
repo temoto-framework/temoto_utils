@@ -39,6 +39,7 @@
 #include <QVBoxLayout>
 #include <QFileDialog>
 #include <QFormLayout>
+#include <QMessageBox>
 
 #include <boost/algorithm/string.hpp>
 #include <iostream>
@@ -212,10 +213,10 @@ void GeneratePackageWidget::modifyRootDir()
 // ******************************************************************************************
 void GeneratePackageWidget::setRootDir()
 {
-  QString dir = QFileDialog::getExistingDirectory(this, tr("Open Directory"),
-                                             "~/",
-                                             QFileDialog::ShowDirsOnly
-                                             | QFileDialog::DontResolveSymlinks);
+  QString dir = QFileDialog::getExistingDirectory(this
+  , tr("Open Directory")
+  , "~/"
+  , QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
 
   package_path_field_->setText(dir);
   umrf_->setLibraryPath(dir.toStdString());
@@ -229,6 +230,9 @@ void GeneratePackageWidget::generatePackage()
   // TODO: Make sure that a name was given for the package
   // TODO: Make sure that there isnt any other ros packages with the same name
   apg_.generatePackage(*umrf_, temoto_actions_path_);
+  QMessageBox msg_box;
+  msg_box.setText("A TeMoto Action package has been generated successfully");
+  msg_box.exec();
 }
 
 } // temoto action assistant namespace

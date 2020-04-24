@@ -56,8 +56,10 @@ namespace temoto_action_assistant
 // ******************************************************************************************
 // Outer User Interface for MoveIt Configuration Assistant
 // ******************************************************************************************
-ActionAssistantWidget::ActionAssistantWidget(QWidget* parent, boost::program_options::variables_map args)
-  : QWidget(parent)
+ActionAssistantWidget::ActionAssistantWidget(QWidget* parent
+, boost::program_options::variables_map args)
+: QWidget(parent)
+, custom_parameter_map_(action_parameter::PARAMETER_MAP)
 {
   // Read in the umrf
   if (args.count("du_path"))
@@ -211,7 +213,7 @@ void ActionAssistantWidget::progressPastStartScreen()
   // Load all widgets ------------------------------------------------
 
   // UMRF Editor
-  uew_ = new UmrfEditorWidget(this, umrf_);
+  uew_ = new UmrfEditorWidget(this, umrf_, &custom_parameter_map_);
   main_content_->addWidget(uew_);
   connect(uew_, SIGNAL(isModal(bool)), this, SLOT(setModalMode(bool)));
 

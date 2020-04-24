@@ -163,6 +163,7 @@ private:
 
   /// Contains all the configuration data
   std::shared_ptr<Umrf> umrf_;
+  std::map<std::string, std::string> custom_parameter_map_;
   
   /// Default path for TeMoto actions
   std::string temoto_actions_path_;

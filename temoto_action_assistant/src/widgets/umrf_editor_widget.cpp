@@ -48,13 +48,16 @@ namespace temoto_action_assistant
 // ******************************************************************************************
 // Constructor
 // ******************************************************************************************
-UmrfEditorWidget::UmrfEditorWidget(QWidget* parent, std::shared_ptr<Umrf> umrf)
-  : SetupScreenWidget(parent),
-    umrf_(umrf),
-    uniqueness_counter_(0),
-    top_level_font_(QFont(QFont().defaultFamily(), 11, QFont::Bold)),
-    io_font_(QFont(QFont().defaultFamily(), 10, QFont::Bold)),
-    type_font_(QFont(QFont().defaultFamily(), 10, QFont::Normal, QFont::StyleItalic))
+UmrfEditorWidget::UmrfEditorWidget(QWidget* parent
+, std::shared_ptr<Umrf> umrf
+, std::map<std::string, std::string>* custom_parameter_map)
+: SetupScreenWidget(parent),
+  umrf_(umrf),
+  custom_parameter_map_(custom_parameter_map),
+  uniqueness_counter_(0),
+  top_level_font_(QFont(QFont().defaultFamily(), 11, QFont::Bold)),
+  io_font_(QFont(QFont().defaultFamily(), 10, QFont::Bold)),
+  type_font_(QFont(QFont().defaultFamily(), 10, QFont::Normal, QFont::StyleItalic))
 
 {
   // TODO: add a description element to the widget
@@ -106,7 +109,7 @@ UmrfEditorWidget::UmrfEditorWidget(QWidget* parent, std::shared_ptr<Umrf> umrf)
   /*
    * Parameter editor page
    */
-  pew_ = new ParameterEditWidget(parent);
+  pew_ = new ParameterEditWidget(parent, custom_parameter_map_);
   edit_screen_content_->addWidget(pew_);
 
   /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *

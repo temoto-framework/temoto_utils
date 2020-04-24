@@ -72,7 +72,9 @@ public:
   // Public Functions
   // ******************************************************************************************
 
-  UmrfEditorWidget(QWidget* parent, std::shared_ptr<Umrf> umrf);
+  UmrfEditorWidget(QWidget* parent
+  , std::shared_ptr<Umrf> umrf
+  , std::map<std::string, std::string>* custom_parameter_map);
 
   /// Recieved when this widget is chosen from the navigation menu
   virtual void focusGiven();
@@ -111,6 +113,7 @@ private:
 
   /// Contains all the configuration data for the semantic frame
   std::shared_ptr<Umrf> umrf_;
+  std::map<std::string, std::string>* custom_parameter_map_;
   int uniqueness_counter_;
 
   /// Variables for maintaining editing information
@@ -127,8 +130,6 @@ private:
   QTreeWidget* umrf_viz_tree_;
   QWidget* umrf_viz_tree_widget_;
   QStackedLayout* edit_screen_content_;
-
-
 
   // ******************************************************************************************
   // Private Functions
