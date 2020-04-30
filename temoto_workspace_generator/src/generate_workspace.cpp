@@ -58,7 +58,7 @@ int main(int argc, char **argv)
   t_action_config.processAndSaveTemplate(temoto_ws_package_path + "/config/", "action_dst");
   t_temoto_launch.processAndSaveTemplate(temoto_ws_package_path + "/launch/", "temoto");
   t_aa_launch.processAndSaveTemplate(temoto_ws_package_path + "/launch/", "action_assistant");
-  t_components.processAndSaveTemplate(temoto_ws_package_path, "components");
+  t_components.processAndSaveTemplate(temoto_ws_package_path + "/config/", "components");
   t_console_conf.processAndSaveTemplate(temoto_ws_package_path + "/config/", "console");
   
 
