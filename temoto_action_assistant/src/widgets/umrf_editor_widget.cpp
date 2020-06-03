@@ -35,6 +35,7 @@
 /* Author: Dave Coleman */
 
 #include "temoto_action_assistant/widgets/umrf_editor_widget.h"
+#include "temoto_action_assistant/widgets/parameter_add_dialog_widget.h"
 #include <QFormLayout>
 #include <QMessageBox>
 #include <QAction>
@@ -261,26 +262,30 @@ void UmrfEditorWidget::addParameter()
 {
   UmrfTreeData::ElementType type = active_tree_element_.type_;
   std::string group_name = boost::any_cast<std::string>(active_tree_element_.payload_);
-  if (type == UmrfTreeData::INPUT_PARAMETERS)
-  {
-    umrf_->getInputParametersNc().setParameter(ActionParameters::ParameterContainer(
-      "RENAME_PARAM_" + std::to_string(uniqueness_counter_++)));
-  }
-  else if (type == UmrfTreeData::PARAMETER_GROUP_IN)
-  {
-    umrf_->getInputParametersNc().setParameter(ActionParameters::ParameterContainer(
-      group_name + "::" + "RENAME_PARAM_" + std::to_string(uniqueness_counter_++)));
-  }
-  else if (type == UmrfTreeData::OUTPUT_PARAMETERS)
-  {
-    umrf_->getOutputParametersNc().setParameter(ActionParameters::ParameterContainer(
-      "RENAME_PARAM_" + std::to_string(uniqueness_counter_++)));
-  }
-  else if(type == UmrfTreeData::PARAMETER_GROUP_OUT)
-  {
-    umrf_->getOutputParametersNc().setParameter(ActionParameters::ParameterContainer(
-      group_name + "::" + "RENAME_PARAM_" + std::to_string(uniqueness_counter_++)));
-  }
+  // if (type == UmrfTreeData::INPUT_PARAMETERS)
+  // {
+  //   umrf_->getInputParametersNc().setParameter(ActionParameters::ParameterContainer(
+  //     "RENAME_PARAM_" + std::to_string(uniqueness_counter_++)));
+  // }
+  // else if (type == UmrfTreeData::PARAMETER_GROUP_IN)
+  // {
+  //   umrf_->getInputParametersNc().setParameter(ActionParameters::ParameterContainer(
+  //     group_name + "::" + "RENAME_PARAM_" + std::to_string(uniqueness_counter_++)));
+  // }
+  // else if (type == UmrfTreeData::OUTPUT_PARAMETERS)
+  // {
+  //   umrf_->getOutputParametersNc().setParameter(ActionParameters::ParameterContainer(
+  //     "RENAME_PARAM_" + std::to_string(uniqueness_counter_++)));
+  // }
+  // else if(type == UmrfTreeData::PARAMETER_GROUP_OUT)
+  // {
+  //   umrf_->getOutputParametersNc().setParameter(ActionParameters::ParameterContainer(
+  //     group_name + "::" + "RENAME_PARAM_" + std::to_string(uniqueness_counter_++)));
+  // }
+
+  TabDialog td(this);
+  td.exec();
+
   refreshTree();
 }
 
