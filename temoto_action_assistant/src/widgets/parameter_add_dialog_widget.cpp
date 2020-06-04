@@ -23,9 +23,14 @@
 TabDialog::TabDialog(QWidget *parent)
 : QDialog(parent)
 {
-  parameter_types_.insert({"test_param_1 (string)", ActionParameters::ParameterContainer("test_param_1", "string")});
-  parameter_types_.insert({"test_param_2 (string)", ActionParameters::ParameterContainer("test_param_2", "string")});
-  parameter_types_.insert({"test_param_3 (string)", ActionParameters::ParameterContainer("test_param_3", "string")});
+  ActionParameters ap;
+  ap.setParameter(ActionParameters::ParameterContainer("group1::name1", "type1"));
+  ap.setParameter(ActionParameters::ParameterContainer("group1::name2", "type2"));
+
+  addParameterType(ap);
+  // parameter_types_.insert({"test_param_1 (string)", ap});
+  // parameter_types_.insert({"test_param_2 (string)", ActionParameters()});
+  // parameter_types_.insert({"test_param_3 (string)", ActionParameters()});
 
   tab_widget_ = new QTabWidget;
   tab_widget_->addTab(new PredefinedParameterTab(parameter_types_, this), tr("Predefined"));
@@ -42,6 +47,18 @@ TabDialog::TabDialog(QWidget *parent)
   setLayout(mainLayout);
 
   setWindowTitle(tr("Add Parameter"));
+}
+
+bool TabDialog::addParameterType(const ActionParameters& action_parameters_in)
+{
+  if (action_parameters_in.empty())
+  {
+    return false;
+  }
+  
+  // Set the name
+  std::string parameter_name;
+  
 }
 
 const ActionParameters& TabDialog::getParameters() const

@@ -29,7 +29,7 @@ class TabDialog : public QDialog
   Q_OBJECT
 
 public:
-  typedef std::map<std::string, ActionParameters::ParameterContainer> ParameterTypes;
+  typedef std::map<std::string, ActionParameters> ParameterTypes;
 
   explicit TabDialog(QWidget *parent = nullptr);
   const ActionParameters& getParameters() const;
@@ -39,6 +39,7 @@ private:
   QDialogButtonBox *button_box_;
   ParameterTypes parameter_types_;
   ActionParameters selected_parameters_;
+  bool addParameterType(const ActionParameters& action_parameters_in);
 };
 
 class PredefinedParameterTab : public QWidget
