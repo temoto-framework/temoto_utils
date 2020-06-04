@@ -262,29 +262,43 @@ void UmrfEditorWidget::addParameter()
 {
   UmrfTreeData::ElementType type = active_tree_element_.type_;
   std::string group_name = boost::any_cast<std::string>(active_tree_element_.payload_);
+
+  TabDialog td(this);
+  td.exec();
+  ActionParameters aps = td.getParameters();
+
   if (type == UmrfTreeData::INPUT_PARAMETERS)
   {
-    umrf_->getInputParametersNc().setParameter(ActionParameters::ParameterContainer(
-      "RENAME_PARAM_" + std::to_string(uniqueness_counter_++)));
+    for (const auto& ap : aps)
+    {
+      umrf_->getInputParametersNc().setParameter(ap);
+    }
   }
   else if (type == UmrfTreeData::PARAMETER_GROUP_IN)
   {
-    umrf_->getInputParametersNc().setParameter(ActionParameters::ParameterContainer(
-      group_name + "::" + "RENAME_PARAM_" + std::to_string(uniqueness_counter_++)));
+    for (const auto& ap : aps)
+    {
+      ActionParameters::ParameterContainer new_ap = ap;
+      new_ap.setName(group_name + "::" + ap.getName());
+      umrf_->getInputParametersNc().setParameter(new_ap);
+    }
   }
   else if (type == UmrfTreeData::OUTPUT_PARAMETERS)
   {
-    umrf_->getOutputParametersNc().setParameter(ActionParameters::ParameterContainer(
-      "RENAME_PARAM_" + std::to_string(uniqueness_counter_++)));
+    for (const auto& ap : aps)
+    {
+      umrf_->getOutputParametersNc().setParameter(ap);
+    }
   }
   else if(type == UmrfTreeData::PARAMETER_GROUP_OUT)
   {
-    umrf_->getOutputParametersNc().setParameter(ActionParameters::ParameterContainer(
-      group_name + "::" + "RENAME_PARAM_" + std::to_string(uniqueness_counter_++)));
+    for (const auto& ap : aps)
+    {
+      ActionParameters::ParameterContainer new_ap = ap;
+      new_ap.setName(group_name + "::" + ap.getName());
+      umrf_->getOutputParametersNc().setParameter(new_ap);
+    }
   }
-
-  // TabDialog td(this);
-  // td.exec();
 
   refreshTree();
 }

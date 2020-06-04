@@ -24,6 +24,9 @@
 #include <QTabWidget>
 #include <QDialogButtonBox>
 
+#ifndef Q_MOC_RUN
+#endif
+
 class TabDialog : public QDialog
 {
   Q_OBJECT
@@ -38,24 +41,51 @@ private:
   QTabWidget *tab_widget_;
   QDialogButtonBox *button_box_;
   ParameterTypes parameter_types_;
-  ActionParameters selected_parameters_;
+  std::string selected_parameters_name_;
+
   bool addParameterType(const ActionParameters& action_parameters_in);
 };
 
+/**
+ * @brief Tab widget that maintains predefined parameters
+ * 
+ */
 class PredefinedParameterTab : public QWidget
 {
   Q_OBJECT
 
 public:
-  explicit PredefinedParameterTab(TabDialog::ParameterTypes& parameter_types, QWidget *parent = nullptr);
+  explicit PredefinedParameterTab(
+    TabDialog::ParameterTypes& parameter_types,
+    std::string& selected_parameters_name,
+    QWidget *parent = nullptr);
+
+private:
+  std::string& selected_parameters_name_;
+
+private Q_SLOTS:
+  void setSelectedParameters(const QString &text);
 };
 
+/**
+ * @brief Tab widget that hepls to create custom parameters
+ * 
+ */
 class CustomParameterTab : public QWidget
 {
   Q_OBJECT
 
 public:
-  explicit CustomParameterTab(TabDialog::ParameterTypes& parameter_types, QWidget *parent = nullptr);
+  explicit CustomParameterTab(
+    TabDialog::ParameterTypes& parameter_types,
+    std::string& selected_parameters_name,
+    QWidget *parent = nullptr);
+
+private:
+  std::string& selected_parameters_name_;
+
+private Q_SLOTS:
+
 };
 
 #endif
