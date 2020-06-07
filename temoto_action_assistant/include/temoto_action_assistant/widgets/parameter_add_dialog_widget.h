@@ -23,10 +23,13 @@
 #include <QDialog>
 #include <QTabWidget>
 #include <QDialogButtonBox>
+#include <QComboBox>
+#include "temoto_action_assistant/widgets/umrf_tree_widget.h"
 
 #ifndef Q_MOC_RUN
 #endif
-
+namespace temoto_action_assistant
+{
 class TabDialog : public QDialog
 {
   Q_OBJECT
@@ -35,15 +38,21 @@ public:
   typedef std::map<std::string, ActionParameters> ParameterTypes;
 
   explicit TabDialog(QWidget *parent = nullptr);
-  const ActionParameters& getParameters() const;
+  ActionParameters getParameters() const;
 
 private:
   QTabWidget *tab_widget_;
   QDialogButtonBox *button_box_;
   ParameterTypes parameter_types_;
   std::string selected_parameters_name_;
+  UmrfTreeWidget* umrf_tree_widget_;
 
   bool addParameterType(const ActionParameters& action_parameters_in);
+
+private Q_SLOTS:
+  /// 
+  void parameterSelected(const QString &text);
+  void dialogCancelled();
 };
 
 /**
@@ -60,7 +69,10 @@ public:
     std::string& selected_parameters_name,
     QWidget *parent = nullptr);
 
+  QComboBox* getParameterTypeField();
+
 private:
+  QComboBox* parameter_type_field_;
   std::string& selected_parameters_name_;
 
 private Q_SLOTS:
@@ -87,5 +99,5 @@ private:
 private Q_SLOTS:
 
 };
-
+} // temoto_action_assistant namespace
 #endif

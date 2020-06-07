@@ -18,9 +18,11 @@
 
 #include "temoto_action_assistant/widgets/parameter_add_dialog_widget.h"
 #include <QVBoxLayout>
-#include <QComboBox>
+#include <QHBoxLayout>
 #include <boost/algorithm/string.hpp>
 
+namespace temoto_action_assistant
+{
 TabDialog::TabDialog(QWidget *parent)
 : QDialog(parent)
 {
@@ -34,19 +36,30 @@ TabDialog::TabDialog(QWidget *parent)
   addParameterType(ap1);
   addParameterType(ap2);
   
-  tab_widget_ = new QTabWidget;
-  tab_widget_->addTab(new PredefinedParameterTab(parameter_types_, selected_parameters_name_, this), tr("Predefined"));
-  tab_widget_->addTab(new CustomParameterTab(parameter_types_, selected_parameters_name_, this), tr("Custom"));
+  tab_widget_ = new QTabWidget(this);
+  PredefinedParameterTab* tab_predefined_params = new PredefinedParameterTab(parameter_types_, selected_parameters_name_, this);
+  CustomParameterTab* tab_custom_params = new CustomParameterTab(parameter_types_, selected_parameters_name_, this);
+  tab_widget_->addTab(tab_predefined_params, tr("Predefined"));
+  tab_widget_->addTab(tab_custom_params, tr("Custom"));
 
   button_box_ = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
-
   connect(button_box_, &QDialogButtonBox::accepted, this, &QDialog::accept);
-  connect(button_box_, &QDialogButtonBox::rejected, this, &QDialog::reject);
+  connect(button_box_, &QDialogButtonBox::rejected, this, &TabDialog::dialogCancelled);
 
-  QVBoxLayout *mainLayout = new QVBoxLayout;
-  mainLayout->addWidget(tab_widget_);
-  mainLayout->addWidget(button_box_);
-  setLayout(mainLayout);
+  // Initialize the umrf tree widget
+  umrf_tree_widget_ = new UmrfTreeWidget(this);
+  umrf_tree_widget_->addParametersToTree(parameter_types_.begin()->second);
+  connect(tab_predefined_params->getParameterTypeField(), SIGNAL(highlighted(QString)), this, SLOT(parameterSelected(QString)));
+
+  QHBoxLayout *tools_layout = new QHBoxLayout;
+  tools_layout->setAlignment(Qt::AlignBaseline);
+  tools_layout->addWidget(tab_widget_);
+  tools_layout->addWidget(umrf_tree_widget_);
+
+  QVBoxLayout *main_layout = new QVBoxLayout;
+  main_layout->addLayout(tools_layout);
+  main_layout->addWidget(button_box_);
+  setLayout(main_layout);
 
   setWindowTitle(tr("Add Parameter"));
 }
@@ -75,11 +88,32 @@ bool TabDialog::addParameterType(const ActionParameters& action_parameters_in)
   return parameter_types_.insert({parameter_name, action_parameters_in}).second;
 }
 
-const ActionParameters& TabDialog::getParameters() const
+ActionParameters TabDialog::getParameters() const
 {
-  return parameter_types_.find(selected_parameters_name_)->second;
+  if (!selected_parameters_name_.empty())
+  {
+    return parameter_types_.find(selected_parameters_name_)->second;
+  }
+  else
+  {
+    return ActionParameters();
+  }
 }
 
+void TabDialog::parameterSelected(const QString &text)
+{
+  umrf_tree_widget_->addParametersToTree(parameter_types_[text.toStdString()]);
+}
+
+void TabDialog::dialogCancelled()
+{
+  selected_parameters_name_ = "";
+  reject();
+}
+
+// ******************************************************************************************
+//
+// ******************************************************************************************
 PredefinedParameterTab::PredefinedParameterTab(
   TabDialog::ParameterTypes& parameter_types,
   std::string& selected_parameters_name,
@@ -87,24 +121,29 @@ PredefinedParameterTab::PredefinedParameterTab(
 : QWidget(parent)
 , selected_parameters_name_(selected_parameters_name)
 {
-  QComboBox* parameter_type_field = new QComboBox(this);
-  parameter_type_field->setMaximumWidth(400);
-  parameter_type_field->setContextMenuPolicy(Qt::CustomContextMenu);
-  connect(parameter_type_field, SIGNAL(highlighted(QString)), this, SLOT(setSelectedParameters(QString)));
+  parameter_type_field_ = new QComboBox(this);
+  parameter_type_field_->setMaximumWidth(400);
+  parameter_type_field_->setContextMenuPolicy(Qt::CustomContextMenu);
+  connect(parameter_type_field_, SIGNAL(highlighted(QString)), this, SLOT(setSelectedParameters(QString)));
 
   // Add items to the combo box
   for (auto parameter_type : parameter_types)
   {
-    parameter_type_field->addItem(parameter_type.first.c_str());
+    parameter_type_field_->addItem(parameter_type.first.c_str());
   }
 
   // Initialize the default selection
   selected_parameters_name_ = parameter_types.begin()->first;
 
   QVBoxLayout *mainLayout = new QVBoxLayout;
-  mainLayout->addWidget(parameter_type_field);
+  mainLayout->addWidget(parameter_type_field_);
   mainLayout->addStretch(1);
   setLayout(mainLayout);
+}
+
+QComboBox* PredefinedParameterTab::getParameterTypeField()
+{
+  return parameter_type_field_;
 }
 
 void PredefinedParameterTab::setSelectedParameters(const QString &text)
@@ -112,6 +151,9 @@ void PredefinedParameterTab::setSelectedParameters(const QString &text)
   selected_parameters_name_ = text.toStdString();
 }
 
+// ******************************************************************************************
+//
+// ******************************************************************************************
 CustomParameterTab::CustomParameterTab(TabDialog::ParameterTypes& parameter_types,
   std::string& selected_parameters_name,
   QWidget *parent)
@@ -122,3 +164,4 @@ CustomParameterTab::CustomParameterTab(TabDialog::ParameterTypes& parameter_type
    * TODO
    */
 }
+} // temoto_action_assistant namespace

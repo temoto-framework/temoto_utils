@@ -56,6 +56,7 @@ set(HEADERS
   include/temoto_action_assistant/widgets/navigation_widget.h
   include/temoto_action_assistant/widgets/generate_package_widget.h
   include/temoto_action_assistant/widgets/umrf_editor_widget.h
+  include/temoto_action_assistant/widgets/umrf_tree_widget.h
   include/temoto_action_assistant/widgets/umrf_tree_data.h
   include/temoto_action_assistant/widgets/parameter_edit_widget.h
   include/temoto_action_assistant/widgets/parameter_group_edit_widget.h
@@ -73,6 +74,7 @@ add_library(${PROJECT_NAME}_widgets
   src/widgets/navigation_widget.cpp
   src/widgets/generate_package_widget.cpp
   src/widgets/umrf_editor_widget.cpp
+  src/widgets/umrf_tree_widget.cpp
   src/widgets/parameter_edit_widget.cpp
   src/widgets/parameter_group_edit_widget.cpp
   src/widgets/parameter_add_dialog_widget.cpp

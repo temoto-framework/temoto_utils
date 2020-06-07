@@ -33,6 +33,7 @@
  *********************************************************************/
 
 /* Author: Dave Coleman */
+/* Author: Robert Valner */
 
 #include "temoto_action_assistant/widgets/umrf_editor_widget.h"
 #include "temoto_action_assistant/widgets/parameter_add_dialog_widget.h"
