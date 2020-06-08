@@ -88,6 +88,13 @@ ActionAssistantWidget::ActionAssistantWidget(QWidget* parent
     // TODO: Check if the given path is valid
   }
 
+  if (args.count("up_path"))
+  {
+    umrf_parameters_path_ = args["up_path"].as<std::string>();
+    std::cout << "UP PATH: " << umrf_parameters_path_ << std::endl;
+    // TODO: Check if the given path is valid
+  }
+
   // Basic widget container -----------------------------------------
   QHBoxLayout* layout = new QHBoxLayout();
   layout->setAlignment(Qt::AlignTop);
@@ -213,7 +220,7 @@ void ActionAssistantWidget::progressPastStartScreen()
   // Load all widgets ------------------------------------------------
 
   // UMRF Editor
-  uew_ = new UmrfEditorWidget(this, umrf_, &custom_parameter_map_);
+  uew_ = new UmrfEditorWidget(this, umrf_, &custom_parameter_map_, umrf_parameters_path_);
   main_content_->addWidget(uew_);
   connect(uew_, SIGNAL(isModal(bool)), this, SLOT(setModalMode(bool)));
 

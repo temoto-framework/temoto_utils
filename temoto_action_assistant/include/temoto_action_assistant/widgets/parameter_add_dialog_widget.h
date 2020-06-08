@@ -14,8 +14,6 @@
  * limitations under the License.
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-/* Author: Robert Valner */
-
 #ifndef TEMOTO_ACTION_ASSISTANT_PARAMETER_ADD_DIALOG_WIDGET
 #define TEMOTO_ACTION_ASSISTANT_PARAMETER_ADD_DIALOG_WIDGET
 
@@ -30,6 +28,11 @@
 #endif
 namespace temoto_action_assistant
 {
+
+// Forward declare the tabs
+class PredefinedParameterTab;
+class CustomParameterTab;
+
 class TabDialog : public QDialog
 {
   Q_OBJECT
@@ -37,17 +40,23 @@ class TabDialog : public QDialog
 public:
   typedef std::map<std::string, ActionParameters> ParameterTypes;
 
-  explicit TabDialog(QWidget *parent = nullptr);
-  ActionParameters getParameters() const;
+  TabDialog(QWidget *parent, const std::string& umrf_parameters_path);
+  ActionParameters getParameters();
 
 private:
+  bool addParameterType(const ActionParameters& action_parameters_in);
+
+  void parseUmrfParameterFiles(const std::string& umrf_parameters_path);
+
   QTabWidget *tab_widget_;
   QDialogButtonBox *button_box_;
   ParameterTypes parameter_types_;
   std::string selected_parameters_name_;
   UmrfTreeWidget* umrf_tree_widget_;
 
-  bool addParameterType(const ActionParameters& action_parameters_in);
+  /// Tabs
+  PredefinedParameterTab* tab_predefined_params_;
+  CustomParameterTab* tab_custom_params_;
 
 private Q_SLOTS:
   /// 
@@ -64,12 +73,13 @@ class PredefinedParameterTab : public QWidget
   Q_OBJECT
 
 public:
-  explicit PredefinedParameterTab(
-    TabDialog::ParameterTypes& parameter_types,
-    std::string& selected_parameters_name,
-    QWidget *parent = nullptr);
+  PredefinedParameterTab( TabDialog::ParameterTypes& parameter_types
+  , std::string& selected_parameters_name
+  , QWidget *parent = nullptr);
 
   QComboBox* getParameterTypeField();
+  
+  void refreshSelectedParameter();
 
 private:
   QComboBox* parameter_type_field_;
@@ -88,10 +98,9 @@ class CustomParameterTab : public QWidget
   Q_OBJECT
 
 public:
-  explicit CustomParameterTab(
-    TabDialog::ParameterTypes& parameter_types,
-    std::string& selected_parameters_name,
-    QWidget *parent = nullptr);
+  CustomParameterTab( TabDialog::ParameterTypes& parameter_types
+  , std::string& selected_parameters_name
+  , QWidget *parent = nullptr);
 
 private:
   std::string& selected_parameters_name_;

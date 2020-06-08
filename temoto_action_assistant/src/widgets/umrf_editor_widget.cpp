@@ -36,7 +36,6 @@
 /* Author: Robert Valner */
 
 #include "temoto_action_assistant/widgets/umrf_editor_widget.h"
-#include "temoto_action_assistant/widgets/parameter_add_dialog_widget.h"
 #include <QFormLayout>
 #include <QMessageBox>
 #include <QAction>
@@ -52,7 +51,8 @@ namespace temoto_action_assistant
 // ******************************************************************************************
 UmrfEditorWidget::UmrfEditorWidget(QWidget* parent
 , std::shared_ptr<Umrf> umrf
-, std::map<std::string, std::string>* custom_parameter_map)
+, std::map<std::string, std::string>* custom_parameter_map
+, std::string umrf_parameters_path)
 : SetupScreenWidget(parent),
   umrf_(umrf),
   custom_parameter_map_(custom_parameter_map),
@@ -114,6 +114,11 @@ UmrfEditorWidget::UmrfEditorWidget(QWidget* parent
   pew_ = new ParameterEditWidget(parent, custom_parameter_map_);
   edit_screen_content_->addWidget(pew_);
 
+  /*
+   * Parameter adding dialog widget
+   */
+  td_ = new TabDialog(this, umrf_parameters_path); 
+
   /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
    *                           Create content for the interfaces tree
    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -158,12 +163,6 @@ QWidget* UmrfEditorWidget::createContentsWidget()
 
   // Bottom Controls -------------------------------------------------------------
   QHBoxLayout* controls_layout = new QHBoxLayout();
-
-  // Expand/Contract controls
-  QLabel* expand_controls = new QLabel(this);
-  expand_controls->setText("<a href='expand'>Expand All</a> <a href='contract'>Collapse All</a>");
-  //connect(expand_controls, SIGNAL(linkActivated(const QString)), this, SLOT(alterTree(const QString)));
-  controls_layout->addWidget(expand_controls);
 
   // Spacer
   QWidget* spacer = new QWidget(this);
@@ -264,9 +263,13 @@ void UmrfEditorWidget::addParameter()
   UmrfTreeData::ElementType type = active_tree_element_.type_;
   std::string group_name = boost::any_cast<std::string>(active_tree_element_.payload_);
 
-  TabDialog td(this);
-  td.exec();
-  ActionParameters aps = td.getParameters();
+  //td_->exec();
+  ActionParameters aps = td_->getParameters();
+
+  if (aps.empty())
+  {
+    return;
+  }
 
   if (type == UmrfTreeData::INPUT_PARAMETERS)
   {

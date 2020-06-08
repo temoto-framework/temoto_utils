@@ -56,6 +56,7 @@
 #include "temoto_action_assistant/widgets/parameter_edit_widget.h"
 #include "temoto_action_assistant/widgets/name_edit_widget.h"
 #include "temoto_action_assistant/widgets/effect_edit_widget.h"
+#include "temoto_action_assistant/widgets/parameter_add_dialog_widget.h"
 #include <memory>
 #include "boost/any.hpp"
 #include "temoto_action_engine/umrf.h"
@@ -74,7 +75,8 @@ public:
 
   UmrfEditorWidget(QWidget* parent
   , std::shared_ptr<Umrf> umrf
-  , std::map<std::string, std::string>* custom_parameter_map);
+  , std::map<std::string, std::string>* custom_parameter_map
+  , std::string umrf_parameters_path);
 
   /// Recieved when this widget is chosen from the navigation menu
   virtual void focusGiven();
@@ -125,6 +127,7 @@ private:
   ParameterGroupEditWidget* pgew_;
   NameEditWidget* new_;
   EffectEditWidget* eew_;
+  TabDialog* td_;
 
   /// Main table for holding groups
   QTreeWidget* umrf_viz_tree_;

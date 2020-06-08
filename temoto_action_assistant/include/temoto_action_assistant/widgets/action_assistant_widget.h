@@ -168,6 +168,7 @@ private:
   /// Default path for TeMoto actions
   std::string temoto_actions_path_;
   std::string file_templates_path_;
+  std::string umrf_parameters_path_;
 
   // ******************************************************************************************
   // Private Functions
