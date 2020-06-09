@@ -80,8 +80,14 @@ UmrfEditorWidget::UmrfEditorWidget(QWidget* parent
    *                               Create content for the edit screen
    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
   QVBoxLayout* edit_screen_top_layout = new QVBoxLayout();
-  edit_screen_content_ = new QStackedLayout();
   layout_e_t->addLayout(edit_screen_top_layout);
+
+  QFrame* line = new QFrame();
+  line->setFrameShape(QFrame::VLine);
+  line->setFrameShadow(QFrame::Sunken);
+  layout_e_t->addWidget(line);
+
+  edit_screen_content_ = new QStackedLayout();
   edit_screen_top_layout->addLayout(edit_screen_content_);
 
   /*
@@ -119,11 +125,16 @@ UmrfEditorWidget::UmrfEditorWidget(QWidget* parent
    */
   td_ = new TabDialog(this, umrf_parameters_path); 
 
-  /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-   *                           Create content for the interfaces tree
-   * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+  /* 
+   * Create content for the interfaces tree
+   */
+  QVBoxLayout* umrf_layout = new QVBoxLayout();
   umrf_viz_tree_widget_ = createContentsWidget();
-  layout_e_t->addWidget(umrf_viz_tree_widget_);
+  dew_ = new DescriptionEditWidget(this, umrf_);
+  umrf_layout->addWidget(umrf_viz_tree_widget_);
+  umrf_layout->addWidget(dew_);
+
+  layout_e_t->addLayout(umrf_layout);
 
   /*
    * Add the edtior/tree layout to the top layout
@@ -156,6 +167,7 @@ QWidget* UmrfEditorWidget::createContentsWidget()
   umrf_viz_tree_ = new QTreeWidget(this);
   umrf_viz_tree_->setHeaderLabel("UMRF");
   umrf_viz_tree_->setContextMenuPolicy(Qt::CustomContextMenu);
+  umrf_viz_tree_->setMinimumHeight(350);
 
   connect(umrf_viz_tree_, SIGNAL(itemClicked(QTreeWidgetItem*, int)), this, SLOT(editSelected()));
   connect(umrf_viz_tree_, &QTreeWidget::customContextMenuRequested, this, &UmrfEditorWidget::createRightClickMenu);
@@ -164,10 +176,10 @@ QWidget* UmrfEditorWidget::createContentsWidget()
   // Bottom Controls -------------------------------------------------------------
   QHBoxLayout* controls_layout = new QHBoxLayout();
 
-  // Spacer
-  QWidget* spacer = new QWidget(this);
-  spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
-  controls_layout->addWidget(spacer);
+  // // Spacer
+  // QWidget* spacer = new QWidget(this);
+  // spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+  // controls_layout->addWidget(spacer);
 
   // Add Controls to layout
   layout->addLayout(controls_layout);
@@ -581,7 +593,17 @@ void UmrfEditorWidget::addParametersToTree( QTreeWidgetItem* upper_level_item_in
       if (param_name_comps.size()-i == 1)
       {  
         QTreeWidgetItem* tree_item_param = new QTreeWidgetItem(upper_level_item);
-        tree_item_param->setText(0, QString::fromStdString(param.getNameNoNamespace() + " (" + param.getType() + ")"));
+        if (param.getExample().empty())
+        {
+          tree_item_param->setText(0, QString::fromStdString(param.getNameNoNamespace() 
+          + " (" + param.getType() + ")"));
+        }
+        else
+        {
+          tree_item_param->setText(0, QString::fromStdString(param.getNameNoNamespace() 
+          + " (" + param.getType() + "), e.g. '" + param.getExample() + "'"));
+        }
+        
         tree_item_param->setFont(0, type_font_);
         UmrfTreeData tree_item_param_pl = UmrfTreeData(
           is_input ? UmrfTreeData::PARAMETER_IN : UmrfTreeData::PARAMETER_OUT,

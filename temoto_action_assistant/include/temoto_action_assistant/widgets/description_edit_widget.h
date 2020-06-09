@@ -1,5 +1,5 @@
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * Copyright 2019 TeMoto Telerobotics
+ * Copyright 2020 TeMoto Telerobotics
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,26 +14,22 @@
  * limitations under the License.
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-/* Author: Robert Valner */
-
-#ifndef TEMOTO_ACTION_ASSISTANT_PARAMETER_EDIT_WIDGET
-#define TEMOTO_ACTION_ASSISTANT_PARAMETER_EDIT_WIDGET
+#ifndef TEMOTO_ACTION_ASSISTANT_DESCRIPTION_EDIT_WIDGET
+#define TEMOTO_ACTION_ASSISTANT_DESCRIPTION_EDIT_WIDGET
 
 #include <QWidget>
 #include <QLabel>
-#include <QLineEdit>
+#include <QTextEdit>
 #include <QComboBox>
-#include <QTreeWidget>
 
 #ifndef Q_MOC_RUN
 #endif
 
-#include "temoto_action_assistant/widgets/umrf_tree_data.h"
 #include "temoto_action_engine/umrf.h"
 
 namespace temoto_action_assistant
 {
-class ParameterEditWidget : public QWidget
+class DescriptionEditWidget : public QWidget
 {
   Q_OBJECT
 
@@ -43,22 +39,13 @@ public:
   // ******************************************************************************************
 
   /// Constructor
-  ParameterEditWidget(QWidget* parent, std::map<std::string, std::string>* custom_parameter_map);
-
-  /// Focus given
-  void focusGiven(QTreeWidgetItem* tree_item_ptr);
-
-  /// Creates a context based menu
-  void createRightClickMenu(const QPoint& pos);
+  DescriptionEditWidget(QWidget* parent, std::shared_ptr<Umrf> umrf);
 
   // ******************************************************************************************
   // Qt Components
   // ******************************************************************************************
-
   QLabel* title_;  // specify the title from the parent widget
-  QLineEdit* parameter_name_field_;
-  QLineEdit* parameter_example_field_;
-  QComboBox* parameter_type_field_;
+  QTextEdit* description_field_;
 
 private Q_SLOTS:
 
@@ -66,39 +53,26 @@ private Q_SLOTS:
   // Slot Event Functions
   // ******************************************************************************************
 
-  /// Modifies the name variable
-  void modifyName();
+  /// Modifies the word variable
+  void modifyDescription();
 
-  /// Modifies the name variable
-  void modifyExample();
-
-  /// Modify the type variable
-  void modifyType(const QString &text);
-
-  void addTypeDialog();
 
 Q_SIGNALS:
 
   // ******************************************************************************************
   // Emitted Signals
   // ******************************************************************************************
-  void refreshUmrfTree();
 
 private:
   // ******************************************************************************************
   // Variables
   // ******************************************************************************************
+  std::shared_ptr<Umrf> umrf_;
 
-  /// Points to the active element of the interface tree
-  UmrfTreeData tree_data_;
-  std::map<std::string, std::string>* custom_parameter_map_;
-  QTreeWidgetItem* tree_item_ptr_;
 
   // ******************************************************************************************
   // Private Functions
   // ******************************************************************************************
-  void refreshTreeItemText(const ActionParameters::ParameterContainer* const parameter);
-
 };
 }
 

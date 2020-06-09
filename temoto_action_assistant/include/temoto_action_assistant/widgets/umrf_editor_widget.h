@@ -56,6 +56,7 @@
 #include "temoto_action_assistant/widgets/parameter_edit_widget.h"
 #include "temoto_action_assistant/widgets/name_edit_widget.h"
 #include "temoto_action_assistant/widgets/effect_edit_widget.h"
+#include "temoto_action_assistant/widgets/description_edit_widget.h"
 #include "temoto_action_assistant/widgets/parameter_add_dialog_widget.h"
 #include <memory>
 #include "boost/any.hpp"
@@ -126,6 +127,7 @@ private:
   ParameterEditWidget* pew_;
   ParameterGroupEditWidget* pgew_;
   NameEditWidget* new_;
+  DescriptionEditWidget* dew_;
   EffectEditWidget* eew_;
   TabDialog* td_;
 

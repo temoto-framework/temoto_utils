@@ -51,7 +51,6 @@ ParameterEditWidget::ParameterEditWidget(QWidget *parent, std::map<std::string, 
   parameter_type_field_->setMaximumWidth(400);
   parameter_type_field_->setContextMenuPolicy(Qt::CustomContextMenu);
   parameter_form_layout->addRow("Type:", parameter_type_field_);
-
   connect(parameter_type_field_, SIGNAL(highlighted(QString)), this, SLOT(modifyType(QString)));
   connect(parameter_type_field_, &QTreeWidget::customContextMenuRequested, this, &ParameterEditWidget::createRightClickMenu);
 
@@ -62,13 +61,20 @@ ParameterEditWidget::ParameterEditWidget(QWidget *parent, std::map<std::string, 
   }
 
   /*
-   * Create the word editing field
+   * Create the name editing field
    */
   parameter_name_field_ = new QLineEdit(this);
   parameter_name_field_->setMaximumWidth(400);
   parameter_form_layout->addRow("Name:", parameter_name_field_);
-
   connect(parameter_name_field_, &QLineEdit::textChanged, this, &ParameterEditWidget::modifyName);
+
+  /*
+   * Create the example editing field
+   */
+  parameter_example_field_ = new QLineEdit(this);
+  parameter_example_field_->setMaximumWidth(400);
+  parameter_form_layout->addRow("Example:", parameter_example_field_);
+  connect(parameter_example_field_, &QLineEdit::textChanged, this, &ParameterEditWidget::modifyExample);
 
   this->setLayout(parameter_editor_layout);
 }
@@ -80,9 +86,14 @@ void ParameterEditWidget::modifyName()
 {
   ActionParameters::ParameterContainer* parameter = boost::any_cast<ActionParameters::ParameterContainer*>(tree_data_.payload_);
   parameter->setNameKeepNamespace(parameter_name_field_->text().toStdString());
+  refreshTreeItemText(parameter);
+}
 
-  QString text = QString::fromStdString(parameter->getNameNoNamespace() + " (" + parameter->getType() + ")");
-  tree_item_ptr_->setText(0, text);
+void ParameterEditWidget::modifyExample()
+{
+  ActionParameters::ParameterContainer* parameter = boost::any_cast<ActionParameters::ParameterContainer*>(tree_data_.payload_);
+  parameter->setExample(parameter_example_field_->text().toStdString());
+  refreshTreeItemText(parameter);
 }
 
 // ******************************************************************************************
@@ -92,9 +103,7 @@ void ParameterEditWidget::modifyType(const QString &text)
 {
   ActionParameters::ParameterContainer* parameter = boost::any_cast<ActionParameters::ParameterContainer*>(tree_data_.payload_);
   parameter->setType(text.toStdString());
-
-  QString item_text = QString::fromStdString(parameter->getNameNoNamespace() + " (" + parameter->getType() + ")");
-  tree_item_ptr_->setText(0, item_text);
+  refreshTreeItemText(parameter);
 }
 
 // ******************************************************************************************
@@ -108,9 +117,14 @@ void ParameterEditWidget::focusGiven(QTreeWidgetItem* tree_item_ptr)
   ActionParameters::ParameterContainer* parameter = boost::any_cast<ActionParameters::ParameterContainer*>(tree_data_.payload_);
 
   /*
-   * Update the word field
+   * Update the name field
    */
   parameter_name_field_->setText(QString::fromStdString(parameter->getNameNoNamespace()));
+
+  /*
+   * Update the example field
+   */
+  parameter_example_field_->setText(QString::fromStdString(parameter->getExample()));
 
   /*
    * Update the type field
@@ -161,6 +175,22 @@ void ParameterEditWidget::addTypeDialog()
     (*custom_parameter_map_)[text.toStdString()] = text.toStdString();
     parameter_type_field_->addItem(text.toStdString().c_str());
   }
+}
+
+void ParameterEditWidget::refreshTreeItemText(const ActionParameters::ParameterContainer* const parameter)
+{
+  QString text;
+  if (parameter->getExample().empty())
+  {
+    text = QString::fromStdString(parameter->getNameNoNamespace() + " (" + parameter->getType() + ")");
+  }
+  else
+  {
+    text = QString::fromStdString(parameter->getNameNoNamespace() + " (" + parameter->getType() + "), e.g. '" + parameter->getExample() + "'");
+  }
+  
+  QString::fromStdString(parameter->getNameNoNamespace() + " (" + parameter->getType() + ")");
+  tree_item_ptr_->setText(0, text);
 }
 
 } // temoto_action_assistant namespace

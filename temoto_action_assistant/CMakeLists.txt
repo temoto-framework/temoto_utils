@@ -62,6 +62,7 @@ set(HEADERS
   include/temoto_action_assistant/widgets/parameter_group_edit_widget.h
   include/temoto_action_assistant/widgets/parameter_add_dialog_widget.h
   include/temoto_action_assistant/widgets/name_edit_widget.h
+  include/temoto_action_assistant/widgets/description_edit_widget.h
   include/temoto_action_assistant/widgets/effect_edit_widget.h
 )
 
@@ -79,6 +80,7 @@ add_library(${PROJECT_NAME}_widgets
   src/widgets/parameter_group_edit_widget.cpp
   src/widgets/parameter_add_dialog_widget.cpp
   src/widgets/name_edit_widget.cpp
+  src/widgets/description_edit_widget.cpp
   src/widgets/effect_edit_widget.cpp
   ${HEADERS}
 )
