@@ -41,6 +41,7 @@
 #include <QAction>
 #include <QMenu>
 #include <QStyle>
+#include <QScrollArea>
 #include <iostream>
 #include <boost/algorithm/string.hpp>
 
@@ -67,6 +68,7 @@ UmrfEditorWidget::UmrfEditorWidget(QWidget* parent
   // Basic widget container
   QVBoxLayout* layout = new QVBoxLayout();
   QHBoxLayout* layout_e_t = new QHBoxLayout();
+  //layout_e_t->setAlignment(Qt::AlignTop);
 
   /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
    *                                Create content for the top layer
@@ -79,8 +81,12 @@ UmrfEditorWidget::UmrfEditorWidget(QWidget* parent
   /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
    *                               Create content for the edit screen
    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-  QVBoxLayout* edit_screen_top_layout = new QVBoxLayout();
-  layout_e_t->addLayout(edit_screen_top_layout);
+  //QVBoxLayout* edit_screen_top_layout = new QVBoxLayout();
+  //layout_e_t->addLayout(edit_screen_top_layout);
+  QScrollArea* scroll_area = new QScrollArea(parent);
+  ugw_ = new UmrfGraphWidget;
+  scroll_area->setWidget(ugw_);
+  layout_e_t->addWidget(scroll_area);
 
   QFrame* line = new QFrame();
   line->setFrameShape(QFrame::VLine);
@@ -88,7 +94,7 @@ UmrfEditorWidget::UmrfEditorWidget(QWidget* parent
   layout_e_t->addWidget(line);
 
   edit_screen_content_ = new QStackedLayout();
-  edit_screen_top_layout->addLayout(edit_screen_content_);
+  //edit_screen_top_layout->addLayout(edit_screen_content_);
 
   /*
    * Dummy editor page
@@ -131,8 +137,15 @@ UmrfEditorWidget::UmrfEditorWidget(QWidget* parent
   QVBoxLayout* umrf_layout = new QVBoxLayout();
   umrf_viz_tree_widget_ = createContentsWidget();
   dew_ = new DescriptionEditWidget(this, umrf_);
-  umrf_layout->addWidget(umrf_viz_tree_widget_);
+
+  QFrame* h_line = new QFrame();
+  h_line->setFrameShape(QFrame::HLine);
+  h_line->setFrameShadow(QFrame::Sunken);
+
   umrf_layout->addWidget(dew_);
+  umrf_layout->addWidget(umrf_viz_tree_widget_);
+  umrf_layout->addWidget(h_line);
+  umrf_layout->addLayout(edit_screen_content_);
 
   layout_e_t->addLayout(umrf_layout);
 

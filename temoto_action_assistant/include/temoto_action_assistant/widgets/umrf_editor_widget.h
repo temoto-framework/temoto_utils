@@ -58,6 +58,7 @@
 #include "temoto_action_assistant/widgets/effect_edit_widget.h"
 #include "temoto_action_assistant/widgets/description_edit_widget.h"
 #include "temoto_action_assistant/widgets/parameter_add_dialog_widget.h"
+#include "temoto_action_assistant/widgets/umrf_graph_widget.h"
 #include <memory>
 #include "boost/any.hpp"
 #include "temoto_action_engine/umrf.h"
@@ -130,6 +131,7 @@ private:
   DescriptionEditWidget* dew_;
   EffectEditWidget* eew_;
   TabDialog* td_;
+  UmrfGraphWidget* ugw_;
 
   /// Main table for holding groups
   QTreeWidget* umrf_viz_tree_;

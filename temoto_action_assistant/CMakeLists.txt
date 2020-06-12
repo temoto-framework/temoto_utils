@@ -64,6 +64,7 @@ set(HEADERS
   include/temoto_action_assistant/widgets/name_edit_widget.h
   include/temoto_action_assistant/widgets/description_edit_widget.h
   include/temoto_action_assistant/widgets/effect_edit_widget.h
+  include/temoto_action_assistant/widgets/umrf_graph_widget.h
 )
 
 # Main Widgets Library - all screens (navigation options)
@@ -82,6 +83,7 @@ add_library(${PROJECT_NAME}_widgets
   src/widgets/name_edit_widget.cpp
   src/widgets/description_edit_widget.cpp
   src/widgets/effect_edit_widget.cpp
+  src/widgets/umrf_graph_widget.cpp
   ${HEADERS}
 )
 set_target_properties(${PROJECT_NAME}_widgets PROPERTIES VERSION ${${PROJECT_NAME}_VERSION})
