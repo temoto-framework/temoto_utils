@@ -22,6 +22,7 @@
 #include <QHBoxLayout>
 #include <QFormLayout>
 #include <iostream>
+#include <math.h>
 
 namespace temoto_action_assistant
 {
@@ -31,9 +32,13 @@ namespace temoto_action_assistant
 // ******************************************************************************************
 UmrfGraphWidget::UmrfGraphWidget(QWidget *parent)
 : QWidget(parent)
+, canvas_width_(400)
+, canvas_height_(800)
+, selected_circle_(nullptr)
 {
-  QVBoxLayout* v_box_layout = new QVBoxLayout;
-
+  QVBoxLayout* v_box_layout = new QVBoxLayout(parent);
+  setMinimumWidth(canvas_width_);
+  setMinimumHeight(canvas_height_);
 
   //v_box_layout->addWidget(scroll_area);
   setLayout(v_box_layout);
@@ -43,10 +48,85 @@ void UmrfGraphWidget::paintEvent(QPaintEvent* pe)
 {
   QPainter painter(this);
   painter.setRenderHint(QPainter::Antialiasing,true);
-  QPen pen(Qt::blue,2);
+  QPen pen(Qt::darkGray,2);
   painter.setPen(pen);
-  QRect r=QRect(0,0,100,100);
-  painter.drawEllipse(r);
+  painter.setBrush(Qt::lightGray);
+
+  for (const auto& circle : circles_)
+  {
+    painter.drawEllipse(circle.x_ - circle.radius_
+    , circle.y_ - circle.radius_
+    , circle.radius_*2
+    , circle.radius_*2);
+  }
+}
+
+void UmrfGraphWidget::mousePressEvent(QMouseEvent* event)
+{
+  if (event->button() == Qt::LeftButton)
+  {
+    for (auto& circle : circles_)
+    {
+      if (!circle.isInCircle(event->x(), event->y()))
+      {
+        continue;
+      }
+      else
+      {
+        selected_circle_ = &circle;
+      }
+    }
+  }
+  
+  else if (event->button() == Qt::RightButton)
+  {
+    circles_.emplace_back(event->x(), event->y(), 25);
+    update();
+  }
+}
+
+void UmrfGraphWidget::mouseReleaseEvent(QMouseEvent *event)
+{
+  if (selected_circle_ != nullptr)
+  {
+    selected_circle_ = nullptr;
+  }
+}
+
+void UmrfGraphWidget::mouseMoveEvent(QMouseEvent* event)
+{
+  if (selected_circle_ != nullptr && isInBounds(canvas_width_, canvas_height_, event->x(), event->y()))
+  {
+    selected_circle_->x_ = event->x();
+    selected_circle_->y_ = event->y();
+    update();
+  }
+}
+
+bool UmrfGraphWidget::isInBounds(int width, int height, int x_in, int y_in)
+{
+  return x_in > 0
+  && x_in < width
+  && y_in > 0
+  && y_in < height;
+}
+
+
+
+
+CircleHelper::CircleHelper(int x, int y, int radius)
+: x_(x)
+, y_(y)
+, radius_(radius)
+{}
+
+bool CircleHelper::isInCircle(int x_in, int y_in) const
+{
+  int x_diff = x_ - x_in;
+  int y_diff = y_ - y_in;
+  int diff_length = std::sqrt(std::pow(x_diff, 2) + std::pow(y_diff, 2));
+
+  return diff_length <= radius_;
 }
 
 // ******************************************************************************************

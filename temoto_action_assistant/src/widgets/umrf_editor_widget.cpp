@@ -84,7 +84,8 @@ UmrfEditorWidget::UmrfEditorWidget(QWidget* parent
   //QVBoxLayout* edit_screen_top_layout = new QVBoxLayout();
   //layout_e_t->addLayout(edit_screen_top_layout);
   QScrollArea* scroll_area = new QScrollArea(parent);
-  ugw_ = new UmrfGraphWidget;
+  scroll_area->setStyleSheet("background-color:white;");
+  ugw_ = new UmrfGraphWidget(scroll_area);
   scroll_area->setWidget(ugw_);
   layout_e_t->addWidget(scroll_area);
 
@@ -180,7 +181,8 @@ QWidget* UmrfEditorWidget::createContentsWidget()
   umrf_viz_tree_ = new QTreeWidget(this);
   umrf_viz_tree_->setHeaderLabel("UMRF");
   umrf_viz_tree_->setContextMenuPolicy(Qt::CustomContextMenu);
-  umrf_viz_tree_->setMinimumHeight(350);
+  umrf_viz_tree_->setMinimumHeight(450);
+  umrf_viz_tree_->setMinimumWidth(250);
 
   connect(umrf_viz_tree_, SIGNAL(itemClicked(QTreeWidgetItem*, int)), this, SLOT(editSelected()));
   connect(umrf_viz_tree_, &QTreeWidget::customContextMenuRequested, this, &UmrfEditorWidget::createRightClickMenu);

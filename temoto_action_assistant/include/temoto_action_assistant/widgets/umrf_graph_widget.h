@@ -20,7 +20,7 @@
 #include <QWidget>
 #include <QPixmap>
 #include <QPainter>
-
+#include <QMouseEvent>
 
 #ifndef Q_MOC_RUN
 #endif
@@ -29,6 +29,14 @@
 
 namespace temoto_action_assistant
 {
+class CircleHelper
+{
+public:
+  CircleHelper(int x, int y, int radius);
+  bool isInCircle(int x_in, int y_in) const;
+  int x_, y_, radius_;
+};
+
 class UmrfGraphWidget : public QWidget
 {
   Q_OBJECT
@@ -40,8 +48,6 @@ public:
 
   /// Constructor
   UmrfGraphWidget(QWidget* parent = nullptr);
-
-  void paintEvent(QPaintEvent* pe);
 
   /// Focus given
   //void focusGiven(QTreeWidgetItem* tree_item_ptr);
@@ -71,6 +77,15 @@ private:
   // ******************************************************************************************
   // Private Functions
   // ******************************************************************************************
+  void paintEvent(QPaintEvent* pe);
+  void mousePressEvent(QMouseEvent* event);
+  void mouseMoveEvent(QMouseEvent *event);
+  void mouseReleaseEvent(QMouseEvent *event);
+  bool isInBounds(int width, int height, int x_in, int y_in);
+
+  int canvas_width_, canvas_height_;
+  CircleHelper* selected_circle_;
+  std::vector<CircleHelper> circles_;
 };
 }
 
