@@ -1,5 +1,5 @@
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * Copyright 2019 TeMoto Telerobotics
+ * Copyright 2020 TeMoto Telerobotics
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,9 +32,34 @@ namespace temoto_action_assistant
 class CircleHelper
 {
 public:
+  struct ConnectionHelper
+  {
+    enum class Direction
+    {
+      INBOUND,
+      OUTBOUND
+    };
+
+    ConnectionHelper(CircleHelper* other_circle, Direction direction);
+    ConnectionHelper(const ConnectionHelper& ch);
+
+    Direction direction_;
+    CircleHelper* other_circle_;
+  };
+
   CircleHelper(int x, int y, int radius);
+  CircleHelper(const CircleHelper& ch);
   bool isInCircle(int x_in, int y_in) const;
+  int isInCollisionWith(const CircleHelper& other_circle) const;
+  float getRelativeDirection(const CircleHelper& other_circle) const;
+  bool connectWith(CircleHelper& other_circle);
+  void select();
+  void unSelect();
+
   int x_, y_, radius_;
+  Qt::GlobalColor border_color_;
+  int border_width_;
+  std::vector<ConnectionHelper> connections_;
 };
 
 class UmrfGraphWidget : public QWidget
@@ -82,9 +107,11 @@ private:
   void mouseMoveEvent(QMouseEvent *event);
   void mouseReleaseEvent(QMouseEvent *event);
   bool isInBounds(int width, int height, int x_in, int y_in);
+  void setNewSelectedCircle(CircleHelper* new_selected_circle_);
 
   int canvas_width_, canvas_height_;
   CircleHelper* selected_circle_;
+  bool circle_dropped_;
   std::vector<CircleHelper> circles_;
 };
 }
