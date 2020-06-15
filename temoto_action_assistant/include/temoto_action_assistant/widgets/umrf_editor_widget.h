@@ -117,6 +117,7 @@ private:
 
   /// Contains all the configuration data for the semantic frame
   std::shared_ptr<Umrf> umrf_;
+  std::vector<std::shared_ptr<Umrf>> umrfs_;
   std::map<std::string, std::string>* custom_parameter_map_;
   int uniqueness_counter_;
 

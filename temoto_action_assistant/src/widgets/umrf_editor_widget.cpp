@@ -84,15 +84,15 @@ UmrfEditorWidget::UmrfEditorWidget(QWidget* parent
   //QVBoxLayout* edit_screen_top_layout = new QVBoxLayout();
   //layout_e_t->addLayout(edit_screen_top_layout);
   QScrollArea* scroll_area = new QScrollArea(parent);
-  scroll_area->setStyleSheet("background-color:white;");
-  ugw_ = new UmrfGraphWidget(scroll_area);
+  //scroll_area->setStyleSheet("background-color:white;");
+  ugw_ = new UmrfGraphWidget(umrfs_, scroll_area);
   scroll_area->setWidget(ugw_);
   layout_e_t->addWidget(scroll_area);
 
-  QFrame* line = new QFrame();
-  line->setFrameShape(QFrame::VLine);
-  line->setFrameShadow(QFrame::Sunken);
-  layout_e_t->addWidget(line);
+  // QFrame* line = new QFrame();
+  // line->setFrameShape(QFrame::VLine);
+  // line->setFrameShadow(QFrame::Sunken);
+  // layout_e_t->addWidget(line);
 
   edit_screen_content_ = new QStackedLayout();
   //edit_screen_top_layout->addLayout(edit_screen_content_);
