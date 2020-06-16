@@ -29,8 +29,9 @@ namespace temoto_action_assistant
 // ******************************************************************************************
 // Constructor
 // ******************************************************************************************
-EffectEditWidget::EffectEditWidget(QWidget *parent)
+EffectEditWidget::EffectEditWidget(QWidget *parent, std::shared_ptr<Umrf> umrf)
 : QWidget(parent)
+, umrf_(umrf)
 {
   // TODO: add a description element to the widget
 
@@ -64,35 +65,24 @@ EffectEditWidget::EffectEditWidget(QWidget *parent)
 // ******************************************************************************************
 void EffectEditWidget::modifyEffect(const QString &text)
 {
-  std::string* effect = boost::any_cast<std::string*>(tree_data_.payload_);
-  *effect = text.toStdString();
-
-  QString effect_text = QString::fromStdString("Effect: " + *effect);
-  tree_item_ptr_->setText(0, effect_text);
+  umrf_->setEffect(text.toStdString());
 }
 
 // ******************************************************************************************
 //
 // ******************************************************************************************
-void EffectEditWidget::focusGiven(QTreeWidgetItem* tree_item_ptr)
+void EffectEditWidget::setUmrf(std::shared_ptr<Umrf> umrf)
 {
-  // Set the tree item pointer to active element
-  tree_item_ptr_ = tree_item_ptr;
-  tree_data_ = tree_item_ptr_->data(0, Qt::UserRole).value<UmrfTreeData>();
-  std::string* effect = boost::any_cast<std::string*>(tree_data_.payload_);
+  umrf_ = umrf;
 
-  /*
-   * Update the effect field
-   */
-  int index = effect_type_field_->findText(effect->c_str());
+  // Update the effect field
+  int index = effect_type_field_->findText(umrf_->getEffect().c_str());
   if (index == -1)
   {
     // TODO: Throw an error
     return;
   }
-
   effect_type_field_->setCurrentIndex(index);
 }
-
 
 } // temoto_action_assistant namespace

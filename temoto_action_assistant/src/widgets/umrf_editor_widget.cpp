@@ -81,11 +81,11 @@ UmrfEditorWidget::UmrfEditorWidget(QWidget* parent
   /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
    *                               Create content for the edit screen
    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-  //QVBoxLayout* edit_screen_top_layout = new QVBoxLayout();
-  //layout_e_t->addLayout(edit_screen_top_layout);
   QScrollArea* scroll_area = new QScrollArea(parent);
   //scroll_area->setStyleSheet("background-color:white;");
   ugw_ = new UmrfGraphWidget(umrfs_, scroll_area);
+  connect(ugw_, &UmrfGraphWidget::activeUmrfChanged, this, &UmrfEditorWidget::setActiveUmrf);
+  connect(ugw_, &UmrfGraphWidget::noUmrfSelected, this, &UmrfEditorWidget::hideUmrfEditor);
   scroll_area->setWidget(ugw_);
   layout_e_t->addWidget(scroll_area);
 
@@ -94,61 +94,59 @@ UmrfEditorWidget::UmrfEditorWidget(QWidget* parent
   // line->setFrameShadow(QFrame::Sunken);
   // layout_e_t->addWidget(line);
 
-  edit_screen_content_ = new QStackedLayout();
-  //edit_screen_top_layout->addLayout(edit_screen_content_);
-
-  /*
-   * Dummy editor page
-   */
-  QWidget* dummy_widget = new QWidget();
-  edit_screen_content_->addWidget(dummy_widget);
-
-  /*
-   * Name editor page
-   */
-  new_ = new NameEditWidget(parent);
-  edit_screen_content_->addWidget(new_);
-
-  /*
-   * Effect editor page
-   */
-  eew_ = new EffectEditWidget(parent);
-  edit_screen_content_->addWidget(eew_);
-
-  /*
-   * Parameter Group editor page
-   */
-  pgew_ = new ParameterGroupEditWidget(parent, umrf_);
-  edit_screen_content_->addWidget(pgew_);
-
-  /*
-   * Parameter editor page
-   */
-  pew_ = new ParameterEditWidget(parent, custom_parameter_map_);
-  edit_screen_content_->addWidget(pew_);
-
   /*
    * Parameter adding dialog widget
    */
   td_ = new TabDialog(this, umrf_parameters_path); 
 
-  /* 
-   * Create content for the interfaces tree
+  /*
+   * Create and populate the UMRF editor layout
    */
-  QVBoxLayout* umrf_layout = new QVBoxLayout();
-  umrf_viz_tree_widget_ = createContentsWidget();
-  dew_ = new DescriptionEditWidget(this, umrf_);
+  umrf_layout_widget_ = new QWidget();
+  umrf_layout_ = new QVBoxLayout(umrf_layout_widget_);
+  layout_e_t->addWidget(umrf_layout_widget_);
+  umrf_layout_widget_->setVisible(false);
 
+  // Description editor widget
+  dew_ = new DescriptionEditWidget(this, umrf_);
+  umrf_layout_->addWidget(dew_);
+
+  // Name editor widget
+  new_ = new NameEditWidget(parent, umrf_);
+  umrf_layout_->addWidget(new_);  
+
+  // Effect editor page
+  eew_ = new EffectEditWidget(parent, umrf_);
+  umrf_layout_->addWidget(eew_);
+
+  // Parameter visualizer widget
+  umrf_param_widget_ = createContentsWidget();
+  umrf_layout_->addWidget(umrf_param_widget_);
+
+  // Add horizontal line
   QFrame* h_line = new QFrame();
   h_line->setFrameShape(QFrame::HLine);
   h_line->setFrameShadow(QFrame::Sunken);
+  umrf_layout_->addWidget(h_line);
 
-  umrf_layout->addWidget(dew_);
-  umrf_layout->addWidget(umrf_viz_tree_widget_);
-  umrf_layout->addWidget(h_line);
-  umrf_layout->addLayout(edit_screen_content_);
+  /*
+   * Create and populate the parameter editor layout
+   */  
+  edit_screen_content_ = new QStackedLayout();
 
-  layout_e_t->addLayout(umrf_layout);
+  // Dummy editor page
+  QWidget* dummy_widget = new QWidget();
+  edit_screen_content_->addWidget(dummy_widget);
+
+  // Parameter Group editor page
+  pgew_ = new ParameterGroupEditWidget(parent, umrf_);
+  edit_screen_content_->addWidget(pgew_);
+
+  // Parameter editor page
+  pew_ = new ParameterEditWidget(parent, custom_parameter_map_);
+  edit_screen_content_->addWidget(pew_);
+
+  umrf_layout_->addLayout(edit_screen_content_);
 
   /*
    * Add the edtior/tree layout to the top layout
@@ -179,7 +177,7 @@ QWidget* UmrfEditorWidget::createContentsWidget()
 
   // Tree Box ----------------------------------------------------------------------
   umrf_viz_tree_ = new QTreeWidget(this);
-  umrf_viz_tree_->setHeaderLabel("UMRF");
+  umrf_viz_tree_->setHeaderLabel("UMRF Parameters");
   umrf_viz_tree_->setContextMenuPolicy(Qt::CustomContextMenu);
   umrf_viz_tree_->setMinimumHeight(450);
   umrf_viz_tree_->setMinimumWidth(250);
@@ -443,29 +441,19 @@ void UmrfEditorWidget::editSelected()
   active_tree_element_ = active_tree_item_->data(0, Qt::UserRole).value<UmrfTreeData>();
   UmrfTreeData::ElementType type = active_tree_element_.type_;
 
-  if (type == UmrfTreeData::NAME)
-  {
-    new_->focusGiven(active_tree_item_);
-    edit_screen_content_->setCurrentIndex(1);
-  }
-  if (type == UmrfTreeData::EFFECT)
-  {
-    eew_->focusGiven(active_tree_item_);
-    edit_screen_content_->setCurrentIndex(2);
-  }
-  else if (type == UmrfTreeData::INPUT_PARAMETERS || type == UmrfTreeData::OUTPUT_PARAMETERS)
+  if (type == UmrfTreeData::INPUT_PARAMETERS || type == UmrfTreeData::OUTPUT_PARAMETERS)
   {
     edit_screen_content_->setCurrentIndex(0);
   }
   else if (type == UmrfTreeData::PARAMETER_GROUP_IN || type == UmrfTreeData::PARAMETER_GROUP_OUT)
   {
     pgew_->focusGiven(active_tree_item_);
-    edit_screen_content_->setCurrentIndex(3);
+    edit_screen_content_->setCurrentIndex(1);
   }
   else if (type == UmrfTreeData::PARAMETER_IN || type == UmrfTreeData::PARAMETER_OUT)
   {
     pew_->focusGiven(active_tree_item_);      // Set up the parameter editor
-    edit_screen_content_->setCurrentIndex(4); // Show the parameter editor
+    edit_screen_content_->setCurrentIndex(2); // Show the parameter editor
   }
   else
   {
@@ -478,50 +466,6 @@ void UmrfEditorWidget::editSelected()
 // ******************************************************************************************
 void UmrfEditorWidget::populateInterfacesTree()
 {
-  std::cout << "**************************************" << std::endl;
-  for (const auto& param : umrf_->getInputParameters())
-  {
-    std::cout << " -in-  * " << param.getName() << std::endl;
-  }
-  for (const auto& param : umrf_->getOutputParameters())
-  {
-    std::cout << " -out- * " << param.getName() << std::endl;
-  }
-
-  /*
-   * Add name item
-   */
-  {
-    std::string name_str =  std::string("Name: ") + umrf_->getName();
-    QString name_qstr = QString::fromStdString(name_str);
-
-    QTreeWidgetItem* tree_item_name = new QTreeWidgetItem(umrf_viz_tree_);
-    tree_item_name->setText(0, name_qstr);
-    tree_item_name->setFont(0, top_level_font_);
-    UmrfTreeData tree_item_name_pl = UmrfTreeData(
-                                    UmrfTreeData::NAME,
-                                    boost::any_cast<std::string*>(&umrf_->getNameNc()));
-    tree_item_name->setData(0, Qt::UserRole, QVariant::fromValue(tree_item_name_pl));
-    umrf_viz_tree_->addTopLevelItem(tree_item_name);
-  }
-
-  /*
-   * Add effect item
-   */
-  {
-    std::string effect_str =  std::string("Effect: ") + umrf_->getEffect();
-    QString name_qstr = QString::fromStdString(effect_str);
-
-    QTreeWidgetItem* tree_item_name = new QTreeWidgetItem(umrf_viz_tree_);
-    tree_item_name->setText(0, name_qstr);
-    tree_item_name->setFont(0, top_level_font_);
-    UmrfTreeData tree_item_name_pl = UmrfTreeData(
-                                    UmrfTreeData::EFFECT,
-                                    boost::any_cast<std::string*>(&umrf_->getEffectNc()));
-    tree_item_name->setData(0, Qt::UserRole, QVariant::fromValue(tree_item_name_pl));
-    umrf_viz_tree_->addTopLevelItem(tree_item_name);
-  }
-
   /*
    * Add input parameters
    */
@@ -669,6 +613,22 @@ void UmrfEditorWidget::refreshTree()
 void UmrfEditorWidget::focusGiven()
 {
 
+}
+
+void UmrfEditorWidget::setActiveUmrf(std::shared_ptr<Umrf> umrf)
+{
+  umrf_ = umrf;
+  edit_screen_content_->setCurrentIndex(0);
+  dew_->setUmrf(umrf);
+  new_->setUmrf(umrf);
+  eew_->setUmrf(umrf);
+  refreshTree();
+  umrf_layout_widget_->setVisible(true);
+}
+
+void UmrfEditorWidget::hideUmrfEditor()
+{
+  umrf_layout_widget_->setVisible(false);
 }
 
 } // temoto_action_assistant namespace

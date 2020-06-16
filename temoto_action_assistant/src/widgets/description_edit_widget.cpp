@@ -69,16 +69,9 @@ void DescriptionEditWidget::modifyDescription()
 // ******************************************************************************************
 //
 // ******************************************************************************************
-// void DescriptionEditWidget::focusGiven(QTreeWidgetItem* tree_item_ptr)
-// {
-//   // Set the tree item pointer to active element
-//   tree_item_ptr_ = tree_item_ptr;
-//   tree_data_ = tree_item_ptr_->data(0, Qt::UserRole).value<UmrfTreeData>();
-//   std::string* name = boost::any_cast<std::string*>(tree_data_.payload_);
-
-//   /*
-//    * Update the word field
-//    */
-//   description_field_->setText(QString::fromStdString(*name));
-// }
+void DescriptionEditWidget::setUmrf( std::shared_ptr<Umrf> umrf)
+{
+  umrf_ = umrf;
+  description_field_->setText(QString::fromStdString(umrf_->getDescription()));
+}
 } // temoto_action_assistant namespace

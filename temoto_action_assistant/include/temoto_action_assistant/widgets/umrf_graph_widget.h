@@ -68,9 +68,9 @@ public:
   void select();
   void unSelect();
   QPoint posAsQpoint() const;
-
   const std::string& getUmrfName() const;
 
+  std::string name_;
   std::shared_ptr<Umrf> umrf_;
   int x_, y_, radius_;
   Qt::GlobalColor border_color_;
@@ -80,7 +80,7 @@ public:
 
 class UmrfGraphWidget : public QWidget
 {
-  Q_OBJECT
+Q_OBJECT
 
 public:
   // ******************************************************************************************
@@ -97,6 +97,14 @@ public:
   // Qt Components
   // ******************************************************************************************
 
+Q_SIGNALS:
+
+  // ******************************************************************************************
+  // Emitted Signals
+  // ******************************************************************************************
+  void activeUmrfChanged(std::shared_ptr<Umrf> active_umrf);
+  void noUmrfSelected();
+
 private Q_SLOTS:
 
   // ******************************************************************************************
@@ -106,12 +114,6 @@ private Q_SLOTS:
   void connectCircles();
   void disconnectCircles();
   void removeCircle();
-
-Q_SIGNALS:
-
-  // ******************************************************************************************
-  // Emitted Signals
-  // ******************************************************************************************
 
 private:
   // ******************************************************************************************

@@ -23,12 +23,10 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QComboBox>
-#include <QTreeWidget>
 
 #ifndef Q_MOC_RUN
 #endif
 
-#include "temoto_action_assistant/widgets/umrf_tree_data.h"
 #include "temoto_action_engine/umrf.h"
 
 namespace temoto_action_assistant
@@ -43,10 +41,9 @@ public:
   // ******************************************************************************************
 
   /// Constructor
-  NameEditWidget(QWidget* parent);
+  NameEditWidget(QWidget* parent, std::shared_ptr<Umrf> umrf);
 
-  /// Focus given
-  void focusGiven(QTreeWidgetItem* tree_item_ptr);
+  void setUmrf( std::shared_ptr<Umrf> umrf);
 
   // ******************************************************************************************
   // Qt Components
@@ -75,10 +72,7 @@ private:
   // ******************************************************************************************
   // Variables
   // ******************************************************************************************
-
-  /// Points to the active element of the interface tree
-  UmrfTreeData tree_data_;
-  QTreeWidgetItem* tree_item_ptr_;
+  std::shared_ptr<Umrf> umrf_;
 
 
   // ******************************************************************************************

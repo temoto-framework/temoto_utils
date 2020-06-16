@@ -68,7 +68,7 @@ namespace temoto_action_assistant
 
 class UmrfEditorWidget : public SetupScreenWidget
 {
-  Q_OBJECT
+Q_OBJECT
 
 public:
   // ******************************************************************************************
@@ -105,6 +105,10 @@ private Q_SLOTS:
 
   void unSubgroupParameter();
 
+  void setActiveUmrf(std::shared_ptr<Umrf> umrf);
+
+  void hideUmrfEditor();
+
 private:
   // ******************************************************************************************
   // Variables
@@ -136,8 +140,10 @@ private:
 
   /// Main table for holding groups
   QTreeWidget* umrf_viz_tree_;
-  QWidget* umrf_viz_tree_widget_;
+  QWidget* umrf_param_widget_;
   QStackedLayout* edit_screen_content_;
+  QWidget* umrf_layout_widget_;
+  QVBoxLayout* umrf_layout_;
 
   // ******************************************************************************************
   // Private Functions

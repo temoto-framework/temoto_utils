@@ -136,7 +136,7 @@ void UmrfGraphWidget::paintEvent(QPaintEvent* pe)
     , circle.second.radius_*2);
 
     painter.setPen(text_pen);
-    painter.drawText(circle.second.x_ - 23, circle.second.y_ + 4, QString(circle.second.umrf_->getName().c_str()));
+    painter.drawText(circle.second.x_ + 25, circle.second.y_ - 14, QString(circle.second.getUmrfName().c_str()));
   }
 }
 
@@ -174,6 +174,7 @@ void UmrfGraphWidget::mousePressEvent(QMouseEvent* event)
       selected_circle_ = "";
     }
     update();
+    Q_EMIT noUmrfSelected();
     return;
   }
   // If empty space was right-clicked, then create a new circle
@@ -186,7 +187,8 @@ void UmrfGraphWidget::mousePressEvent(QMouseEvent* event)
   // If a circle was clicked with right button then connect/disconnect the selected cirle to it
   else if (!clicked_circle_name_.empty() && event->button() == Qt::RightButton)
   {
-    if (circles_[selected_circle_].isConnectedWith(circles_[clicked_circle_name_]))
+    // TODO: the order of evaluoation obviously matters, but its not a reliable code design
+    if (!selected_circle_.empty() && circles_[selected_circle_].isConnectedWith(circles_[clicked_circle_name_]))
     {
       QAction* disconnect_action = new QAction(tr("&Disconnect"), this);
       connect(disconnect_action, SIGNAL(triggered()), this, SLOT(disconnectCircles()));
@@ -244,7 +246,9 @@ void UmrfGraphWidget::mouseReleaseEvent(QMouseEvent *event)
 
 void UmrfGraphWidget::mouseMoveEvent(QMouseEvent* event)
 {
-  if (!circle_dropped_ && isInBounds(canvas_width_, canvas_height_, event->x(), event->y()))
+  if (!circle_dropped_ 
+  && isInBounds(canvas_width_, canvas_height_, event->x(), event->y())
+  && !selected_circle_.empty())
   {
     circles_[selected_circle_].x_ = event->x();
     circles_[selected_circle_].y_ = event->y();
@@ -269,6 +273,7 @@ void UmrfGraphWidget::setNewSelectedCircle(const std::string& new_selected_circl
 
   circles_[new_selected_circle_].select();
   selected_circle_ = new_selected_circle_;
+  Q_EMIT activeUmrfChanged(circles_[new_selected_circle_].umrf_);
 }
 
 void UmrfGraphWidget::addCircle()
@@ -294,6 +299,10 @@ void UmrfGraphWidget::disconnectCircles()
 void UmrfGraphWidget::removeCircle()
 {
   circles_.erase(clicked_circle_name_);
+  if (clicked_circle_name_ == selected_circle_)
+  {
+    selected_circle_ = "";
+  }
 
   // Remove all inbound connections
   for (auto& circle : circles_)
@@ -321,7 +330,8 @@ void UmrfGraphWidget::removeCircle()
 // ******************************************************************************************
 
 CircleHelper::CircleHelper(const std::string& name, int x, int y, int radius)
-: x_(x)
+: name_(name)
+, x_(x)
 , y_(y)
 , radius_(radius)
 , border_color_(Qt::darkGray)
@@ -334,6 +344,7 @@ CircleHelper::CircleHelper(const std::string& name, int x, int y, int radius)
 
 CircleHelper::CircleHelper(std::shared_ptr<Umrf> umrf, int x, int y, int radius)
 : umrf_(umrf)
+, name_(umrf->getName())
 , x_(x)
 , y_(y)
 , radius_(radius)
@@ -343,6 +354,7 @@ CircleHelper::CircleHelper(std::shared_ptr<Umrf> umrf, int x, int y, int radius)
 
 CircleHelper::CircleHelper(const CircleHelper& ch)
 : umrf_(ch.umrf_)
+, name_(ch.name_)
 , x_(ch.x_)
 , y_(ch.y_)
 , radius_(ch.radius_)
@@ -470,6 +482,11 @@ void CircleHelper::unSelect()
 {
   border_width_ = 2;
   border_color_ = Qt::darkGray;
+}
+
+const std::string& CircleHelper::getUmrfName() const
+{
+  return umrf_->getName();
 }
 
 QPoint CircleHelper::posAsQpoint() const

@@ -29,8 +29,9 @@ namespace temoto_action_assistant
 // ******************************************************************************************
 // Constructor
 // ******************************************************************************************
-NameEditWidget::NameEditWidget(QWidget *parent)
+NameEditWidget::NameEditWidget(QWidget *parent, std::shared_ptr<Umrf> umrf)
 : QWidget(parent)
+, umrf_(umrf)
 {
   // TODO: add a description element to the widget
 
@@ -58,28 +59,16 @@ NameEditWidget::NameEditWidget(QWidget *parent)
 // ******************************************************************************************
 void NameEditWidget::modifyName()
 {
-  std::string* name = boost::any_cast<std::string*>(tree_data_.payload_);
-  *name = name_field_->text().toStdString();
-
-  QString text = QString::fromStdString("Name: " + *name);
-  tree_item_ptr_->setText(0, text);
+  umrf_->setName(name_field_->text().toStdString());
 }
 
 // ******************************************************************************************
 //
 // ******************************************************************************************
-void NameEditWidget::focusGiven(QTreeWidgetItem* tree_item_ptr)
+void NameEditWidget::setUmrf( std::shared_ptr<Umrf> umrf)
 {
-  // Set the tree item pointer to active element
-  tree_item_ptr_ = tree_item_ptr;
-  tree_data_ = tree_item_ptr_->data(0, Qt::UserRole).value<UmrfTreeData>();
-  std::string* name = boost::any_cast<std::string*>(tree_data_.payload_);
-
-  /*
-   * Update the word field
-   */
-  name_field_->setText(QString::fromStdString(*name));
+  umrf_ = umrf;
+  name_field_->setText(QString::fromStdString(umrf_->getName()));
 }
-
 
 } // temoto_action_assistant namespace

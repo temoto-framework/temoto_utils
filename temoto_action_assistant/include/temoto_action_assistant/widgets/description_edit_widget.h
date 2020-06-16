@@ -31,12 +31,13 @@ namespace temoto_action_assistant
 {
 class DescriptionEditWidget : public QWidget
 {
-  Q_OBJECT
+Q_OBJECT
 
 public:
   // ******************************************************************************************
   // Public Functions
   // ******************************************************************************************
+  void setUmrf( std::shared_ptr<Umrf> umrf);
 
   /// Constructor
   DescriptionEditWidget(QWidget* parent, std::shared_ptr<Umrf> umrf);
@@ -68,7 +69,6 @@ private:
   // Variables
   // ******************************************************************************************
   std::shared_ptr<Umrf> umrf_;
-
 
   // ******************************************************************************************
   // Private Functions
