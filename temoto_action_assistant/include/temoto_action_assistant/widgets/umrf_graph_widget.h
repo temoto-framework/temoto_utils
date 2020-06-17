@@ -88,7 +88,7 @@ public:
   // ******************************************************************************************
 
   /// Constructor
-  UmrfGraphWidget(std::vector<std::shared_ptr<Umrf>>& umrfs, QWidget* parent = nullptr);
+  UmrfGraphWidget(QWidget* parent, std::vector<std::shared_ptr<Umrf>>& umrfs);
 
   /// Focus given
   //void focusGiven(QTreeWidgetItem* tree_item_ptr);

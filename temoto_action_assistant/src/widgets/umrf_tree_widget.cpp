@@ -14,8 +14,6 @@
  * limitations under the License.
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-/* Author: Robert Valner */
-
 #include "temoto_action_assistant/widgets/umrf_tree_widget.h"
 #include <QMenu>
 #include <QStyle>

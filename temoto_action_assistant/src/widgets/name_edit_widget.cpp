@@ -14,8 +14,6 @@
  * limitations under the License.
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-/* Author: Robert Valner */
-
 #include "temoto_action_assistant/widgets/name_edit_widget.h"
 #include "temoto_action_engine/action_parameter.h"
 
@@ -33,14 +31,8 @@ NameEditWidget::NameEditWidget(QWidget *parent, std::shared_ptr<Umrf> umrf)
 : QWidget(parent)
 , umrf_(umrf)
 {
-  // TODO: add a description element to the widget
-
-  QVBoxLayout* parameter_editor_layout = new QVBoxLayout();
-  // TODO: align it to the top
-
   QFormLayout* parameter_form_layout = new QFormLayout();
-  parameter_form_layout->setContentsMargins(0, 15, 0, 15);
-  parameter_editor_layout->addLayout(parameter_form_layout);
+  parameter_form_layout->setContentsMargins(0, 0, 0, 0);
 
   /*
    * Create the name editing field
@@ -51,7 +43,7 @@ NameEditWidget::NameEditWidget(QWidget *parent, std::shared_ptr<Umrf> umrf)
 
   connect(name_field_, &QLineEdit::textChanged, this, &NameEditWidget::modifyName);
 
-  this->setLayout(parameter_editor_layout);
+  this->setLayout(parameter_form_layout);
 }
 
 // ******************************************************************************************
@@ -59,7 +51,10 @@ NameEditWidget::NameEditWidget(QWidget *parent, std::shared_ptr<Umrf> umrf)
 // ******************************************************************************************
 void NameEditWidget::modifyName()
 {
-  umrf_->setName(name_field_->text().toStdString());
+  if (umrf_)
+  {
+    umrf_->setName(name_field_->text().toStdString());
+  }
 }
 
 // ******************************************************************************************

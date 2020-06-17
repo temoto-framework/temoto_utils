@@ -14,8 +14,6 @@
  * limitations under the License.
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-/* Author: Robert Valner */
-
 #include "temoto_action_assistant/widgets/parameter_edit_widget.h"
 #include "temoto_action_engine/action_parameter.h"
 
@@ -35,14 +33,8 @@ ParameterEditWidget::ParameterEditWidget(QWidget *parent, std::map<std::string, 
 : QWidget(parent)
 , custom_parameter_map_(custom_parameter_map)
 {
-  // TODO: add a description element to the widget
-
-  QVBoxLayout* parameter_editor_layout = new QVBoxLayout();
-  // TODO: align it to the top
-
   QFormLayout* parameter_form_layout = new QFormLayout();
-  parameter_form_layout->setContentsMargins(0, 15, 0, 15);
-  parameter_editor_layout->addLayout(parameter_form_layout);
+  parameter_form_layout->setContentsMargins(0, 0, 0, 0);
 
   /*
    * Create parameter type editing combobox
@@ -76,7 +68,7 @@ ParameterEditWidget::ParameterEditWidget(QWidget *parent, std::map<std::string, 
   parameter_form_layout->addRow("Example:", parameter_example_field_);
   connect(parameter_example_field_, &QLineEdit::textChanged, this, &ParameterEditWidget::modifyExample);
 
-  this->setLayout(parameter_editor_layout);
+  this->setLayout(parameter_form_layout);
 }
 
 // ******************************************************************************************

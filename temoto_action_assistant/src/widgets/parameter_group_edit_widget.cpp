@@ -14,8 +14,6 @@
  * limitations under the License.
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-/* Author: Robert Valner */
-
 #include "temoto_action_assistant/widgets/parameter_group_edit_widget.h"
 #include "temoto_action_engine/action_parameter.h"
 #include <boost/algorithm/string.hpp>
@@ -34,15 +32,9 @@ ParameterGroupEditWidget::ParameterGroupEditWidget(QWidget *parent, std::shared_
 : QWidget(parent)
 , umrf_(umrf)
 {
-  // TODO: add a description element to the widget
-
-  QVBoxLayout* parameter_editor_layout = new QVBoxLayout();
-  // TODO: align it to the top
-
   QFormLayout* parameter_form_layout = new QFormLayout();
-  parameter_form_layout->setContentsMargins(0, 15, 0, 15);
-  parameter_editor_layout->addLayout(parameter_form_layout);
-
+  parameter_form_layout->setContentsMargins(0, 0, 0, 0);
+ 
   /*
    * Create the name editing field
    */
@@ -52,7 +44,7 @@ ParameterGroupEditWidget::ParameterGroupEditWidget(QWidget *parent, std::shared_
 
   connect(parameter_group_name_field_, &QLineEdit::textChanged, this, &ParameterGroupEditWidget::modifyName);
 
-  this->setLayout(parameter_editor_layout);
+  this->setLayout(parameter_form_layout);
 }
 
 // ******************************************************************************************
@@ -134,5 +126,12 @@ void ParameterGroupEditWidget::focusGiven(QTreeWidgetItem* tree_item_ptr)
   parameter_group_name_field_->setText(QString::fromStdString(parameter_group_name));
 }
 
+// ******************************************************************************************
+//
+// ******************************************************************************************
+void ParameterGroupEditWidget::setUmrf( std::shared_ptr<Umrf> umrf)
+{
+  umrf_ = umrf;
+}
 
 } // temoto_action_assistant namespace

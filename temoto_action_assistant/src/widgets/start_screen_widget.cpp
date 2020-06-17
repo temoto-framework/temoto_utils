@@ -32,8 +32,6 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  *********************************************************************/
 
-/* Author: Dave Coleman */
-
 // Qt
 #include <QLabel>
 #include <QTimer>
@@ -64,9 +62,9 @@ namespace fs = boost::filesystem;
 // ******************************************************************************************
 // Start screen user interface for MoveIt Configuration Assistant
 // ******************************************************************************************
-StartScreenWidget::StartScreenWidget(QWidget* parent, std::shared_ptr<Umrf> umrf, const std::string& resources_path)
+StartScreenWidget::StartScreenWidget(QWidget* parent, std::vector<std::shared_ptr<Umrf>>& umrfs, const std::string& resources_path)
   : SetupScreenWidget(parent)
-  , umrf_(umrf)
+  , umrfs_(umrfs)
   , resources_path_(resources_path)
 {
   // Basic widget container

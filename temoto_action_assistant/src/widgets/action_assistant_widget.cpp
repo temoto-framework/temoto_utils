@@ -32,8 +32,6 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  *********************************************************************/
 
-/* Author: Dave Coleman */
-
 // SA
 // #include "setup_screen_widget.h"  // a base class for screens in the setup assistant
 #include "temoto_action_assistant/widgets/action_assistant_widget.h"
@@ -70,7 +68,7 @@ ActionAssistantWidget::ActionAssistantWidget(QWidget* parent
     std::string umrf_json_str;
     umrf_json_str.assign(std::istreambuf_iterator<char>(ifs), std::istreambuf_iterator<char>());
     Umrf new_umrf = umrf_json_converter::fromUmrfJsonStr(umrf_json_str, true);
-    umrf_ = std::make_shared<Umrf>(new_umrf);
+    umrfs_.push_back(std::make_shared<Umrf>(new_umrf));
   }
 
   // Pass command arg values to start screen and show appropriate part of screen
@@ -111,7 +109,7 @@ ActionAssistantWidget::ActionAssistantWidget(QWidget* parent
   // Screens --------------------------------------------------------
 
   // Start Screen
-  ssw_ = new StartScreenWidget(this, umrf_, file_templates_path_);
+  ssw_ = new StartScreenWidget(this, umrfs_, file_templates_path_);
   ssw_->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
   connect(ssw_, SIGNAL(readyToProgress()), this, SLOT(progressPastStartScreen()));
   main_content_->addWidget(ssw_);
@@ -220,12 +218,12 @@ void ActionAssistantWidget::progressPastStartScreen()
   // Load all widgets ------------------------------------------------
 
   // UMRF Editor
-  uew_ = new UmrfEditorWidget(this, umrf_, &custom_parameter_map_, umrf_parameters_path_);
+  uew_ = new UmrfEditorWidget(this, umrfs_, &custom_parameter_map_, umrf_parameters_path_);
   main_content_->addWidget(uew_);
   connect(uew_, SIGNAL(isModal(bool)), this, SLOT(setModalMode(bool)));
 
   // Package generator widget
-  gpw_ = new GeneratePackageWidget(this, umrf_, temoto_actions_path_, file_templates_path_);
+  gpw_ = new GeneratePackageWidget(this, umrfs_, temoto_actions_path_, file_templates_path_);
   main_content_->addWidget(gpw_);
 
   // Enable all nav buttons -------------------------------------------

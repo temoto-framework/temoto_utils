@@ -32,7 +32,6 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  *********************************************************************/
 
-
 #ifndef TEMOTO_ACTION_ASSISTANT_GENERATE_PACKAGE_WIDGET
 #define TEMOTO_ACTION_ASSISTANT_GENERATE_PACKAGE_WIDGET
 
@@ -70,9 +69,9 @@ public:
    * \brief Start screen user interface for MoveIt Configuration Assistant
    */
   GeneratePackageWidget( QWidget* parent
-                       , std::shared_ptr<Umrf> umrf
-                       , std::string temoto_actions_path
-                       , std::string file_template_path);
+  , std::vector<std::shared_ptr<Umrf>>& umrfs
+  , std::string temoto_actions_path
+  , std::string file_template_path);
 
   // ******************************************************************************************
   // Qt Components
@@ -86,6 +85,7 @@ public:
   QLineEdit* package_path_field_;
 
   /// Contains the data related to the action
+  std::vector<std::shared_ptr<Umrf>>& umrfs_;
   std::shared_ptr<Umrf> umrf_;
 
   const std::string umrf_TOPIC = "umrf";

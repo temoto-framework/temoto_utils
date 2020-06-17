@@ -14,8 +14,6 @@
  * limitations under the License.
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-/* Author: Robert Valner */
-
 #ifndef TEMOTO_ACTION_ASSISTANT_PARAMETER_EDIT_WIDGET
 #define TEMOTO_ACTION_ASSISTANT_PARAMETER_EDIT_WIDGET
 

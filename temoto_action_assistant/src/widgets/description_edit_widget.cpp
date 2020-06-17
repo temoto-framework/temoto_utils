@@ -34,11 +34,8 @@ DescriptionEditWidget::DescriptionEditWidget(QWidget *parent, std::shared_ptr<Um
   // TODO: add a description element to the widget
 
   QVBoxLayout* parameter_editor_layout = new QVBoxLayout();
+  parameter_editor_layout->setContentsMargins(0, 0, 0, 0);
   parameter_editor_layout->addStretch(0);
-
-  //QFormLayout* parameter_form_layout = new QFormLayout();
-  //parameter_form_layout->setContentsMargins(0, 15, 0, 15);
-  //parameter_editor_layout->addLayout(parameter_form_layout);
 
   QLabel* description_label = new QLabel();
   description_label->setText("Description");
@@ -63,7 +60,10 @@ DescriptionEditWidget::DescriptionEditWidget(QWidget *parent, std::shared_ptr<Um
 // ******************************************************************************************
 void DescriptionEditWidget::modifyDescription()
 {
-  umrf_->setDescription(description_field_->toPlainText().toStdString());
+  if (umrf_)
+  {
+    umrf_->setDescription(description_field_->toPlainText().toStdString());
+  }
 }
 
 // ******************************************************************************************

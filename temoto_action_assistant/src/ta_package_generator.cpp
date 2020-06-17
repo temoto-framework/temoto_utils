@@ -14,8 +14,6 @@
  * limitations under the License.
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-/* Author: Robert Valner */
-
 #include "temoto_action_assistant/ta_package_generator.h"
 #include <boost/filesystem.hpp>
 #include <boost/algorithm/string.hpp>

@@ -14,8 +14,6 @@
  * limitations under the License.
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-/* Author: Robert Valner */
-
 #ifndef TEMOTO_ACTION_ASSISTANT_PARAMETER_GROUP_EDIT_WIDGET
 #define TEMOTO_ACTION_ASSISTANT_PARAMETER_GROUP_EDIT_WIDGET
 
@@ -48,6 +46,8 @@ public:
 
   /// Focus given
   void focusGiven(QTreeWidgetItem* tree_item_ptr);
+
+  void setUmrf(std::shared_ptr<Umrf> umrf);
 
   // ******************************************************************************************
   // Qt Components

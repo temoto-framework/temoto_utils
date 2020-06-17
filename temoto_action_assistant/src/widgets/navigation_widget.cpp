@@ -32,8 +32,6 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  *********************************************************************/
 
-/* Author: Dave Coleman */
-
 #include "temoto_action_assistant/widgets/navigation_widget.h"
 #include <QDebug>
 #include <iostream>

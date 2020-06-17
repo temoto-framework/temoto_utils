@@ -32,8 +32,6 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  *********************************************************************/
 
-/* Author: Dave Coleman */
-
 #include "temoto_action_assistant/widgets/setup_screen_widget.h"
 #include <iostream>
 

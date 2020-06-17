@@ -76,7 +76,7 @@ public:
   // ******************************************************************************************
 
   UmrfEditorWidget(QWidget* parent
-  , std::shared_ptr<Umrf> umrf
+  , std::vector<std::shared_ptr<Umrf>>& umrfs
   , std::map<std::string, std::string>* custom_parameter_map
   , std::string umrf_parameters_path);
 
@@ -119,9 +119,9 @@ private:
   const QFont io_font_;
   const QFont type_font_;
 
-  /// Contains all the configuration data for the semantic frame
-  std::shared_ptr<Umrf> umrf_;
-  std::vector<std::shared_ptr<Umrf>> umrfs_;
+  /// Contains all the configuration data for the semantic fram
+  std::shared_ptr<Umrf> active_umrf_;
+  std::vector<std::shared_ptr<Umrf>>& umrfs_;
   std::map<std::string, std::string>* custom_parameter_map_;
   int uniqueness_counter_;
 
@@ -148,9 +148,6 @@ private:
   // ******************************************************************************************
   // Private Functions
   // ******************************************************************************************
-
-  /// Builds the main screen list widget
-  QWidget* createContentsWidget();
 
   /// Populates the interfaces tree
   void populateInterfacesTree();

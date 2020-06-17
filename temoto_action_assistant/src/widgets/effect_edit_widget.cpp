@@ -14,8 +14,6 @@
  * limitations under the License.
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-/* Author: Robert Valner */
-
 #include "temoto_action_assistant/widgets/effect_edit_widget.h"
 #include "temoto_action_engine/umrf.h"
 
@@ -33,14 +31,8 @@ EffectEditWidget::EffectEditWidget(QWidget *parent, std::shared_ptr<Umrf> umrf)
 : QWidget(parent)
 , umrf_(umrf)
 {
-  // TODO: add a description element to the widget
-
-  QVBoxLayout* effect_editor_layout = new QVBoxLayout();
-  // TODO: align it to the top
-
   QFormLayout* effect_form_layout = new QFormLayout();
-  effect_form_layout->setContentsMargins(0, 15, 0, 15);
-  effect_editor_layout->addLayout(effect_form_layout);
+  effect_form_layout->setContentsMargins(0, 0, 0, 0);
 
   /*
    * Create parameter type editing combobox
@@ -57,7 +49,7 @@ EffectEditWidget::EffectEditWidget(QWidget *parent, std::shared_ptr<Umrf> umrf)
     effect_type_field_->addItem(effect_type.c_str());
   }
 
-  this->setLayout(effect_editor_layout);
+  this->setLayout(effect_form_layout);
 }
 
 // ******************************************************************************************
@@ -65,7 +57,10 @@ EffectEditWidget::EffectEditWidget(QWidget *parent, std::shared_ptr<Umrf> umrf)
 // ******************************************************************************************
 void EffectEditWidget::modifyEffect(const QString &text)
 {
-  umrf_->setEffect(text.toStdString());
+  if (umrf_)
+  {
+    umrf_->setEffect(text.toStdString());
+  }
 }
 
 // ******************************************************************************************

@@ -70,7 +70,7 @@ public:
   /**
    * \brief Start screen user interface for MoveIt Configuration Assistant
    */
-  StartScreenWidget(QWidget* parent, std::shared_ptr<Umrf> umrf, const std::string& resources_path);
+  StartScreenWidget(QWidget* parent, std::vector<std::shared_ptr<Umrf>>& umrfs, const std::string& resources_path);
 
   ~StartScreenWidget();
 
@@ -88,7 +88,7 @@ public:
   QLabel* logo_image_label_;
 
   /// Contains all the configuration data for the setup assistant
-  std::shared_ptr<Umrf> umrf_;
+  std::vector<std::shared_ptr<Umrf>>& umrfs_;
 
 private Q_SLOTS:
 

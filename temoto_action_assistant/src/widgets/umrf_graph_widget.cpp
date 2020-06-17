@@ -29,7 +29,7 @@ namespace temoto_action_assistant
 // ******************************************************************************************
 // Constructor
 // ******************************************************************************************
-UmrfGraphWidget::UmrfGraphWidget(std::vector<std::shared_ptr<Umrf>>& umrfs, QWidget *parent)
+UmrfGraphWidget::UmrfGraphWidget(QWidget *parent, std::vector<std::shared_ptr<Umrf>>& umrfs)
 : QWidget(parent)
 , umrfs_(umrfs)
 , canvas_width_(400)
@@ -45,7 +45,7 @@ UmrfGraphWidget::UmrfGraphWidget(std::vector<std::shared_ptr<Umrf>>& umrfs, QWid
 
   for (auto& umrf : umrfs_)
   {
-    circles_.insert({umrf->getName(), CircleHelper(umrf, 40, 40, 25)});
+    circles_.insert({umrf->getName(), CircleHelper(umrf, 170, 80, 25)});
   }
 }
 

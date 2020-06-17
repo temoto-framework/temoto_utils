@@ -32,8 +32,6 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  *********************************************************************/
 
-/* Author: Dave Coleman */
-
 #ifndef TEMOTO_ACTION_ASSISTANT_ACTION_ASSISTANT_WIDGET
 #define TEMOTO_ACTION_ASSISTANT_ACTION_ASSISTANT_WIDGET
 
@@ -162,7 +160,7 @@ private:
   GeneratePackageWidget* gpw_;
 
   /// Contains all the configuration data
-  std::shared_ptr<Umrf> umrf_;
+  std::vector<std::shared_ptr<Umrf>> umrfs_;
   std::map<std::string, std::string> custom_parameter_map_;
   
   /// Default path for TeMoto actions

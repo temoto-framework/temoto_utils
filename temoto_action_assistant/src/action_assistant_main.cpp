@@ -32,8 +32,6 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  *********************************************************************/
 
-/* Author: Dave Coleman */
-
 #include "temoto_action_assistant/widgets/action_assistant_widget.h"
 #include <ros/ros.h>
 #include <QApplication>
@@ -100,8 +98,8 @@ int main(int argc, char** argv)
 
   // // Load Qt Widget
   temoto_action_assistant::ActionAssistantWidget aaw(NULL, vm);
-  aaw.setMinimumWidth(800);
-  aaw.setMinimumHeight(550);
+  aaw.setMinimumWidth(900);
+  aaw.setMinimumHeight(600);
   //  aaw.setWindowState( Qt::WindowMaximized );
 
   aaw.show();

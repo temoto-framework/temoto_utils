@@ -40,7 +40,7 @@ public:
   void setUmrf( std::shared_ptr<Umrf> umrf);
 
   /// Constructor
-  DescriptionEditWidget(QWidget* parent, std::shared_ptr<Umrf> umrf);
+  DescriptionEditWidget(QWidget* parent, std::shared_ptr<Umrf> umrf = nullptr);
 
   // ******************************************************************************************
   // Qt Components

@@ -14,8 +14,6 @@
  * limitations under the License.
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-/* Author: Robert Valner */
-
 #ifndef TEMOTO_ACTION_ASSISTANT_EFFECT_EDIT_WIDGET
 #define TEMOTO_ACTION_ASSISTANT_EFFECT_EDIT_WIDGET
 
@@ -42,7 +40,7 @@ public:
   // ******************************************************************************************
 
   /// Constructor
-  EffectEditWidget(QWidget* parent, std::shared_ptr<Umrf> umrf);
+  EffectEditWidget(QWidget* parent, std::shared_ptr<Umrf> umrf = nullptr);
 
   void setUmrf(std::shared_ptr<Umrf> umrf);
 

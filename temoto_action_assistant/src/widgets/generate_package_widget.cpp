@@ -51,11 +51,11 @@ namespace temoto_action_assistant
 // Constructor
 // ******************************************************************************************
 GeneratePackageWidget::GeneratePackageWidget( QWidget* parent
-                                            , std::shared_ptr<Umrf> umrf
-                                            , std::string temoto_actions_path
-                                            , std::string file_template_path)
+, std::vector<std::shared_ptr<Umrf>>& umrfs
+, std::string temoto_actions_path
+, std::string file_template_path)
 : SetupScreenWidget(parent),
-  umrf_(umrf),
+  umrfs_(umrfs),
   apg_(file_template_path),
   temoto_actions_path_(temoto_actions_path)
 {
@@ -75,9 +75,9 @@ GeneratePackageWidget::GeneratePackageWidget( QWidget* parent
 
   // Add the package name field
   package_name_field_ = new QLineEdit(this);
-  package_name_field_->setText(QString::fromStdString(umrf_->getPackageName()));
+  //package_name_field_->setText(QString::fromStdString(umrf_->getPackageName()));
   form_layout->addRow("Action Package Name:", package_name_field_);
-  connect(package_name_field_, &QLineEdit::textChanged, this, &GeneratePackageWidget::modifyPackageName);
+  //connect(package_name_field_, &QLineEdit::textChanged, this, &GeneratePackageWidget::modifyPackageName);
 
   // Add the package path field
   package_path_field_ = new QLineEdit(this);
@@ -115,8 +115,8 @@ GeneratePackageWidget::GeneratePackageWidget( QWidget* parent
   /*
    * Set the default path for actions
    */ 
-  package_path_field_->insert(QString::fromStdString(temoto_actions_path_));
-  modifyRootDir();
+  //package_path_field_->insert(QString::fromStdString(temoto_actions_path_));
+  //modifyRootDir();
 
   // Initialize the publisher
   umrf_publisher_ = nh_.advertise<std_msgs::String>( umrf_TOPIC, 1 );
