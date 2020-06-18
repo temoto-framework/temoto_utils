@@ -279,4 +279,23 @@ void ActionPackageGenerator::generatePackage(const Umrf& umrf, const std::string
    */
   tp::saveStrToFile(t_class_base.processTemplate(), ta_dst_path + "/src", ta_package_name, ".cpp");
 }
+
+void ActionPackageGenerator::generateGraph(const std::string& graph_name
+, const std::vector<Umrf>& umrfs
+, const std::string& graphs_path)
+{
+  // Get the name of the package
+  const std::string umrf_graph_path = graphs_path + "/" + graph_name + "/";
+
+  // Create a package directory
+  boost::filesystem::create_directories(umrf_graph_path);
+
+  for (const auto& umrf : umrfs)
+  {
+    std::ofstream umrf_json_file;
+    umrf_json_file.open (umrf_graph_path + umrf.getName() + ".umrf.json");
+    umrf_json_file << umrf_json_converter::toUmrfJsonStr(umrf);
+    umrf_json_file.close();
+  }
+}
 }// temoto_action_assistant namespace

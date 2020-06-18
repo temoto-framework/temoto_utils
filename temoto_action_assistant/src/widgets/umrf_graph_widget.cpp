@@ -280,6 +280,8 @@ void UmrfGraphWidget::addCircle()
 {
   std::string unique_circle_name = "action_" + std::to_string(circle_uniqueness_counter_++);
   circles_.insert({unique_circle_name, CircleHelper(unique_circle_name, clicked_point_x_, clicked_point_y_, 25)});
+  umrfs_.push_back(circles_[unique_circle_name].umrf_);
+
   setNewSelectedCircle(unique_circle_name);
   update();
 }
@@ -287,17 +289,50 @@ void UmrfGraphWidget::addCircle()
 void UmrfGraphWidget::connectCircles()
 {
   circles_[selected_circle_].connectWith(circles_[clicked_circle_name_]);
+  circles_[selected_circle_].umrf_->addChild(circles_[clicked_circle_name_].umrf_->getName());
+  circles_[clicked_circle_name_].umrf_->addParent(circles_[selected_circle_].umrf_->getName());
   update();
 }
 
 void UmrfGraphWidget::disconnectCircles()
 {
   circles_[selected_circle_].disconnectWith(circles_[clicked_circle_name_]);
+  circles_[selected_circle_].umrf_->removeChild(circles_[clicked_circle_name_].umrf_->getName());
+  circles_[clicked_circle_name_].umrf_->removeParent(circles_[selected_circle_].umrf_->getName());
   update();
 }
 
 void UmrfGraphWidget::removeCircle()
 {
+  std::string erased_umrf_name = circles_[clicked_circle_name_].umrf_->getName();
+
+  // Erase the UMRF from umrfs_ vector
+  // TODO: At the moment the match between the umrf in umrfs_ vector and
+  // the umrf in the circle class is found by comparing the addresses of
+  // the pointed objects. This is for sure not pretty and could be done
+  // in a more safer way. 
+  auto umrf_iterator = std::find_if(umrfs_.begin(), umrfs_.end()
+  , [&](const std::shared_ptr<Umrf>& u) 
+  {
+    if (&(*u) == &(*circles_[clicked_circle_name_].umrf_))
+      return true;
+    else
+      return false;
+  });
+
+  // Erase the UMRF from the globally shared vector of UMRF pointers
+  if (umrf_iterator != umrfs_.end())
+  {
+    umrfs_.erase(umrf_iterator);
+  }
+  else
+  {
+    std::cout << "Cannot remove the circle because the UMRF which was contained"
+    "within the graph GUI was not found" << std::endl;
+    return;
+  }
+
+  // Erase the circle
   circles_.erase(clicked_circle_name_);
   if (clicked_circle_name_ == selected_circle_)
   {
@@ -307,6 +342,11 @@ void UmrfGraphWidget::removeCircle()
   // Remove all inbound connections
   for (auto& circle : circles_)
   {
+    // Remove the erased umrf from other umrfs. If the erased umrf was not
+    // child/parent, then nothing happens.W
+    circle.second.umrf_->removeParent(erased_umrf_name);
+    circle.second.umrf_->removeChild(erased_umrf_name);
+
     for (auto con_it=circle.second.connections_.begin()
     ; con_it!=circle.second.connections_.end()
     ; con_it++)

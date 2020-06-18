@@ -34,6 +34,7 @@ int main(int argc, char **argv)
    */
   std::cout << "* Creating package folder structure" << std::endl; 
   boost::filesystem::create_directories(temoto_ws_path + "actions");
+  boost::filesystem::create_directories(temoto_ws_path + "umrf_graphs");
   boost::filesystem::create_directories(temoto_ws_package_path + "config");
   boost::filesystem::create_directories(temoto_ws_package_path + "launch");
 

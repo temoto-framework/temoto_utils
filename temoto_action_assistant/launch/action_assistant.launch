@@ -1,5 +1,6 @@
 <launch>
   <arg name="ta_path" default="~/"/>
+  <arg name="ug_path" default="~/"/>
   <arg name="ft_path" default="~/"/>
   <arg name="du_path" default="~/"/>
   <arg name="up_path" default="~/"/>
@@ -7,7 +8,8 @@
   <!-- Run -->
   <node pkg="temoto_action_assistant" type="temoto_action_assistant" name="temoto_action_assistant"
         output="screen"  required="true" args="
-          --ta_path $(arg ta_path) 
+          --ta_path $(arg ta_path)
+          --ug_path $(arg ug_path) 
           --ft_path $(arg ft_path) 
           --du_path $(arg du_path) 
           --up_path $(arg up_path)"/>

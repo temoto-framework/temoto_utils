@@ -71,55 +71,47 @@ public:
   GeneratePackageWidget( QWidget* parent
   , std::vector<std::shared_ptr<Umrf>>& umrfs
   , std::string temoto_actions_path
+  , std::string temoto_graphs_path
   , std::string file_template_path);
 
   // ******************************************************************************************
   // Qt Components
   // ******************************************************************************************
 
-  QPushButton* btn_root_dir_;
+  QPushButton* btn_actions_dir_;
+  QPushButton* btn_graphs_dir_;
   QPushButton* btn_generate_package_;
   QLabel* next_label_;
   QProgressBar* progress_bar_;
-  QLineEdit* package_name_field_;
-  QLineEdit* package_path_field_;
+  QLineEdit* actions_path_field_;
+  QLineEdit* graphs_path_field_;
 
   /// Contains the data related to the action
   std::vector<std::shared_ptr<Umrf>>& umrfs_;
-  std::shared_ptr<Umrf> umrf_;
-
-  const std::string umrf_TOPIC = "umrf";
 
 private Q_SLOTS:
 
   // ******************************************************************************************
   // Slot Event Functions
   // ******************************************************************************************
-
-  /// Modify the name of the package
-  void modifyPackageName(const QString &text);
-
-  /// Generate package
-  void generatePackage();
-
-  /// Set the root directory where the package will be generated
-  void setRootDir();
-
-  ///
-  void modifyRootDir();
+  void generatePackages();
+  void setActionsPath();
+  void setGraphsPath();
 
 private:
   // ******************************************************************************************
   // Variables
   // ******************************************************************************************
-  ros::NodeHandle nh_;
-  ros::Publisher umrf_publisher_;
   std::string temoto_actions_path_;
+  std::string temoto_graphs_path_;
   ActionPackageGenerator apg_;
 
   // ******************************************************************************************
   // Private Functions
   // ******************************************************************************************
+  std::string convertToPackageName(const std::string& name) const;
+  std::string convertToClassName(const std::string& name) const;
+  void generateUmrfGraph() const;
 
 };
 

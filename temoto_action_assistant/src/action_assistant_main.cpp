@@ -62,6 +62,7 @@ int main(int argc, char** argv)
     ("help,h", "Show help message")("debug,g", "Run in debug/test mode")
     ("ft_path", po::value<std::string>(), "Path to package generator templates")
     ("ta_path", po::value<std::string>(), "Base path to where action package is generated to")
+    ("ug_path", po::value<std::string>(), "Base path to where umrf graphs are generated")
     ("du_path", po::value<std::string>(), "Path to default UMRF that will be presented in the assistant")
     ("up_path", po::value<std::string>(), "Path to default UMRF parameter definitions");
 

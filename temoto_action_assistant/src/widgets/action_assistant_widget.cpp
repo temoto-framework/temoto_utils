@@ -79,6 +79,13 @@ ActionAssistantWidget::ActionAssistantWidget(QWidget* parent
     // TODO: Check if the given path is valid
   }
 
+  if (args.count("ug_path"))
+  {
+    temoto_graphs_path_ = args["ug_path"].as<std::string>();
+    std::cout << "UG PATH: " << temoto_graphs_path_ << std::endl;
+    // TODO: Check if the given path is valid
+  }
+
   if (args.count("ft_path"))
   {
     file_templates_path_ = args["ft_path"].as<std::string>();
@@ -136,7 +143,7 @@ ActionAssistantWidget::ActionAssistantWidget(QWidget* parent
   // Add Navigation Buttons (but do not load widgets yet except start screen)
   nav_name_list_ << "Start";
   nav_name_list_ << "UMRF Editor";
-  nav_name_list_ << "Generate Action";
+  nav_name_list_ << "Generate Actions";
 
   // // Navigation Left Pane --------------------------------------------------
   navs_view_ = new NavigationWidget(this);
@@ -223,7 +230,7 @@ void ActionAssistantWidget::progressPastStartScreen()
   connect(uew_, SIGNAL(isModal(bool)), this, SLOT(setModalMode(bool)));
 
   // Package generator widget
-  gpw_ = new GeneratePackageWidget(this, umrfs_, temoto_actions_path_, file_templates_path_);
+  gpw_ = new GeneratePackageWidget(this, umrfs_, temoto_actions_path_, temoto_graphs_path_, file_templates_path_);
   main_content_->addWidget(gpw_);
 
   // Enable all nav buttons -------------------------------------------

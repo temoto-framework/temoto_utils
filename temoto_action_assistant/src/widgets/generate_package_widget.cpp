@@ -53,11 +53,13 @@ namespace temoto_action_assistant
 GeneratePackageWidget::GeneratePackageWidget( QWidget* parent
 , std::vector<std::shared_ptr<Umrf>>& umrfs
 , std::string temoto_actions_path
+, std::string temoto_graphs_path
 , std::string file_template_path)
 : SetupScreenWidget(parent),
   umrfs_(umrfs),
   apg_(file_template_path),
-  temoto_actions_path_(temoto_actions_path)
+  temoto_actions_path_(temoto_actions_path),
+  temoto_graphs_path_(temoto_actions_path)
 {
   // Layout for "add/remove selected" buttons
   QVBoxLayout* layout = new QVBoxLayout(this);
@@ -73,24 +75,39 @@ GeneratePackageWidget::GeneratePackageWidget( QWidget* parent
    */
   QFormLayout* form_layout = new QFormLayout();
 
-  // Add the package name field
-  package_name_field_ = new QLineEdit(this);
-  //package_name_field_->setText(QString::fromStdString(umrf_->getPackageName()));
-  form_layout->addRow("Action Package Name:", package_name_field_);
-  //connect(package_name_field_, &QLineEdit::textChanged, this, &GeneratePackageWidget::modifyPackageName);
-
-  // Add the package path field
-  package_path_field_ = new QLineEdit(this);
-  form_layout->addRow("Action Package Path:", package_path_field_);
-  connect(package_path_field_, &QLineEdit::textChanged, this, &GeneratePackageWidget::modifyRootDir);
+  /*
+   * Add the actions path field
+   */ 
+  actions_path_field_ = new QLineEdit(this);
+  actions_path_field_->setEnabled(false);
 
   // action package path selection button
-  btn_root_dir_ = new QPushButton("&or Select the Path", this);
-  btn_root_dir_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
-  btn_root_dir_->setMaximumWidth(200);
-  connect(btn_root_dir_, SIGNAL(clicked()), this, SLOT(setRootDir()));
-  form_layout->addWidget(btn_root_dir_);
-  form_layout->setAlignment(btn_root_dir_, Qt::AlignRight);
+  btn_actions_dir_ = new QPushButton("&Select Path", this);
+  btn_actions_dir_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+  btn_actions_dir_->setMaximumWidth(100);
+  connect(btn_actions_dir_, SIGNAL(clicked()), this, SLOT(setActionsPath()));
+
+  QHBoxLayout* actions_path_layout  = new QHBoxLayout();
+  actions_path_layout->addWidget(actions_path_field_);
+  actions_path_layout->addWidget(btn_actions_dir_);
+  form_layout->addRow("Actions Path:", actions_path_layout);
+
+  /*
+   * Add the graphs path field
+   */
+  graphs_path_field_ = new QLineEdit(this);
+  graphs_path_field_->setEnabled(false);
+
+  // action package path selection button
+  btn_graphs_dir_ = new QPushButton("&Select Path", this);
+  btn_graphs_dir_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+  btn_graphs_dir_->setMaximumWidth(100);
+  connect(btn_graphs_dir_, SIGNAL(clicked()), this, SLOT(setGraphsPath()));
+
+  QHBoxLayout* graphs_path_layout  = new QHBoxLayout();
+  graphs_path_layout->addWidget(graphs_path_field_);
+  graphs_path_layout->addWidget(btn_graphs_dir_);
+  form_layout->addRow("Graphs Path:", graphs_path_layout);
 
   layout->addLayout(form_layout);
   layout->addSpacerItem(new QSpacerItem(1,50, QSizePolicy::Expanding, QSizePolicy::Fixed));
@@ -100,11 +117,11 @@ GeneratePackageWidget::GeneratePackageWidget( QWidget* parent
    */
   btn_generate_package_ = new QPushButton("&Generate", this);
   btn_generate_package_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
-  connect(btn_generate_package_, SIGNAL(clicked()), this, SLOT(generatePackage()));
+  connect(btn_generate_package_, SIGNAL(clicked()), this, SLOT(generatePackages()));
   layout->addWidget(btn_generate_package_);
   layout->setAlignment(btn_generate_package_, Qt::AlignCenter);
 
-  if (package_name_field_->text().toStdString().empty())
+  if (umrfs_.size() == 0)
   {
     btn_generate_package_->setEnabled(false);
   }
@@ -115,31 +132,166 @@ GeneratePackageWidget::GeneratePackageWidget( QWidget* parent
   /*
    * Set the default path for actions
    */ 
-  //package_path_field_->insert(QString::fromStdString(temoto_actions_path_));
-  //modifyRootDir();
+  actions_path_field_->insert(QString::fromStdString(temoto_actions_path_));
+}
 
-  // Initialize the publisher
-  umrf_publisher_ = nh_.advertise<std_msgs::String>( umrf_TOPIC, 1 );
+// ******************************************************************************************
+//
+// ******************************************************************************************
+void GeneratePackageWidget::setActionsPath()
+{
+  std::string start_dir = temoto_actions_path_;
+  if (start_dir.empty())
+  {
+    start_dir = "~/";
+  }
+
+  QString dir = QFileDialog::getExistingDirectory(this
+  , tr("Open Directory")
+  , start_dir.c_str()
+  , QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+
+  if (!dir.isEmpty())
+  {
+    actions_path_field_->setText(dir);
+    temoto_actions_path_ = dir.toStdString();
+  }
+}
+
+// ******************************************************************************************
+//
+// ******************************************************************************************
+void GeneratePackageWidget::setGraphsPath()
+{
+  std::string start_dir = temoto_graphs_path_;
+  if (start_dir.empty())
+  {
+    start_dir = "~/";
+  }
+
+  QString dir = QFileDialog::getExistingDirectory(this
+  , tr("Open Directory")
+  , start_dir.c_str()
+  , QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+
+  if (!dir.isEmpty())
+  {
+    graphs_path_field_->setText(dir);
+    temoto_graphs_path_ = dir.toStdString();
+  }
+}
+
+// ******************************************************************************************
+//
+// ******************************************************************************************
+void GeneratePackageWidget::generateUmrfGraph() const
+{
 
 }
 
 // ******************************************************************************************
 //
 // ******************************************************************************************
-void GeneratePackageWidget::modifyPackageName(const QString &text)
+void GeneratePackageWidget::generatePackages()
+{
+  // Make a copy of the original UMRFs
+  std::vector<Umrf> umrfs_copy;
+  for (const auto& original_umrf_ptr : umrfs_)
+  {
+    umrfs_copy.push_back(*original_umrf_ptr);
+  }
+
+  if (umrfs_.size() == 0)
+  {
+    QMessageBox msg_box;
+    msg_box.setText("No UMRF's defined.");
+    msg_box.exec();
+    return;
+  }
+
+  // Check the names of the UMRFs before proceeding further
+  // TODO: Make sure that there isnt any other ros packages with the same name
+  for (auto& umrf_cpy : umrfs_copy)
+  {
+    if (umrf_cpy.getName().empty())
+    {
+      QMessageBox msg_box;
+      msg_box.setText("One of the UMRF's has no name set.");
+      msg_box.exec();
+      return;
+    }
+
+    // Generate a ROS compliant package name and ROS C++ compliant class name from UMRF's name
+    std::string umrf_action_package_name = convertToPackageName(umrf_cpy.getName());
+    std::string umrf_action_class_name = convertToClassName(umrf_cpy.getName());
+
+    umrf_cpy.setPackageName(umrf_action_package_name);
+    umrf_cpy.setName(umrf_action_class_name);
+
+    // Convert parent UMRF names to ROS C++ compliant format
+    std::vector<std::string> parent_names_cpy = umrf_cpy.getParents();
+    umrf_cpy.clearParents();
+    for (const auto& parent_name : parent_names_cpy)
+    {
+      umrf_cpy.addParent(convertToClassName(parent_name));
+    }
+
+    // Convert child UMRF names to ROS C++ compliant format
+    std::vector<std::string> child_names_cpy = umrf_cpy.getChildren();
+    umrf_cpy.clearChildren();
+    for (const auto& child_name : child_names_cpy)
+    {
+      umrf_cpy.addChild(convertToClassName(child_name));
+    }
+  }
+
+  // Generate the UMRF graph
+  apg_.generateGraph("test_graph", umrfs_copy, temoto_graphs_path_);
+
+  // Generate TeMoto action packages
+  for (auto& umrf_cpy : umrfs_copy)
+  {
+    // Remove the "children" and "parents" fields
+    umrf_cpy.clearChildren();
+    umrf_cpy.clearParents();
+
+    // Generate the TeMoto action package
+    apg_.generatePackage(umrf_cpy, temoto_actions_path_);
+  }
+
+  std::string message;
+
+  if (umrfs_.size() == 1)
+  {
+    message = "A TeMoto Action package was generated successfully";
+  }
+  else if (umrfs_.size() > 1)
+  {
+    message = std::to_string(umrfs_.size()) + " TeMoto Action packages were generated successfully";
+  }
+
+  QMessageBox msg_box;
+  msg_box.setText(message.c_str());
+  msg_box.exec();
+}
+
+// ******************************************************************************************
+//
+// ******************************************************************************************
+std::string GeneratePackageWidget::convertToPackageName(const std::string& name) const
 {
   /*
    * Remove whitespaces and change to lower case
    */
-  std::string path = text.toStdString();
-  boost::algorithm::to_lower(path);
-  boost::replace_all(path, " ", "_");
+  std::string package_name = name;
+  boost::algorithm::to_lower(package_name);
+  boost::replace_all(package_name, " ", "_");
 
   /*
    * Remove all non alphanumeric elements except "_"
    */
   std::string path_alnum;
-  for(char& c : path)
+  for(char& c : package_name)
   {
     if (std::isalnum(c) || std::string(1, c)=="_")
     {
@@ -167,72 +319,28 @@ void GeneratePackageWidget::modifyPackageName(const QString &text)
   {
     path_alnum = "ta_" + path_alnum;
   }
+  return path_alnum;
+}
 
+// ******************************************************************************************
+//
+// ******************************************************************************************
+std::string GeneratePackageWidget::convertToClassName(const std::string& name) const
+{
   /*
    * Create action class name
    */
-  std::string action_class_name;
+  std::string package_name = convertToPackageName(name);
+  std::string class_name;
   std::vector<std::string> tokens;
-  boost::split(tokens, path_alnum, boost::is_any_of("_"));
+  boost::split(tokens, package_name, boost::is_any_of("_"));
 
   for (std::string token : tokens)
   {
     token[0] = std::toupper(token[0]);
-    action_class_name += token;
+    class_name += token;
   }
-
-  /*
-   * Modify the action descriptor
-   */
-  umrf_->setPackageName(path_alnum);
-  umrf_->setName(action_class_name);
-
-  package_name_field_->setText(QString::fromStdString(path_alnum));
-
-  if (path_alnum == "")
-  {
-    btn_generate_package_->setEnabled(false);
-  }
-  else
-  {
-    btn_generate_package_->setEnabled(true);
-  }
-  
-}
-
-// ******************************************************************************************
-//
-// ******************************************************************************************
-void GeneratePackageWidget::modifyRootDir()
-{
-  umrf_->setLibraryPath(package_path_field_->text().toStdString());
-}
-
-// ******************************************************************************************
-//
-// ******************************************************************************************
-void GeneratePackageWidget::setRootDir()
-{
-  QString dir = QFileDialog::getExistingDirectory(this
-  , tr("Open Directory")
-  , "~/"
-  , QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
-
-  package_path_field_->setText(dir);
-  umrf_->setLibraryPath(dir.toStdString());
-}
-
-// ******************************************************************************************
-//
-// ******************************************************************************************
-void GeneratePackageWidget::generatePackage()
-{
-  // TODO: Make sure that a name was given for the package
-  // TODO: Make sure that there isnt any other ros packages with the same name
-  apg_.generatePackage(*umrf_, temoto_actions_path_);
-  QMessageBox msg_box;
-  msg_box.setText("A TeMoto Action package has been generated successfully");
-  msg_box.exec();
+  return class_name;
 }
 
 } // temoto action assistant namespace

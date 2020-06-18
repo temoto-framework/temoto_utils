@@ -8,6 +8,7 @@
 <![CDATA[<launch>
   <include file="$(find temoto_action_assistant)/launch/action_assistant.launch">
     <arg name="ta_path" value="$(find $(arg temoto_ws_name))/../actions/" />
+    <arg name="ug_path" value="$(find $(arg temoto_ws_name))/../umrf_graphs/" />
     <arg name="ft_path" value="$(find temoto_action_assistant)/" />
     <arg name="du_path" value="$(find temoto_action_assistant)/resources/default_umrf.json" />
   </include>

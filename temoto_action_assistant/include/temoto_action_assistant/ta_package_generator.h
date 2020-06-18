@@ -28,6 +28,9 @@ class ActionPackageGenerator
 public:
   ActionPackageGenerator(const std::string& file_template_path);
   void generatePackage(const Umrf& umrf, const std::string& package_path);
+  void generateGraph(const std::string& graph_name
+  , const std::vector<Umrf>& umrfs
+  , const std::string& graphs_path);
 
 private:
   std::string file_template_path_;
