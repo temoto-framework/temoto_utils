@@ -48,6 +48,8 @@ public:
   /// Builds a new tree based on updated action descriptor
   void refreshTree();
 
+  void clear();
+
 private:
   /// Fonts
   const QFont top_level_font_;

@@ -141,6 +141,7 @@ UmrfEditorWidget::UmrfEditorWidget(QWidget* parent
 
   // Description editor widget
   dew_ = new DescriptionEditWidget(parent, active_umrf_);
+  connect(dew_, &DescriptionEditWidget::textSelected, td_, &TabDialog::getParameters);
   dne_form_layout->addRow("Description", dew_);
   //umrf_layout_->setAlignment(dew_, Qt::AlignTop);
 

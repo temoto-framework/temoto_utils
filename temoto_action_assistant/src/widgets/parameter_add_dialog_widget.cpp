@@ -124,10 +124,48 @@ bool TabDialog::addParameterType(const ActionParameters& action_parameters_in)
   return parameter_types_.insert({parameter_name, action_parameters_in}).second;
 }
 
-ActionParameters TabDialog::getParameters()
+int countWords(const char* str)
 {
-  tab_predefined_params_->refreshSelectedParameter();
+   bool in_spaces = true;
+   int numWords = 0;
+
+   while (*str != '\0')
+   {
+      if (std::isspace(*str))
+      {
+         in_spaces = true;
+      }
+      else if (in_spaces)
+      {
+         numWords++;
+         in_spaces = false;
+      }
+
+      ++str;
+   }
+
+   return numWords;
+}
+
+ActionParameters TabDialog::getParameters(const std::string& text_to_annotate)
+{
+  text_to_annotate_ = text_to_annotate;
+
+  if (!text_to_annotate_.empty())
+  {
+    selected_parameters_name_ = "";
+    umrf_tree_widget_->clear();
+    int word_count = countWords(text_to_annotate_.c_str());
+    tab_predefined_params_->repopulateParameterField(parameter_types_, word_count);
+  }
+  else
+  {
+    tab_predefined_params_->refreshSelectedParameter();
+    tab_predefined_params_->repopulateParameterField(parameter_types_);
+  }
+  
   exec();
+  text_to_annotate_ = "";
 
   if (!selected_parameters_name_.empty())
   {
@@ -165,10 +203,7 @@ PredefinedParameterTab::PredefinedParameterTab(TabDialog::ParameterTypes& parame
   connect(parameter_type_field_, SIGNAL(highlighted(QString)), this, SLOT(setSelectedParameters(QString)));
 
   // Add items to the combo box
-  for (auto parameter_type : parameter_types)
-  {
-    parameter_type_field_->addItem(parameter_type.first.c_str());
-  }
+  repopulateParameterField(parameter_types);
 
   // Initialize the default selection
   if (!parameter_types.empty())
@@ -195,6 +230,37 @@ void PredefinedParameterTab::setSelectedParameters(const QString &text)
 void PredefinedParameterTab::refreshSelectedParameter()
 {
   selected_parameters_name_ = parameter_type_field_->currentText().toStdString();
+}
+
+void PredefinedParameterTab::repopulateParameterField(TabDialog::ParameterTypes& parameter_types, const int& max_nr_of_subparams)
+{
+  parameter_type_field_->clear();
+  for (auto parameter_type : parameter_types)
+  {
+    if ((parameter_type.second.getParameterCount() > max_nr_of_subparams) && (max_nr_of_subparams != 0))
+    {
+      continue;
+    }
+    parameter_type_field_->addItem(parameter_type.first.c_str());
+  }
+
+  if (!selected_parameters_name_.empty())
+  {
+    int index = parameter_type_field_->findText(selected_parameters_name_.c_str());
+    if (index == -1)
+    {
+      // TODO: Throw an error
+      return;
+    }
+    parameter_type_field_->setCurrentIndex(index);
+    Q_EMIT parameter_type_field_->highlighted(selected_parameters_name_.c_str());
+  }
+  else
+  {
+    parameter_type_field_->setCurrentIndex(0);
+    Q_EMIT parameter_type_field_->highlighted(parameter_type_field_->itemText(0));
+  }
+  
 }
 
 // ******************************************************************************************

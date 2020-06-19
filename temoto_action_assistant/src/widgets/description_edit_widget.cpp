@@ -20,6 +20,7 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QFormLayout>
+#include <QMenu>
 
 namespace temoto_action_assistant
 {
@@ -48,6 +49,10 @@ DescriptionEditWidget::DescriptionEditWidget(QWidget *parent, std::shared_ptr<Um
   description_field_ = new QTextEdit();
   description_field_->setMaximumWidth(400);
   description_field_->setMaximumHeight(50);
+  description_field_->setContextMenuPolicy(Qt::CustomContextMenu);
+  connect(description_field_, &QTextEdit::customContextMenuRequested, this, &DescriptionEditWidget::descriptionRightClick);
+
+
   parameter_editor_layout->addWidget(description_field_);
 
   //parameter_form_layout->addRow("Description:", description_field_);
@@ -74,5 +79,31 @@ void DescriptionEditWidget::setUmrf( std::shared_ptr<Umrf> umrf)
 {
   umrf_ = umrf;
   description_field_->setText(QString::fromStdString(umrf_->getDescription()));
+}
+
+// ******************************************************************************************
+//
+// ******************************************************************************************
+void DescriptionEditWidget::descriptionRightClick(const QPoint& pos)
+{
+  std::string selected_text = description_field_->textCursor().selectedText().toStdString();
+
+  if (!selected_text.empty())
+  {
+    QMenu menu(this);
+    QAction* add_action = new QAction(tr("&Annotate as Parameter"), this);
+    connect(add_action, &QAction::triggered, this, &DescriptionEditWidget::parseSelctedText);
+    menu.addAction(add_action);
+    menu.exec(description_field_->mapToGlobal(pos));
+  }
+}
+
+// ******************************************************************************************
+//
+// ******************************************************************************************
+void DescriptionEditWidget::parseSelctedText()
+{
+  std::string selected_text = description_field_->textCursor().selectedText().toStdString();
+  Q_EMIT textSelected(selected_text);
 }
 } // temoto_action_assistant namespace

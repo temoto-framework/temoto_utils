@@ -139,8 +139,16 @@ void UmrfGraphWidget::paintEvent(QPaintEvent* pe)
     , circle.second.radius_*2
     , circle.second.radius_*2);
 
+    // Draw the texts
     painter.setPen(text_pen);
+    QFont font;
+    font.setPixelSize(12);
+    painter.setFont(font);
     painter.drawText(circle.second.x_ + 25, circle.second.y_ - 14, QString(circle.second.getUmrfName().c_str()));
+
+    font.setPixelSize(9);
+    painter.setFont(font);
+    painter.drawText(circle.second.x_ + 30, circle.second.y_ - 2, QString(circle.second.umrf_->getDescription().c_str()));
   }
 }
 
@@ -366,6 +374,7 @@ void UmrfGraphWidget::removeCircle()
       }
     }
   }
+  Q_EMIT noUmrfSelected();
   update();
 }
 
@@ -377,14 +386,14 @@ void UmrfGraphWidget::addUmrf(const Umrf& umrf)
   int max_y_pos = 30;
   for (const auto& circle : circles_)
   {
-    if (circle.second.y_ > max_y_pos)
+    if (circle.second.y_ >= max_y_pos)
     {
       max_y_pos = circle.second.y_ + 85;
     }
   }
 
   Umrf local_umrf = umrf;
-  local_umrf.setName(local_umrf.getDescription());
+  local_umrf.setName(unique_circle_name);
 
   for (const auto& circle : circles_)
   {

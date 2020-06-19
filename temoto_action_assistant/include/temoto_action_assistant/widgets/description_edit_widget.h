@@ -48,6 +48,9 @@ public:
   QLabel* title_;  // specify the title from the parent widget
   QTextEdit* description_field_;
 
+Q_SIGNALS:
+  void textSelected(const std::string& selected_text);
+
 private Q_SLOTS:
 
   // ******************************************************************************************
@@ -56,6 +59,8 @@ private Q_SLOTS:
 
   /// Modifies the word variable
   void modifyDescription();
+  void descriptionRightClick(const QPoint& pos);
+  void parseSelctedText();
 
 
 Q_SIGNALS:

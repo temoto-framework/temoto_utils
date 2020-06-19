@@ -41,7 +41,7 @@ public:
   typedef std::map<std::string, ActionParameters> ParameterTypes;
 
   TabDialog(QWidget *parent, const std::string& umrf_parameters_path);
-  ActionParameters getParameters();
+  ActionParameters getParameters(const std::string& text_to_annotate = "");
 
 private:
   bool addParameterType(const ActionParameters& action_parameters_in);
@@ -53,6 +53,7 @@ private:
   ParameterTypes parameter_types_;
   std::string selected_parameters_name_;
   UmrfTreeWidget* umrf_tree_widget_;
+  std::string text_to_annotate_;
 
   /// Tabs
   PredefinedParameterTab* tab_predefined_params_;
@@ -78,7 +79,7 @@ public:
   , QWidget *parent = nullptr);
 
   QComboBox* getParameterTypeField();
-  
+  void repopulateParameterField(TabDialog::ParameterTypes& parameter_types, const int& max_nr_of_subparams = 0);
   void refreshSelectedParameter();
 
 private:

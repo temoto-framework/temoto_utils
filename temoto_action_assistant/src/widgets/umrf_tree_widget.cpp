@@ -169,4 +169,9 @@ void UmrfTreeWidget::refreshTree()
   umrf_viz_tree_->expandAll();  // Expand the tree. TODO: the user might not like it
 }
 
+void UmrfTreeWidget::clear()
+{
+  umrf_viz_tree_->clear();
+}
+
 } // temoto_action_assistant namespace
