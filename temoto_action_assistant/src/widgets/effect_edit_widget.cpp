@@ -31,7 +31,7 @@ EffectEditWidget::EffectEditWidget(QWidget *parent, std::shared_ptr<Umrf> umrf)
 : QWidget(parent)
 , umrf_(umrf)
 {
-  QFormLayout* effect_form_layout = new QFormLayout();
+  QVBoxLayout* effect_form_layout = new QVBoxLayout();
   effect_form_layout->setContentsMargins(0, 0, 0, 0);
 
   /*
@@ -39,7 +39,7 @@ EffectEditWidget::EffectEditWidget(QWidget *parent, std::shared_ptr<Umrf> umrf)
    */
   effect_type_field_ = new QComboBox(this);
   effect_type_field_->setMaximumWidth(400);
-  effect_form_layout->addRow("Effect:", effect_type_field_);
+  effect_form_layout->addWidget(effect_type_field_);
 
   connect(effect_type_field_, SIGNAL(highlighted(QString)), this, SLOT(modifyEffect(QString)));
 

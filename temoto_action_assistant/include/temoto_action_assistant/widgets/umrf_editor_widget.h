@@ -76,6 +76,7 @@ public:
   // ******************************************************************************************
 
   UmrfEditorWidget(QWidget* parent
+  , std::string& umrf_graph_name
   , std::vector<std::shared_ptr<Umrf>>& umrfs
   , std::map<std::string, std::string>* custom_parameter_map
   , std::string umrf_parameters_path);
@@ -109,6 +110,12 @@ private Q_SLOTS:
 
   void hideUmrfEditor();
 
+  void graphNameChanged();
+
+  void annotateToAction(const QPoint& pos);
+
+  void addAnnotatedAction();
+
 private:
   // ******************************************************************************************
   // Variables
@@ -121,6 +128,7 @@ private:
 
   /// Contains all the configuration data for the semantic fram
   std::shared_ptr<Umrf> active_umrf_;
+  std::string& umrf_graph_name_;
   std::vector<std::shared_ptr<Umrf>>& umrfs_;
   std::map<std::string, std::string>* custom_parameter_map_;
   int uniqueness_counter_;
@@ -128,6 +136,8 @@ private:
   /// Variables for maintaining editing information
   UmrfTreeData active_tree_element_;
   QTreeWidgetItem* active_tree_item_;
+  QLineEdit* graph_name_field_;
+  QLineEdit* graph_description_field_;
 
   /// Widgets for editing the contents of the interfaces tree
   ParameterEditWidget* pew_;

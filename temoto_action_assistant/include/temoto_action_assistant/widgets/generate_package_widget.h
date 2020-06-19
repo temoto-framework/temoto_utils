@@ -69,6 +69,7 @@ public:
    * \brief Start screen user interface for MoveIt Configuration Assistant
    */
   GeneratePackageWidget( QWidget* parent
+  , std::string& umrf_graph_name
   , std::vector<std::shared_ptr<Umrf>>& umrfs
   , std::string temoto_actions_path
   , std::string temoto_graphs_path
@@ -104,6 +105,7 @@ private:
   // ******************************************************************************************
   std::string temoto_actions_path_;
   std::string temoto_graphs_path_;
+  std::string& umrf_graph_name_;
   ActionPackageGenerator apg_;
 
   // ******************************************************************************************

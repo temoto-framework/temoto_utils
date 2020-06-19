@@ -33,13 +33,14 @@ DescriptionEditWidget::DescriptionEditWidget(QWidget *parent, std::shared_ptr<Um
 {
   // TODO: add a description element to the widget
 
+  
   QVBoxLayout* parameter_editor_layout = new QVBoxLayout();
   parameter_editor_layout->setContentsMargins(0, 0, 0, 0);
-  parameter_editor_layout->addStretch(0);
+  //parameter_editor_layout->addStretch(0);
 
-  QLabel* description_label = new QLabel();
-  description_label->setText("Description");
-  parameter_editor_layout->addWidget(description_label);
+  // QLabel* description_label = new QLabel();
+  // description_label->setText("Description");
+  // parameter_editor_layout->addWidget(description_label);
 
   /*
    * Create the name editing field

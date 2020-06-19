@@ -1,9 +1,9 @@
 <launch>
-  <arg name="ta_path" default="~/"/>
-  <arg name="ug_path" default="~/"/>
-  <arg name="ft_path" default="~/"/>
-  <arg name="du_path" default="~/"/>
-  <arg name="up_path" default="~/"/>
+  <arg name="ta_path" default=""/>
+  <arg name="ug_path" default=""/>
+  <arg name="ft_path" default=""/>
+  <arg name="du_path" default=""/>
+  <arg name="up_path" default=""/>
 
   <!-- Run -->
   <node pkg="temoto_action_assistant" type="temoto_action_assistant" name="temoto_action_assistant"

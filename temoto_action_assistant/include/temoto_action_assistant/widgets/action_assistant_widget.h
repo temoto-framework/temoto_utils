@@ -162,6 +162,7 @@ private:
   /// Contains all the configuration data
   std::vector<std::shared_ptr<Umrf>> umrfs_;
   std::map<std::string, std::string> custom_parameter_map_;
+  std::string umrf_graph_name_;
   
   /// Default path for TeMoto actions
   std::string temoto_actions_path_;

@@ -18,7 +18,6 @@
 #define TEMOTO_ACTION_ASSISTANT_UMRF_GRAPH_WIDGET
 
 #include <QWidget>
-#include <QPixmap>
 #include <QPainter>
 #include <QMouseEvent>
 #include <QPoint>
@@ -54,7 +53,7 @@ public:
 
   CircleHelper(){}
   CircleHelper(const std::string& name, int x, int y, int radius);
-  CircleHelper(std::shared_ptr<Umrf> umrf, int x, int y, int radius);
+  CircleHelper(std::shared_ptr<Umrf> umrf, const std::string& name, int x, int y, int radius);
   CircleHelper(const CircleHelper& ch);
 
   bool isInCircle(int x_in, int y_in) const;
@@ -89,6 +88,7 @@ public:
 
   /// Constructor
   UmrfGraphWidget(QWidget* parent, std::vector<std::shared_ptr<Umrf>>& umrfs);
+  void addUmrf(const Umrf& umrf);
 
   /// Focus given
   //void focusGiven(QTreeWidgetItem* tree_item_ptr);
@@ -119,7 +119,6 @@ private:
   // ******************************************************************************************
   // Variables
   // ******************************************************************************************
-  QPixmap* pixmap_;
 
   // ******************************************************************************************
   // Private Functions
@@ -130,6 +129,7 @@ private:
   void mouseReleaseEvent(QMouseEvent *event);
   bool isInBounds(int width, int height, int x_in, int y_in);
   void setNewSelectedCircle(const std::string& new_selected_circle_);
+  std::string getUniqueCircleName();
 
   int canvas_width_, canvas_height_;
   int clicked_point_x_, clicked_point_y_;

@@ -51,15 +51,17 @@ namespace temoto_action_assistant
 // Constructor
 // ******************************************************************************************
 GeneratePackageWidget::GeneratePackageWidget( QWidget* parent
+, std::string& umrf_graph_name
 , std::vector<std::shared_ptr<Umrf>>& umrfs
 , std::string temoto_actions_path
 , std::string temoto_graphs_path
 , std::string file_template_path)
 : SetupScreenWidget(parent),
+  umrf_graph_name_(umrf_graph_name),
   umrfs_(umrfs),
   apg_(file_template_path),
   temoto_actions_path_(temoto_actions_path),
-  temoto_graphs_path_(temoto_actions_path)
+  temoto_graphs_path_(temoto_graphs_path)
 {
   // Layout for "add/remove selected" buttons
   QVBoxLayout* layout = new QVBoxLayout(this);
@@ -80,6 +82,7 @@ GeneratePackageWidget::GeneratePackageWidget( QWidget* parent
    */ 
   actions_path_field_ = new QLineEdit(this);
   actions_path_field_->setEnabled(false);
+  actions_path_field_->insert(QString::fromStdString(temoto_actions_path_));
 
   // action package path selection button
   btn_actions_dir_ = new QPushButton("&Select Path", this);
@@ -97,6 +100,7 @@ GeneratePackageWidget::GeneratePackageWidget( QWidget* parent
    */
   graphs_path_field_ = new QLineEdit(this);
   graphs_path_field_->setEnabled(false);
+  graphs_path_field_->insert(QString::fromStdString(temoto_graphs_path_));
 
   // action package path selection button
   btn_graphs_dir_ = new QPushButton("&Select Path", this);
@@ -128,11 +132,6 @@ GeneratePackageWidget::GeneratePackageWidget( QWidget* parent
 
   layout->addStretch();
   this->setLayout(layout);
-
-  /*
-   * Set the default path for actions
-   */ 
-  actions_path_field_->insert(QString::fromStdString(temoto_actions_path_));
 }
 
 // ******************************************************************************************
@@ -246,7 +245,7 @@ void GeneratePackageWidget::generatePackages()
   }
 
   // Generate the UMRF graph
-  apg_.generateGraph("test_graph", umrfs_copy, temoto_graphs_path_);
+  apg_.generateGraph(umrf_graph_name_, umrfs_copy, temoto_graphs_path_);
 
   // Generate TeMoto action packages
   for (auto& umrf_cpy : umrfs_copy)

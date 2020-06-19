@@ -49,10 +49,12 @@ namespace temoto_action_assistant
 // Constructor
 // ******************************************************************************************
 UmrfEditorWidget::UmrfEditorWidget(QWidget* parent
+, std::string& umrf_graph_name
 , std::vector<std::shared_ptr<Umrf>>& umrfs
 , std::map<std::string, std::string>* custom_parameter_map
 , std::string umrf_parameters_path)
 : SetupScreenWidget(parent),
+  umrf_graph_name_(umrf_graph_name),
   umrfs_(umrfs),
   custom_parameter_map_(custom_parameter_map),
   uniqueness_counter_(0),
@@ -71,19 +73,47 @@ UmrfEditorWidget::UmrfEditorWidget(QWidget* parent
    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
   // Add header
-  HeaderWidget* header = new HeaderWidget("UMRF Editor", "Edit UMRF structures", this);
+  HeaderWidget* header = new HeaderWidget("UMRF Editor", "", this);
   layout->addWidget(header);
 
   /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
    *                               Create content for the edit screen
    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-  QScrollArea* scroll_area = new QScrollArea(parent);
+  QVBoxLayout* umrf_graph_layout = new QVBoxLayout();
+  umrf_graph_layout->setAlignment(Qt::AlignTop);
+  QFormLayout* graph_form_layout = new QFormLayout();
+  graph_form_layout->setContentsMargins(0, 0, 0, 0);
+
+  // TODO: The graph name and description fields should be defined in UmrfGraphWidget class
+  graph_name_field_ = new QLineEdit();
+  graph_name_field_->setText(umrf_graph_name_.c_str());
+  graph_description_field_ = new QLineEdit();
+  graph_description_field_->setContextMenuPolicy(Qt::CustomContextMenu);
+  connect(graph_description_field_, &QLineEdit::customContextMenuRequested, this, &UmrfEditorWidget::annotateToAction);
+
+  graph_form_layout->addRow("Graph name:", graph_name_field_);
+  graph_form_layout->addRow("Graph description:", graph_description_field_);
+  connect(graph_name_field_, &QLineEdit::textChanged, this, &UmrfEditorWidget::graphNameChanged);
+
+  QScrollArea* scroll_area = new QScrollArea();
   //scroll_area->setStyleSheet("background-color:white;");
   ugw_ = new UmrfGraphWidget(scroll_area, umrfs_);
   connect(ugw_, &UmrfGraphWidget::activeUmrfChanged, this, &UmrfEditorWidget::setActiveUmrf);
   connect(ugw_, &UmrfGraphWidget::noUmrfSelected, this, &UmrfEditorWidget::hideUmrfEditor);
   scroll_area->setWidget(ugw_);
-  layout_e_t->addWidget(scroll_area);
+
+  umrf_graph_layout->addLayout(graph_form_layout);
+  umrf_graph_layout->addWidget(scroll_area);
+
+  layout_e_t->addLayout(umrf_graph_layout);
+  layout_e_t->setAlignment(umrf_graph_layout, Qt::AlignTop);
+
+  // Add vertical line
+  QFrame* v_line = new QFrame();
+  v_line->setContentsMargins(10, 0, 0, 0);
+  v_line->setFrameShape(QFrame::VLine);
+  v_line->setFrameShadow(QFrame::Sunken);
+  layout_e_t->addWidget(v_line);
 
   /*
    * Parameter adding dialog widget
@@ -96,14 +126,7 @@ UmrfEditorWidget::UmrfEditorWidget(QWidget* parent
   QVBoxLayout* umrf_editor_with_spacer_layout = new QVBoxLayout();
   umrf_editor_with_spacer_layout->setAlignment(Qt::AlignTop);
   layout_e_t->addLayout(umrf_editor_with_spacer_layout);
-
-  // Add a spacer for maintainig the width of the umrf editor screen when hidden
-  QWidget* spacer = new QWidget(this);
-  spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
-  spacer->setMinimumWidth(200);
-  spacer->setMaximumHeight(1);
-  umrf_editor_with_spacer_layout->addWidget(spacer);
-  umrf_editor_with_spacer_layout->setAlignment(spacer, Qt::AlignTop);
+  layout_e_t->setAlignment(umrf_editor_with_spacer_layout, Qt::AlignTop);
 
   umrf_layout_widget_ = new QWidget();
   umrf_layout_ = new QVBoxLayout(umrf_layout_widget_);
@@ -111,20 +134,25 @@ UmrfEditorWidget::UmrfEditorWidget(QWidget* parent
   umrf_editor_with_spacer_layout->setAlignment(umrf_layout_widget_, Qt::AlignTop);
   umrf_layout_widget_->setVisible(false);
 
+  // Form layout for description, name and effect fields
+  QFormLayout* dne_form_layout = new QFormLayout();
+  dne_form_layout->setContentsMargins(0, 0, 0, 0);
+  umrf_layout_->addLayout(dne_form_layout);
+
   // Description editor widget
   dew_ = new DescriptionEditWidget(parent, active_umrf_);
-  umrf_layout_->addWidget(dew_);
-  umrf_layout_->setAlignment(dew_, Qt::AlignTop);
+  dne_form_layout->addRow("Description", dew_);
+  //umrf_layout_->setAlignment(dew_, Qt::AlignTop);
 
   // Name editor widget
   new_ = new NameEditWidget(parent, active_umrf_);
-  umrf_layout_->addWidget(new_);
-  umrf_layout_->setAlignment(new_, Qt::AlignTop);
+  dne_form_layout->addRow("Name", new_);
+  //umrf_layout_->setAlignment(new_, Qt::AlignTop);
 
   // Effect editor page
   eew_ = new EffectEditWidget(parent, active_umrf_);
-  umrf_layout_->addWidget(eew_);
-  umrf_layout_->setAlignment(eew_, Qt::AlignTop);
+  dne_form_layout->addRow("Effect", eew_);
+  //umrf_layout_->setAlignment(eew_, Qt::AlignTop);
 
   // Parameter visualizer widget
   umrf_viz_tree_ = new QTreeWidget();
@@ -163,6 +191,14 @@ UmrfEditorWidget::UmrfEditorWidget(QWidget* parent
 
   umrf_layout_->addLayout(edit_screen_content_);
   umrf_layout_->setAlignment(edit_screen_content_, Qt::AlignTop);
+
+  // Add a spacer for maintainig the width of the umrf editor screen when hidden
+  QWidget* spacer = new QWidget(this);
+  spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+  spacer->setMinimumWidth(200);
+  spacer->setMaximumHeight(1);
+  umrf_editor_with_spacer_layout->addWidget(spacer);
+  umrf_editor_with_spacer_layout->setAlignment(spacer, Qt::AlignTop);
 
   /*
    * Add the edtior/tree layout to the top layout
@@ -583,6 +619,9 @@ void UmrfEditorWidget::focusGiven()
 
 }
 
+// ******************************************************************************************
+//
+// ******************************************************************************************
 void UmrfEditorWidget::setActiveUmrf(std::shared_ptr<Umrf> umrf)
 {
   active_umrf_ = umrf;
@@ -596,9 +635,51 @@ void UmrfEditorWidget::setActiveUmrf(std::shared_ptr<Umrf> umrf)
   umrf_layout_widget_->setVisible(true);
 }
 
+// ******************************************************************************************
+//
+// ******************************************************************************************
 void UmrfEditorWidget::hideUmrfEditor()
 {
   umrf_layout_widget_->setVisible(false);
+}
+
+// ******************************************************************************************
+//
+// ******************************************************************************************
+void UmrfEditorWidget::graphNameChanged()
+{
+  std::string new_name = graph_name_field_->text().toStdString();
+  if (!new_name.empty())
+  {
+    umrf_graph_name_ = new_name;
+  }
+}
+
+// ******************************************************************************************
+//
+// ******************************************************************************************
+void UmrfEditorWidget::annotateToAction(const QPoint& pos)
+{
+  std::string selected_text = graph_description_field_->selectedText().toStdString();
+  if (!selected_text.empty())
+  {
+    QMenu menu(this);
+    QAction* add_action = new QAction(tr("&Annotate as Action"), this);
+    connect(add_action, &QAction::triggered, this, &UmrfEditorWidget::addAnnotatedAction);
+    menu.addAction(add_action);
+    menu.exec(graph_description_field_->mapToGlobal(pos));
+  }
+}
+
+// ******************************************************************************************
+//
+// ******************************************************************************************
+void UmrfEditorWidget::addAnnotatedAction()
+{
+  Umrf new_umrf;
+  new_umrf.setEffect("synchronous");
+  new_umrf.setDescription(graph_description_field_->selectedText().toStdString());
+  ugw_->addUmrf(new_umrf);
 }
 
 } // temoto_action_assistant namespace

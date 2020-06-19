@@ -39,13 +39,17 @@ UmrfGraphWidget::UmrfGraphWidget(QWidget *parent, std::vector<std::shared_ptr<Um
 , circle_uniqueness_counter_(0)
 {
   QVBoxLayout* v_box_layout = new QVBoxLayout(parent);
+  v_box_layout->setContentsMargins(0, 0, 0, 0);
+  
   setMinimumWidth(canvas_width_);
   setMinimumHeight(canvas_height_);
   setLayout(v_box_layout);
 
   for (auto& umrf : umrfs_)
   {
-    circles_.insert({umrf->getName(), CircleHelper(umrf, 170, 80, 25)});
+    // TODO: Pass as lvalue reference
+    std::string unique_circle_name = getUniqueCircleName();
+    circles_.insert({unique_circle_name, CircleHelper(umrf, unique_circle_name, 170, 80, 25)});
   }
 }
 
@@ -278,7 +282,7 @@ void UmrfGraphWidget::setNewSelectedCircle(const std::string& new_selected_circl
 
 void UmrfGraphWidget::addCircle()
 {
-  std::string unique_circle_name = "action_" + std::to_string(circle_uniqueness_counter_++);
+  std::string unique_circle_name = getUniqueCircleName();
   circles_.insert({unique_circle_name, CircleHelper(unique_circle_name, clicked_point_x_, clicked_point_y_, 25)});
   umrfs_.push_back(circles_[unique_circle_name].umrf_);
 
@@ -365,6 +369,45 @@ void UmrfGraphWidget::removeCircle()
   update();
 }
 
+void UmrfGraphWidget::addUmrf(const Umrf& umrf)
+{
+  const std::string unique_circle_name = getUniqueCircleName();
+
+  // Get the y coordinate of the lowest circle
+  int max_y_pos = 30;
+  for (const auto& circle : circles_)
+  {
+    if (circle.second.y_ > max_y_pos)
+    {
+      max_y_pos = circle.second.y_ + 85;
+    }
+  }
+
+  Umrf local_umrf = umrf;
+  local_umrf.setName(local_umrf.getDescription());
+
+  for (const auto& circle : circles_)
+  {
+    if (circle.second.umrf_->getName() == local_umrf.getName())
+    {
+      std::cout << "The provided UMRF already exists" << std::endl;
+      return;
+    }
+  }
+
+  circles_.insert({unique_circle_name, CircleHelper(std::make_shared<Umrf>(local_umrf), unique_circle_name, 100, max_y_pos, 25)});
+  umrfs_.push_back(circles_[unique_circle_name].umrf_);
+ 
+  setNewSelectedCircle(unique_circle_name);
+  update();
+}
+
+std::string UmrfGraphWidget::getUniqueCircleName()
+{
+  return "action_" + std::to_string(circle_uniqueness_counter_++);
+}
+
+
 // ******************************************************************************************
 // Circle and Line helper definitions
 // ******************************************************************************************
@@ -379,12 +422,13 @@ CircleHelper::CircleHelper(const std::string& name, int x, int y, int radius)
 {
   Umrf umrf;
   umrf.setName(name);
+  umrf.setEffect("synchronous");
   umrf_ = std::make_shared<Umrf>(umrf);
 }
 
-CircleHelper::CircleHelper(std::shared_ptr<Umrf> umrf, int x, int y, int radius)
+CircleHelper::CircleHelper(std::shared_ptr<Umrf> umrf, const std::string& name, int x, int y, int radius)
 : umrf_(umrf)
-, name_(umrf->getName())
+, name_(name)
 , x_(x)
 , y_(y)
 , radius_(radius)

@@ -31,7 +31,7 @@ NameEditWidget::NameEditWidget(QWidget *parent, std::shared_ptr<Umrf> umrf)
 : QWidget(parent)
 , umrf_(umrf)
 {
-  QFormLayout* parameter_form_layout = new QFormLayout();
+  QVBoxLayout* parameter_form_layout = new QVBoxLayout();
   parameter_form_layout->setContentsMargins(0, 0, 0, 0);
 
   /*
@@ -39,7 +39,7 @@ NameEditWidget::NameEditWidget(QWidget *parent, std::shared_ptr<Umrf> umrf)
    */
   name_field_ = new QLineEdit(this);
   name_field_->setMaximumWidth(400);
-  parameter_form_layout->addRow("Name:", name_field_);
+  parameter_form_layout->addWidget(name_field_);
 
   connect(name_field_, &QLineEdit::textChanged, this, &NameEditWidget::modifyName);
 
