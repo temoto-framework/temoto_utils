@@ -103,6 +103,7 @@ target_link_libraries(${PROJECT_NAME}_widgets
 add_executable(${PROJECT_NAME} 
   src/action_assistant_main.cpp
   src/ta_package_generator.cpp
+  src/threaded_action_indexer.cpp
 )
 target_link_libraries(${PROJECT_NAME}
   ${PROJECT_NAME}_widgets 

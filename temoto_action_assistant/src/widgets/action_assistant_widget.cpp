@@ -58,7 +58,7 @@ ActionAssistantWidget::ActionAssistantWidget(QWidget* parent
 , boost::program_options::variables_map args)
 : QWidget(parent)
 , custom_parameter_map_(action_parameter::PARAMETER_MAP)
-, umrf_graph_name_("umrf_graph_0")
+, umrf_graph_name_("")
 {
   // Read in the umrf
   if (args.count("du_path"))
@@ -103,6 +103,9 @@ ActionAssistantWidget::ActionAssistantWidget(QWidget* parent
     std::cout << "UP PATH: " << umrf_parameters_path_ << std::endl;
     // TODO: Check if the given path is valid
   }
+
+  // Initialize the action indexer
+  action_indexer_ = std::make_shared<ThreadedActionIndexer>(temoto_actions_path_);
 
   // Basic widget container -----------------------------------------
   QHBoxLayout* layout = new QHBoxLayout();
@@ -229,12 +232,23 @@ void ActionAssistantWidget::progressPastStartScreen()
   // Load all widgets ------------------------------------------------
 
   // UMRF Editor
-  uew_ = new UmrfEditorWidget(this, umrf_graph_name_, umrfs_, &custom_parameter_map_, umrf_parameters_path_);
+  uew_ = new UmrfEditorWidget(this
+  , umrf_graph_name_
+  , umrfs_
+  , &custom_parameter_map_
+  , umrf_parameters_path_
+  , action_indexer_);
   main_content_->addWidget(uew_);
   connect(uew_, SIGNAL(isModal(bool)), this, SLOT(setModalMode(bool)));
 
   // Package generator widget
-  gpw_ = new GeneratePackageWidget(this, umrf_graph_name_, umrfs_, temoto_actions_path_, temoto_graphs_path_, file_templates_path_);
+  gpw_ = new GeneratePackageWidget(this
+  , umrf_graph_name_
+  , umrfs_
+  , temoto_actions_path_
+  , temoto_graphs_path_
+  , file_templates_path_
+  , action_indexer_);
   main_content_->addWidget(gpw_);
 
   // Enable all nav buttons -------------------------------------------

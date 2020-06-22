@@ -52,11 +52,13 @@ UmrfEditorWidget::UmrfEditorWidget(QWidget* parent
 , std::string& umrf_graph_name
 , std::vector<std::shared_ptr<Umrf>>& umrfs
 , std::map<std::string, std::string>* custom_parameter_map
-, std::string umrf_parameters_path)
+, std::string umrf_parameters_path
+, std::shared_ptr<ThreadedActionIndexer> action_indexer)
 : SetupScreenWidget(parent),
   umrf_graph_name_(umrf_graph_name),
   umrfs_(umrfs),
   custom_parameter_map_(custom_parameter_map),
+  action_indexer_(action_indexer),
   uniqueness_counter_(0),
   top_level_font_(QFont(QFont().defaultFamily(), 11, QFont::Bold, QFont::StyleItalic)),
   io_font_(QFont(QFont().defaultFamily(), 10, QFont::Bold)),
@@ -86,7 +88,15 @@ UmrfEditorWidget::UmrfEditorWidget(QWidget* parent
 
   // TODO: The graph name and description fields should be defined in UmrfGraphWidget class
   graph_name_field_ = new QLineEdit();
-  graph_name_field_->setText(umrf_graph_name_.c_str());
+  if (umrf_graph_name_.empty())
+  {
+    graph_name_field_->setPlaceholderText("umrf_graph_0");
+  }
+  else
+  {
+    graph_name_field_->setText(umrf_graph_name_.c_str());
+  }
+  
   graph_description_field_ = new QLineEdit();
   graph_description_field_->setContextMenuPolicy(Qt::CustomContextMenu);
   connect(graph_description_field_, &QLineEdit::customContextMenuRequested, this, &UmrfEditorWidget::annotateToAction);
@@ -141,7 +151,7 @@ UmrfEditorWidget::UmrfEditorWidget(QWidget* parent
 
   // Description editor widget
   dew_ = new DescriptionEditWidget(parent, active_umrf_);
-  connect(dew_, &DescriptionEditWidget::textSelected, td_, &TabDialog::getParameters);
+  connect(dew_, &DescriptionEditWidget::textSelected, this, &UmrfEditorWidget::addParameterFromDescription);
   dne_form_layout->addRow("Description", dew_);
   //umrf_layout_->setAlignment(dew_, Qt::AlignTop);
 
@@ -283,6 +293,19 @@ void UmrfEditorWidget::createRightClickMenu(const QPoint& pos)
   // Create the menu where the cursor is
   QPoint pt(pos);
   menu.exec(umrf_viz_tree_->mapToGlobal(pos));
+}
+
+// ******************************************************************************************
+// 
+// ******************************************************************************************
+void UmrfEditorWidget::addParameterFromDescription(const std::string& text_to_annotate)
+{
+  ActionParameters aps = td_->getParameters(text_to_annotate);
+  for (const auto& ap : aps)
+  {
+    active_umrf_->getInputParametersNc().setParameter(ap);
+  }
+  refreshTree();
 }
 
 // ******************************************************************************************
@@ -668,6 +691,18 @@ void UmrfEditorWidget::annotateToAction(const QPoint& pos)
     QAction* add_action = new QAction(tr("&Annotate as Action"), this);
     connect(add_action, &QAction::triggered, this, &UmrfEditorWidget::addAnnotatedAction);
     menu.addAction(add_action);
+
+    if (action_indexer_->getActionCount() > 0)
+    {
+      QMenu* sub_menu = menu.addMenu("Annotate as Existing Action");
+      connect(sub_menu, &QMenu::triggered, this, &UmrfEditorWidget::addExistingAction);
+      for (const auto& umrf_name : action_indexer_->getUmrfNames())
+      {
+        QAction* action = new QAction(umrf_name.c_str(), this);
+        sub_menu->addAction(action);
+      }
+    }
+
     menu.exec(graph_description_field_->mapToGlobal(pos));
   }
 }
@@ -680,6 +715,14 @@ void UmrfEditorWidget::addAnnotatedAction()
   Umrf new_umrf;
   new_umrf.setEffect("synchronous");
   new_umrf.setDescription(graph_description_field_->selectedText().toStdString());
+  ugw_->addUmrf(new_umrf);
+}
+
+void UmrfEditorWidget::addExistingAction(QAction *action)
+{
+  Umrf new_umrf = action_indexer_->getUmrf(action->text().toStdString());
+  new_umrf.setDescription(graph_description_field_->selectedText().toStdString());
+  new_umrf.setName(new_umrf.getPackageName());
   ugw_->addUmrf(new_umrf);
 }
 

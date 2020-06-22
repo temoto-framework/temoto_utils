@@ -53,6 +53,7 @@
 #include "temoto_action_assistant/widgets/navigation_widget.h"
 #include "temoto_action_assistant/widgets/umrf_editor_widget.h"
 #include "temoto_action_assistant/widgets/generate_package_widget.h"
+#include "temoto_action_assistant/threaded_action_indexer.h"
 
 #ifndef Q_MOC_RUN
 
@@ -163,6 +164,7 @@ private:
   std::vector<std::shared_ptr<Umrf>> umrfs_;
   std::map<std::string, std::string> custom_parameter_map_;
   std::string umrf_graph_name_;
+  std::shared_ptr<ThreadedActionIndexer> action_indexer_;
   
   /// Default path for TeMoto actions
   std::string temoto_actions_path_;

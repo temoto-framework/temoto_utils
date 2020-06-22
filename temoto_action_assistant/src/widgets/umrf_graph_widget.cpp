@@ -393,7 +393,10 @@ void UmrfGraphWidget::addUmrf(const Umrf& umrf)
   }
 
   Umrf local_umrf = umrf;
-  local_umrf.setName(unique_circle_name);
+  if (local_umrf.getName().empty())
+  {
+    local_umrf.setName(unique_circle_name);
+  }
 
   for (const auto& circle : circles_)
   {

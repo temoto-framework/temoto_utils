@@ -49,6 +49,7 @@
 #include "setup_screen_widget.h"  // a base class for screens in the setup assistant
 #include "temoto_action_engine/umrf.h"
 #include "temoto_action_assistant/ta_package_generator.h"
+#include "temoto_action_assistant/threaded_action_indexer.h"
 
 namespace temoto_action_assistant
 {
@@ -73,7 +74,8 @@ public:
   , std::vector<std::shared_ptr<Umrf>>& umrfs
   , std::string temoto_actions_path
   , std::string temoto_graphs_path
-  , std::string file_template_path);
+  , std::string file_template_path
+  , std::shared_ptr<ThreadedActionIndexer> action_indexer);
 
   // ******************************************************************************************
   // Qt Components
@@ -107,6 +109,7 @@ private:
   std::string temoto_graphs_path_;
   std::string& umrf_graph_name_;
   ActionPackageGenerator apg_;
+  std::shared_ptr<ThreadedActionIndexer> action_indexer_;
 
   // ******************************************************************************************
   // Private Functions

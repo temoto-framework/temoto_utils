@@ -55,13 +55,15 @@ GeneratePackageWidget::GeneratePackageWidget( QWidget* parent
 , std::vector<std::shared_ptr<Umrf>>& umrfs
 , std::string temoto_actions_path
 , std::string temoto_graphs_path
-, std::string file_template_path)
+, std::string file_template_path
+, std::shared_ptr<ThreadedActionIndexer> action_indexer)
 : SetupScreenWidget(parent),
   umrf_graph_name_(umrf_graph_name),
   umrfs_(umrfs),
   apg_(file_template_path),
   temoto_actions_path_(temoto_actions_path),
-  temoto_graphs_path_(temoto_graphs_path)
+  temoto_graphs_path_(temoto_graphs_path),
+  action_indexer_(action_indexer)
 {
   // Layout for "add/remove selected" buttons
   QVBoxLayout* layout = new QVBoxLayout(this);
@@ -246,13 +248,28 @@ void GeneratePackageWidget::generatePackages()
 
   // Generate the UMRF graph
   apg_.generateGraph(umrf_graph_name_, umrfs_copy, temoto_graphs_path_);
+  unsigned int ignored_umrfs = 0;
 
   // Generate TeMoto action packages
   for (auto& umrf_cpy : umrfs_copy)
   {
+    if (action_indexer_->hasUmrf(umrf_cpy.getName()))
+    {
+      // Dont overwrite an existing package
+      ignored_umrfs++;
+      continue;
+    }
+
     // Remove the "children" and "parents" fields
     umrf_cpy.clearChildren();
     umrf_cpy.clearParents();
+
+    // Clear the examples in the parameters
+    for (ActionParameters::ParameterContainer input_param : umrf_cpy.getInputParametersNc())
+    {
+      input_param.setExample("");
+      umrf_cpy.getInputParametersNc().setParameter(input_param, true);
+    }
 
     // Generate the TeMoto action package
     apg_.generatePackage(umrf_cpy, temoto_actions_path_);
@@ -260,11 +277,11 @@ void GeneratePackageWidget::generatePackages()
 
   std::string message;
 
-  if (umrfs_.size() == 1)
+  if ((umrfs_.size() - ignored_umrfs) == 1)
   {
     message = "A TeMoto Action package was generated successfully";
   }
-  else if (umrfs_.size() > 1)
+  else if ((umrfs_.size() - ignored_umrfs) > 1)
   {
     message = std::to_string(umrfs_.size()) + " TeMoto Action packages were generated successfully";
   }

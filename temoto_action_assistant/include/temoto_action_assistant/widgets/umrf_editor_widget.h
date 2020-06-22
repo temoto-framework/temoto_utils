@@ -59,6 +59,7 @@
 #include "temoto_action_assistant/widgets/description_edit_widget.h"
 #include "temoto_action_assistant/widgets/parameter_add_dialog_widget.h"
 #include "temoto_action_assistant/widgets/umrf_graph_widget.h"
+#include "temoto_action_assistant/threaded_action_indexer.h"
 #include <memory>
 #include "boost/any.hpp"
 #include "temoto_action_engine/umrf.h"
@@ -79,7 +80,8 @@ public:
   , std::string& umrf_graph_name
   , std::vector<std::shared_ptr<Umrf>>& umrfs
   , std::map<std::string, std::string>* custom_parameter_map
-  , std::string umrf_parameters_path);
+  , std::string umrf_parameters_path
+  , std::shared_ptr<ThreadedActionIndexer> action_indexer);
 
   /// Recieved when this widget is chosen from the navigation menu
   virtual void focusGiven();
@@ -95,6 +97,8 @@ private Q_SLOTS:
 
   /// Creates a context based menu
   void createRightClickMenu(const QPoint& pos);
+
+  void addParameterFromDescription(const std::string& text_to_annotate);
 
   void addParameter();
 
@@ -115,6 +119,8 @@ private Q_SLOTS:
   void annotateToAction(const QPoint& pos);
 
   void addAnnotatedAction();
+  
+  void addExistingAction(QAction *action);
 
 private:
   // ******************************************************************************************
@@ -132,6 +138,7 @@ private:
   std::vector<std::shared_ptr<Umrf>>& umrfs_;
   std::map<std::string, std::string>* custom_parameter_map_;
   int uniqueness_counter_;
+  std::shared_ptr<ThreadedActionIndexer> action_indexer_;
 
   /// Variables for maintaining editing information
   UmrfTreeData active_tree_element_;
