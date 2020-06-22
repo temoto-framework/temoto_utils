@@ -99,7 +99,7 @@ int main(int argc, char** argv)
 
   // // Load Qt Widget
   temoto_action_assistant::ActionAssistantWidget aaw(NULL, vm);
-  aaw.setMinimumWidth(900);
+  aaw.setMinimumWidth(1000);
   aaw.setMinimumHeight(600);
   //  aaw.setWindowState( Qt::WindowMaximized );
 
