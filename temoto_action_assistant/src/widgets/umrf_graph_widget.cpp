@@ -53,7 +53,7 @@ UmrfGraphWidget::UmrfGraphWidget(QWidget *parent, std::vector<std::shared_ptr<Um
   }
 }
 
-void UmrfGraphWidget::paintEvent(QPaintEvent* pe)
+void UmrfGraphWidget::drawGraph()
 {
   QPainter painter(this);
   painter.setRenderHint(QPainter::Antialiasing,true);
@@ -150,6 +150,43 @@ void UmrfGraphWidget::paintEvent(QPaintEvent* pe)
     painter.setFont(font);
     painter.drawText(circle.second.x_ + 30, circle.second.y_ - 2, QString(circle.second.umrf_->getDescription().c_str()));
   }
+}
+
+void UmrfGraphWidget::paintEvent(QPaintEvent* pe)
+{
+  drawGraph();
+}
+
+void UmrfGraphWidget::refreshGraph()
+{
+  // Update the UMRF parents/children
+  for (auto& circle : circles_)
+  {
+    // Update children
+    circle.second.umrf_->clearChildren();
+    for (auto& connection : circle.second.connections_)
+    {
+      circle.second.umrf_->addChild(circles_.at(connection.other_circle_name_).getUmrfName());
+    }
+    
+    // Update parents
+    circle.second.umrf_->clearParents();
+    for(auto& other_circle : circles_)
+    {
+      if (circle.first == other_circle.first)
+      {
+        continue;
+      }
+
+      if (other_circle.second.isConnectedWith(circle.second))
+      {
+        circle.second.umrf_->addParent(other_circle.second.getUmrfName());
+      }
+    }
+  }
+
+  // Redraw the graph
+  update();
 }
 
 void UmrfGraphWidget::mousePressEvent(QMouseEvent* event)

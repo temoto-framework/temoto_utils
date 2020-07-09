@@ -50,6 +50,7 @@ public:
 
 Q_SIGNALS:
   void textSelected(const std::string& selected_text);
+  void updated();
 
 private Q_SLOTS:
 
@@ -61,13 +62,6 @@ private Q_SLOTS:
   void modifyDescription();
   void descriptionRightClick(const QPoint& pos);
   void parseSelctedText();
-
-
-Q_SIGNALS:
-
-  // ******************************************************************************************
-  // Emitted Signals
-  // ******************************************************************************************
 
 private:
   // ******************************************************************************************

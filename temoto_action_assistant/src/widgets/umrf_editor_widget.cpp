@@ -152,11 +152,13 @@ UmrfEditorWidget::UmrfEditorWidget(QWidget* parent
   // Description editor widget
   dew_ = new DescriptionEditWidget(parent, active_umrf_);
   connect(dew_, &DescriptionEditWidget::textSelected, this, &UmrfEditorWidget::addParameterFromDescription);
+  connect(dew_, &DescriptionEditWidget::updated, ugw_, &UmrfGraphWidget::refreshGraph);
   dne_form_layout->addRow("Description", dew_);
   //umrf_layout_->setAlignment(dew_, Qt::AlignTop);
 
   // Name editor widget
   new_ = new NameEditWidget(parent, active_umrf_);
+  connect(new_, &NameEditWidget::updated, ugw_, &UmrfGraphWidget::refreshGraph);
   dne_form_layout->addRow("Name", new_);
   //umrf_layout_->setAlignment(new_, Qt::AlignTop);
 

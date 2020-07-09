@@ -69,6 +69,7 @@ void DescriptionEditWidget::modifyDescription()
   if (umrf_)
   {
     umrf_->setDescription(description_field_->toPlainText().toStdString());
+    Q_EMIT updated();
   }
 }
 

@@ -89,6 +89,7 @@ public:
   /// Constructor
   UmrfGraphWidget(QWidget* parent, std::vector<std::shared_ptr<Umrf>>& umrfs);
   void addUmrf(const Umrf& umrf);
+  void refreshGraph();
 
   /// Focus given
   //void focusGiven(QTreeWidgetItem* tree_item_ptr);
@@ -127,6 +128,7 @@ private:
   void mousePressEvent(QMouseEvent* event);
   void mouseMoveEvent(QMouseEvent *event);
   void mouseReleaseEvent(QMouseEvent *event);
+  void drawGraph();
   bool isInBounds(int width, int height, int x_in, int y_in);
   void setNewSelectedCircle(const std::string& new_selected_circle_);
   std::string getUniqueCircleName();

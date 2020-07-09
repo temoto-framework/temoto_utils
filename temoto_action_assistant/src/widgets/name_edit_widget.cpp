@@ -54,6 +54,7 @@ void NameEditWidget::modifyName()
   if (umrf_)
   {
     umrf_->setName(name_field_->text().toStdString());
+    Q_EMIT updated();
   }
 }
 
