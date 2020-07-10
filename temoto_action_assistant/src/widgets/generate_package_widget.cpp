@@ -230,19 +230,19 @@ void GeneratePackageWidget::generatePackages()
     umrf_cpy.setName(umrf_action_class_name);
 
     // Convert parent UMRF names to ROS C++ compliant format
-    std::vector<std::string> parent_names_cpy = umrf_cpy.getParents();
+    std::vector<Umrf::Relation> parent_relations_cpy = umrf_cpy.getParents();
     umrf_cpy.clearParents();
-    for (const auto& parent_name : parent_names_cpy)
+    for (const auto& parent_relation : parent_relations_cpy)
     {
-      umrf_cpy.addParent(convertToClassName(parent_name));
+      umrf_cpy.addParent(Umrf::Relation(convertToClassName(parent_relation.getName()), parent_relation.getSuffix()));
     }
 
     // Convert child UMRF names to ROS C++ compliant format
-    std::vector<std::string> child_names_cpy = umrf_cpy.getChildren();
+    std::vector<Umrf::Relation> child_relations_cpy = umrf_cpy.getChildren();
     umrf_cpy.clearChildren();
-    for (const auto& child_name : child_names_cpy)
+    for (const auto& child_relation : child_relations_cpy)
     {
-      umrf_cpy.addChild(convertToClassName(child_name));
+      umrf_cpy.addChild(Umrf::Relation(convertToClassName(child_relation.getName()), child_relation.getSuffix()));
     }
   }
 

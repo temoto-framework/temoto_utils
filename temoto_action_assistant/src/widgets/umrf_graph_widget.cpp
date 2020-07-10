@@ -144,7 +144,8 @@ void UmrfGraphWidget::drawGraph()
     QFont font;
     font.setPixelSize(12);
     painter.setFont(font);
-    painter.drawText(circle.second.x_ + 25, circle.second.y_ - 14, QString(circle.second.getUmrfName().c_str()));
+    std::string name = circle.second.getUmrfName() + " " + std::to_string(circle.second.umrf_->getSuffix());
+    painter.drawText(circle.second.x_ + 25, circle.second.y_ - 14, QString(name.c_str()));
 
     font.setPixelSize(9);
     painter.setFont(font);
@@ -166,7 +167,7 @@ void UmrfGraphWidget::refreshGraph()
     circle.second.umrf_->clearChildren();
     for (auto& connection : circle.second.connections_)
     {
-      circle.second.umrf_->addChild(circles_.at(connection.other_circle_name_).getUmrfName());
+      circle.second.umrf_->addChild(circles_.at(connection.other_circle_name_).umrf_->asRelation());
     }
     
     // Update parents
@@ -180,7 +181,7 @@ void UmrfGraphWidget::refreshGraph()
 
       if (other_circle.second.isConnectedWith(circle.second))
       {
-        circle.second.umrf_->addParent(other_circle.second.getUmrfName());
+        circle.second.umrf_->addParent(other_circle.second.umrf_->asRelation());
       }
     }
   }
@@ -338,22 +339,22 @@ void UmrfGraphWidget::addCircle()
 void UmrfGraphWidget::connectCircles()
 {
   circles_[selected_circle_].connectWith(circles_[clicked_circle_name_]);
-  circles_[selected_circle_].umrf_->addChild(circles_[clicked_circle_name_].umrf_->getName());
-  circles_[clicked_circle_name_].umrf_->addParent(circles_[selected_circle_].umrf_->getName());
+  circles_[selected_circle_].umrf_->addChild(circles_[clicked_circle_name_].umrf_->asRelation());
+  circles_[clicked_circle_name_].umrf_->addParent(circles_[selected_circle_].umrf_->asRelation());
   update();
 }
 
 void UmrfGraphWidget::disconnectCircles()
 {
   circles_[selected_circle_].disconnectWith(circles_[clicked_circle_name_]);
-  circles_[selected_circle_].umrf_->removeChild(circles_[clicked_circle_name_].umrf_->getName());
-  circles_[clicked_circle_name_].umrf_->removeParent(circles_[selected_circle_].umrf_->getName());
+  circles_[selected_circle_].umrf_->removeChild(circles_[clicked_circle_name_].umrf_->asRelation());
+  circles_[clicked_circle_name_].umrf_->removeParent(circles_[selected_circle_].umrf_->asRelation());
   update();
 }
 
 void UmrfGraphWidget::removeCircle()
 {
-  std::string erased_umrf_name = circles_[clicked_circle_name_].umrf_->getName();
+  Umrf::Relation erased_umrf_relation = circles_[clicked_circle_name_].umrf_->asRelation();
 
   // Erase the UMRF from umrfs_ vector
   // TODO: At the moment the match between the umrf in umrfs_ vector and
@@ -393,8 +394,8 @@ void UmrfGraphWidget::removeCircle()
   {
     // Remove the erased umrf from other umrfs. If the erased umrf was not
     // child/parent, then nothing happens.W
-    circle.second.umrf_->removeParent(erased_umrf_name);
-    circle.second.umrf_->removeChild(erased_umrf_name);
+    circle.second.umrf_->removeParent( erased_umrf_relation);
+    circle.second.umrf_->removeChild( erased_umrf_relation);
 
     for (auto con_it=circle.second.connections_.begin()
     ; con_it!=circle.second.connections_.end()
@@ -439,8 +440,24 @@ void UmrfGraphWidget::addUmrf(const Umrf& umrf)
   {
     if (circle.second.umrf_->getName() == local_umrf.getName())
     {
-      std::cout << "The provided UMRF already exists" << std::endl;
-      return;
+      std::cout << "The provided UMRF already exists. Adding as a new UMRF instance" << std::endl;
+
+      // Count instances of the same UMRF
+      unsigned int umrf_count = 0;
+      for(const auto& u : umrfs_)
+      {
+        if (u->getName() == local_umrf.getName())
+        {
+          umrf_count++;
+        }
+      }
+
+      local_umrf.setSuffix(umrf_count);
+      break;
+    }
+    else
+    {
+      continue;
     }
   }
 

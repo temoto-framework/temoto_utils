@@ -122,7 +122,7 @@ void ActionPackageGenerator::generatePackage(const Umrf& umrf, const std::string
     }
   }
 
-  invoker_umrf.setSuffix("0");
+  invoker_umrf.setSuffix(0);
   invoker_umrf_json_file.open (ta_dst_path + "/test/invoker_umrf.json");
   invoker_umrf_json_file << umrf_json_converter::toUmrfJsonStr(invoker_umrf);
   invoker_umrf_json_file.close();
