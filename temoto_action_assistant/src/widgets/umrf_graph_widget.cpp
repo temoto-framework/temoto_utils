@@ -160,9 +160,23 @@ void UmrfGraphWidget::paintEvent(QPaintEvent* pe)
 
 void UmrfGraphWidget::refreshGraph()
 {
-  // Update the UMRF parents/children
+  // Update the UMRF parents/children and suffixes
   for (auto& circle : circles_)
   {
+    // Update the suffixes
+    std::vector<std::shared_ptr<Umrf>> duplicate_umrfs = getDuplicateUmrfs(circle.second.getUmrfName());
+    std::sort(duplicate_umrfs.begin(), duplicate_umrfs.end(),
+    [](const std::shared_ptr<Umrf>& u1, const std::shared_ptr<Umrf>& u2)
+    {
+      return u1->getSuffix() < u2->getSuffix();
+    });
+
+    unsigned int suffix = 0;
+    for (auto& u : duplicate_umrfs)
+    {
+      u->setSuffix(suffix++);
+    }
+
     // Update children
     circle.second.umrf_->clearChildren();
     for (auto& connection : circle.second.connections_)
@@ -394,8 +408,8 @@ void UmrfGraphWidget::removeCircle()
   {
     // Remove the erased umrf from other umrfs. If the erased umrf was not
     // child/parent, then nothing happens.W
-    circle.second.umrf_->removeParent( erased_umrf_relation);
-    circle.second.umrf_->removeChild( erased_umrf_relation);
+    circle.second.umrf_->removeParent(erased_umrf_relation);
+    circle.second.umrf_->removeChild(erased_umrf_relation);
 
     for (auto con_it=circle.second.connections_.begin()
     ; con_it!=circle.second.connections_.end()
@@ -413,7 +427,7 @@ void UmrfGraphWidget::removeCircle()
     }
   }
   Q_EMIT noUmrfSelected();
-  update();
+  refreshGraph();
 }
 
 void UmrfGraphWidget::addUmrf(const Umrf& umrf)
@@ -436,31 +450,7 @@ void UmrfGraphWidget::addUmrf(const Umrf& umrf)
     local_umrf.setName(unique_circle_name);
   }
 
-  for (const auto& circle : circles_)
-  {
-    if (circle.second.umrf_->getName() == local_umrf.getName())
-    {
-      std::cout << "The provided UMRF already exists. Adding as a new UMRF instance" << std::endl;
-
-      // Count instances of the same UMRF
-      unsigned int umrf_count = 0;
-      for(const auto& u : umrfs_)
-      {
-        if (u->getName() == local_umrf.getName())
-        {
-          umrf_count++;
-        }
-      }
-
-      local_umrf.setSuffix(umrf_count);
-      break;
-    }
-    else
-    {
-      continue;
-    }
-  }
-
+  local_umrf.setSuffix(getDuplicateUmrfs(local_umrf.getName()).size());
   circles_.insert({unique_circle_name, CircleHelper(std::make_shared<Umrf>(local_umrf), unique_circle_name, 100, max_y_pos, 25)});
   umrfs_.push_back(circles_[unique_circle_name].umrf_);
  
@@ -471,6 +461,21 @@ void UmrfGraphWidget::addUmrf(const Umrf& umrf)
 std::string UmrfGraphWidget::getUniqueCircleName()
 {
   return "action_" + std::to_string(circle_uniqueness_counter_++);
+}
+
+std::vector<std::shared_ptr<Umrf>> UmrfGraphWidget::getDuplicateUmrfs(const std::string& umrf_name)
+{
+  std::vector<std::shared_ptr<Umrf>> duplicate_umrfs;
+
+  for(auto& u : umrfs_)
+  {
+    if (u->getName() == umrf_name)
+    {
+      duplicate_umrfs.push_back(u);
+    }
+  }
+
+  return duplicate_umrfs;
 }
 
 

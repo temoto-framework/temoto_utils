@@ -293,7 +293,7 @@ void ActionPackageGenerator::generateGraph(const std::string& graph_name
   for (const auto& umrf : umrfs)
   {
     std::ofstream umrf_json_file;
-    umrf_json_file.open (umrf_graph_path + umrf.getName() + ".umrf.json");
+    umrf_json_file.open (umrf_graph_path + umrf.getName() + std::to_string(umrf.getSuffix()) + ".umrf.json");
     umrf_json_file << umrf_json_converter::toUmrfJsonStr(umrf);
     umrf_json_file.close();
   }

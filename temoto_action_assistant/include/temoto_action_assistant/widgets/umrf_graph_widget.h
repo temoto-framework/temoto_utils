@@ -132,6 +132,7 @@ private:
   bool isInBounds(int width, int height, int x_in, int y_in);
   void setNewSelectedCircle(const std::string& new_selected_circle_);
   std::string getUniqueCircleName();
+  std::vector<std::shared_ptr<Umrf>> getDuplicateUmrfs(const std::string& umrf_name);
 
   int canvas_width_, canvas_height_;
   int clicked_point_x_, clicked_point_y_;
