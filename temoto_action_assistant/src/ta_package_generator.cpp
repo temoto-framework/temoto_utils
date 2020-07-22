@@ -95,7 +95,7 @@ void ActionPackageGenerator::generatePackage(const Umrf& umrf, const std::string
    */
   std::ofstream umrf_json_file;
   umrf_json_file.open (ta_dst_path + "/umrf.json");
-  umrf_json_file << umrf_json_converter::toUmrfJsonStr(umrf);
+  umrf_json_file << umrf_json_converter::toUmrfJsonStr(umrf, true);
   umrf_json_file.close();
 
   /*
