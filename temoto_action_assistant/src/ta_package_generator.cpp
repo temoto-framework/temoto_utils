@@ -173,7 +173,7 @@ void ActionPackageGenerator::generatePackage(const Umrf& umrf, const std::string
    * Generate umrf_graph.txt 
    */
   t_umrf_graph.setArgument("umrf_name", "invoker_umrf.json");
-  t_umrf_graph.processAndSaveTemplate(ta_dst_path + "test/", "umrf_graph");
+  t_umrf_graph.processAndSaveTemplate(ta_dst_path + "test/", ta_package_name + "_graph");
 
   /*
    * Generate the action implementation c++ source file
