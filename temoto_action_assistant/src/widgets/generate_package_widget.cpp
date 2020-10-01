@@ -247,7 +247,8 @@ void GeneratePackageWidget::generatePackages()
   }
 
   // Generate the UMRF graph
-  apg_.generateGraph(umrf_graph_name_, umrfs_copy, temoto_graphs_path_);
+  UmrfGraph umrf_graph(umrf_graph_name_, umrfs_copy);
+  apg_.generateGraph(umrf_graph, temoto_graphs_path_);
   unsigned int ignored_umrfs = 0;
 
   // Generate TeMoto action packages
