@@ -3,11 +3,12 @@
 <f_template extension=".test">
 
   <arg name="param_type" default="INVALID_TYPE" />
+  <arg name="param_type_us" default="INVALID_TYPE" />
   <arg name="param_name" default="INVALID_NAME" />
   <arg name="param_name_us" default="INVALID_NAME" />
   <body>
 
-<![CDATA[$(arg param_type) $(arg param_name_us) = GET_PARAMETER("$(arg param_name)", $(arg param_type));
+<![CDATA[$(arg param_type_us) $(arg param_name_us) = GET_PARAMETER("$(arg param_name)", $(arg param_type_us));
 ]]>
 
   </body>

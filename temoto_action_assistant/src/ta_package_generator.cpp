@@ -192,18 +192,19 @@ void ActionPackageGenerator::generatePackage(const Umrf& umrf, const std::string
 
   for (const auto& input_param : umrf.getInputParameters())
   {
-    std::string parameter_name = input_param.getName();
+    std::string parameter_name = "in_param_" + input_param.getName();
     boost::replace_all(parameter_name, "::", "_");
     t_parameter_in.setArgument("param_name", input_param.getName());
     t_parameter_in.setArgument("param_name_us", parameter_name);
+    t_parameter_in.setArgument("param_type", input_param.getType());
 
     if (action_parameter::PARAMETER_MAP.find(input_param.getType()) != action_parameter::PARAMETER_MAP.end())
     {
-      t_parameter_in.setArgument("param_type", action_parameter::PARAMETER_MAP.at(input_param.getType()));
+      t_parameter_in.setArgument("param_type_us", action_parameter::PARAMETER_MAP.at(input_param.getType()));
     }
     else
     {
-      t_parameter_in.setArgument("param_type", input_param.getType());
+      t_parameter_in.setArgument("param_type_us", input_param.getType());
     }
     generated_content_cpp += "  " + t_parameter_in.processTemplate();
   }
@@ -220,17 +221,17 @@ void ActionPackageGenerator::generatePackage(const Umrf& umrf, const std::string
 
   for (const auto& output_param : umrf.getOutputParameters())
   {
-    std::string parameter_name = output_param.getName();
+    std::string parameter_name = "out_param_" + output_param.getName();
     boost::replace_all(parameter_name, "::", "_");
     t_parameter_decl.setArgument("param_name_us", parameter_name);
 
     if (action_parameter::PARAMETER_MAP.find(output_param.getType()) != action_parameter::PARAMETER_MAP.end())
     {
-      t_parameter_decl.setArgument("param_type", action_parameter::PARAMETER_MAP.at(output_param.getType()));
+      t_parameter_decl.setArgument("param_type_us", action_parameter::PARAMETER_MAP.at(output_param.getType()));
     }
     else
     {
-      t_parameter_decl.setArgument("param_type", output_param.getType());
+      t_parameter_decl.setArgument("param_type_us", output_param.getType());
     }
     generated_content_cpp += "  " + t_parameter_decl.processTemplate();
   }
@@ -251,19 +252,20 @@ void ActionPackageGenerator::generatePackage(const Umrf& umrf, const std::string
 
   for (const auto& output_param : umrf.getOutputParameters())
   {
-    std::string parameter_name = output_param.getName();
+    std::string parameter_name = "out_param_" + output_param.getName();
     boost::replace_all(parameter_name, "::", "_");
     t_parameter_out.setArgument("param_name_us", parameter_name);
     t_parameter_out.setArgument("param_name", output_param.getName());
+    t_parameter_out.setArgument("param_type", output_param.getType());
 
-    if (action_parameter::PARAMETER_MAP.find(output_param.getType()) != action_parameter::PARAMETER_MAP.end())
-    {
-      t_parameter_out.setArgument("param_type", action_parameter::PARAMETER_MAP.at(output_param.getType()));
-    }
-    else
-    {
-      t_parameter_out.setArgument("param_type", output_param.getType());
-    }
+    // if (action_parameter::PARAMETER_MAP.find(output_param.getType()) != action_parameter::PARAMETER_MAP.end())
+    // {
+    //   t_parameter_out.setArgument("param_type_us", action_parameter::PARAMETER_MAP.at(output_param.getType()));
+    // }
+    // else
+    // {
+    //   t_parameter_out.setArgument("param_type_us", output_param.getType());
+    // }
     generated_content_cpp += "  " + t_parameter_out.processTemplate();
   }
 

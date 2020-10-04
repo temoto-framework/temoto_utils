@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 
-<f_template extension=".test">
+<f_template extension=".h">
 
   <arg name="ta_package_name" default="err_noname_err" />
   <body>
@@ -9,7 +9,7 @@
 #ifndef $(arg ta_package_name)_MACROS_H
 #define $(arg ta_package_name)_MACROS_H
 
-#define GET_PARAMETER(name, type) boost::any_cast<type>(getUmrfPtr()->getInputParameters().getParameter(name).getData())
+#define GET_PARAMETER(name, type) getUmrfPtr()->getInputParameters().getParameterData<type>(name)
 #define SET_PARAMETER(name, type, value) getUmrfPtr()->getOutputParametersNc().setParameter(name, type, boost::any(value))
 
 #endif
