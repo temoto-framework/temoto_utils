@@ -99,9 +99,8 @@ void ActionPackageGenerator::generatePackage(const Umrf& umrf, const std::string
   umrf_json_file.close();
 
   /*
-   * Generate invoker_umrf.json
+   * Generate invoker umrf graph
    */
-  std::ofstream invoker_umrf_json_file;
   Umrf invoker_umrf = umrf;
   invoker_umrf.getInputParametersNc().clear();
 
@@ -123,9 +122,8 @@ void ActionPackageGenerator::generatePackage(const Umrf& umrf, const std::string
   }
 
   invoker_umrf.setSuffix(0);
-  invoker_umrf_json_file.open (ta_dst_path + "/test/invoker_umrf.json");
-  invoker_umrf_json_file << umrf_json_converter::toUmrfJsonStr(invoker_umrf);
-  invoker_umrf_json_file.close();
+  UmrfGraph invoker_umrf_graph(ta_package_name, std::vector<Umrf>{invoker_umrf}, false);
+  generateGraph(invoker_umrf_graph, ta_dst_path + "/test");
 
   /*
    * Generate CMakeLists.txt
@@ -168,12 +166,6 @@ void ActionPackageGenerator::generatePackage(const Umrf& umrf, const std::string
    */
   t_testlaunch_separate.setArgument("ta_package_name", ta_package_name);
   t_testlaunch_separate.processAndSaveTemplate(ta_dst_path + "launch/", "action_test_separate");
-
-  /*
-   * Generate umrf_graph.txt 
-   */
-  t_umrf_graph.setArgument("umrf_name", "invoker_umrf.json");
-  t_umrf_graph.processAndSaveTemplate(ta_dst_path + "test/", ta_package_name + "_graph");
 
   /*
    * Generate the action implementation c++ source file
