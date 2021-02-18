@@ -43,15 +43,9 @@
 
   <buildtool_depend>catkin</buildtool_depend>
 
-  <build_depend>roscpp</build_depend>>
-  <build_depend>rospy</build_depend>
-  <build_depend>temoto</build_depend>
-  <build_depend>temoto_action_assistant</build_depend>
-
-  <exec_depend>roscpp</exec_depend>
-  <exec_depend>rospy</exec_depend>
-  <exec_depend>temoto</exec_depend>
-  <exec_depend>temoto_action_assistant</exec_depend>
+  <depend>roscpp</depend>>
+  <depend>rospy</depend>
+  <depend>temoto_action_assistant</depend>
 
   <!-- The export tag contains other, unspecified, tags -->
   <export>

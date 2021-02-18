@@ -62,7 +62,7 @@ namespace fs = boost::filesystem;
 // ******************************************************************************************
 // Start screen user interface for MoveIt Configuration Assistant
 // ******************************************************************************************
-StartScreenWidget::StartScreenWidget(QWidget* parent, std::vector<std::shared_ptr<Umrf>>& umrfs, const std::string& resources_path)
+StartScreenWidget::StartScreenWidget(QWidget* parent, std::vector<std::shared_ptr<UmrfNode>>& umrfs, const std::string& resources_path)
   : SetupScreenWidget(parent)
   , umrfs_(umrfs)
   , resources_path_(resources_path)

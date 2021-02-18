@@ -25,7 +25,7 @@
 #ifndef Q_MOC_RUN
 #endif
 
-#include "temoto_action_engine/umrf.h"
+#include "temoto_action_engine/umrf_node.h"
 
 namespace temoto_action_assistant
 {
@@ -39,9 +39,9 @@ public:
   // ******************************************************************************************
 
   /// Constructor
-  NameEditWidget(QWidget* parent, std::shared_ptr<Umrf> umrf = nullptr);
+  NameEditWidget(QWidget* parent, std::shared_ptr<UmrfNode> umrf = nullptr);
 
-  void setUmrf( std::shared_ptr<Umrf> umrf);
+  void setUmrf( std::shared_ptr<UmrfNode> umrf);
 
   // ******************************************************************************************
   // Qt Components
@@ -71,7 +71,7 @@ private:
   // ******************************************************************************************
   // Variables
   // ******************************************************************************************
-  std::shared_ptr<Umrf> umrf_;
+  std::shared_ptr<UmrfNode> umrf_;
 
 
   // ******************************************************************************************

@@ -51,11 +51,11 @@ bool ThreadedActionIndexer::hasUmrf(const std::string& umrf_name) const
   return false;
 }
 
-Umrf ThreadedActionIndexer::getUmrf(const std::string& umrf_name) const
+UmrfNode ThreadedActionIndexer::getUmrf(const std::string& umrf_name) const
 {
   std::lock_guard<std::mutex> umrfs_lock(umrfs_mutex_);
   const auto& umrf_it = std::find_if(umrfs_.begin(), umrfs_.end(),
-  [&](const Umrf& umrf)
+  [&](const UmrfNode& umrf)
   {
     if (umrf.getPackageName() == umrf_name)
       return true;
@@ -65,7 +65,7 @@ Umrf ThreadedActionIndexer::getUmrf(const std::string& umrf_name) const
 
   if (umrf_it == umrfs_.end())
   {
-    return Umrf();
+    return UmrfNode();
   }
   else
   {

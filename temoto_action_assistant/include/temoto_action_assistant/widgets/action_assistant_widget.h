@@ -61,7 +61,7 @@
 #include <ros/ros.h>
 #include <boost/program_options.hpp>  // for parsing input arguments
 #include <boost/thread/mutex.hpp>
-#include "temoto_action_engine/umrf.h"
+#include "temoto_action_engine/umrf_node.h"
 #endif
 
 namespace temoto_action_assistant
@@ -161,7 +161,7 @@ private:
   GeneratePackageWidget* gpw_;
 
   /// Contains all the configuration data
-  std::vector<std::shared_ptr<Umrf>> umrfs_;
+  std::vector<std::shared_ptr<UmrfNode>> umrfs_;
   std::map<std::string, std::string> custom_parameter_map_;
   std::string umrf_graph_name_;
   std::shared_ptr<ThreadedActionIndexer> action_indexer_;

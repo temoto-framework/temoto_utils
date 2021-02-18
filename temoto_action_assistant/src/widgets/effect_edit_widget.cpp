@@ -15,7 +15,7 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 #include "temoto_action_assistant/widgets/effect_edit_widget.h"
-#include "temoto_action_engine/umrf.h"
+#include "temoto_action_engine/umrf_node.h"
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -27,7 +27,7 @@ namespace temoto_action_assistant
 // ******************************************************************************************
 // Constructor
 // ******************************************************************************************
-EffectEditWidget::EffectEditWidget(QWidget *parent, std::shared_ptr<Umrf> umrf)
+EffectEditWidget::EffectEditWidget(QWidget *parent, std::shared_ptr<UmrfNode> umrf)
 : QWidget(parent)
 , umrf_(umrf)
 {
@@ -66,7 +66,7 @@ void EffectEditWidget::modifyEffect(const QString &text)
 // ******************************************************************************************
 //
 // ******************************************************************************************
-void EffectEditWidget::setUmrf(std::shared_ptr<Umrf> umrf)
+void EffectEditWidget::setUmrf(std::shared_ptr<UmrfNode> umrf)
 {
   umrf_ = umrf;
 

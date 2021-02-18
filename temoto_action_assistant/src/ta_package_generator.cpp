@@ -59,7 +59,7 @@ ActionPackageGenerator::ActionPackageGenerator(const std::string& file_template_
   file_templates_loaded_ = true;
 }
 
-void ActionPackageGenerator::generatePackage(const Umrf& umrf, const std::string& package_path)
+void ActionPackageGenerator::generatePackage(const UmrfNode& umrf, const std::string& package_path)
 {
   if (!file_templates_loaded_)
   {
@@ -101,7 +101,7 @@ void ActionPackageGenerator::generatePackage(const Umrf& umrf, const std::string
   /*
    * Generate invoker umrf graph
    */
-  Umrf invoker_umrf = umrf;
+  UmrfNode invoker_umrf = umrf;
   invoker_umrf.getInputParametersNc().clear();
 
   // Give input parameters some dummy values
@@ -122,7 +122,7 @@ void ActionPackageGenerator::generatePackage(const Umrf& umrf, const std::string
   }
 
   invoker_umrf.setSuffix(0);
-  UmrfGraph invoker_umrf_graph(ta_package_name, std::vector<Umrf>{invoker_umrf}, false);
+  UmrfGraph invoker_umrf_graph(ta_package_name, std::vector<UmrfNode>{invoker_umrf});
   generateGraph(invoker_umrf_graph, ta_dst_path + "/test");
 
   /*

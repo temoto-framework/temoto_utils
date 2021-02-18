@@ -25,7 +25,7 @@
 #ifndef Q_MOC_RUN
 #endif
 
-#include "temoto_action_engine/umrf.h"
+#include "temoto_action_engine/umrf_node.h"
 #include <memory>
 #include <map>
 
@@ -53,7 +53,7 @@ public:
 
   CircleHelper(){}
   CircleHelper(const std::string& name, int x, int y, int radius);
-  CircleHelper(std::shared_ptr<Umrf> umrf, const std::string& name, int x, int y, int radius);
+  CircleHelper(std::shared_ptr<UmrfNode> umrf, const std::string& name, int x, int y, int radius);
   CircleHelper(const CircleHelper& ch);
 
   bool isInCircle(int x_in, int y_in) const;
@@ -70,7 +70,7 @@ public:
   const std::string& getUmrfName() const;
 
   std::string name_;
-  std::shared_ptr<Umrf> umrf_;
+  std::shared_ptr<UmrfNode> umrf_;
   int x_, y_, radius_;
   Qt::GlobalColor border_color_;
   int border_width_;
@@ -87,8 +87,8 @@ public:
   // ******************************************************************************************
 
   /// Constructor
-  UmrfGraphWidget(QWidget* parent, std::vector<std::shared_ptr<Umrf>>& umrfs);
-  void addUmrf(const Umrf& umrf);
+  UmrfGraphWidget(QWidget* parent, std::vector<std::shared_ptr<UmrfNode>>& umrfs);
+  void addUmrf(const UmrfNode& umrf);
   void refreshGraph();
 
   /// Focus given
@@ -103,7 +103,7 @@ Q_SIGNALS:
   // ******************************************************************************************
   // Emitted Signals
   // ******************************************************************************************
-  void activeUmrfChanged(std::shared_ptr<Umrf> active_umrf);
+  void activeUmrfChanged(std::shared_ptr<UmrfNode> active_umrf);
   void noUmrfSelected();
 
 private Q_SLOTS:
@@ -132,7 +132,7 @@ private:
   bool isInBounds(int width, int height, int x_in, int y_in);
   void setNewSelectedCircle(const std::string& new_selected_circle_);
   std::string getUniqueCircleName();
-  std::vector<std::shared_ptr<Umrf>> getDuplicateUmrfs(const std::string& umrf_name);
+  std::vector<std::shared_ptr<UmrfNode>> getDuplicateUmrfs(const std::string& umrf_name);
 
   int canvas_width_, canvas_height_;
   int clicked_point_x_, clicked_point_y_;
@@ -142,7 +142,7 @@ private:
   std::map<std::string, CircleHelper> circles_;
   int circle_uniqueness_counter_;
 
-  std::vector<std::shared_ptr<Umrf>>& umrfs_;
+  std::vector<std::shared_ptr<UmrfNode>>& umrfs_;
 };
 }
 

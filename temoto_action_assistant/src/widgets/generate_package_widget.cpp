@@ -52,7 +52,7 @@ namespace temoto_action_assistant
 // ******************************************************************************************
 GeneratePackageWidget::GeneratePackageWidget( QWidget* parent
 , std::string& umrf_graph_name
-, std::vector<std::shared_ptr<Umrf>>& umrfs
+, std::vector<std::shared_ptr<UmrfNode>>& umrfs
 , std::string temoto_actions_path
 , std::string temoto_graphs_path
 , std::string file_template_path
@@ -196,7 +196,7 @@ void GeneratePackageWidget::generateUmrfGraph() const
 void GeneratePackageWidget::generatePackages()
 {
   // Make a copy of the original UMRFs
-  std::vector<Umrf> umrfs_copy;
+  std::vector<UmrfNode> umrfs_copy;
   for (const auto& original_umrf_ptr : umrfs_)
   {
     umrfs_copy.push_back(*original_umrf_ptr);
@@ -230,24 +230,24 @@ void GeneratePackageWidget::generatePackages()
     umrf_cpy.setName(umrf_action_class_name);
 
     // Convert parent UMRF names to ROS C++ compliant format
-    std::vector<Umrf::Relation> parent_relations_cpy = umrf_cpy.getParents();
+    std::vector<UmrfNode::Relation> parent_relations_cpy = umrf_cpy.getParents();
     umrf_cpy.clearParents();
     for (const auto& parent_relation : parent_relations_cpy)
     {
-      umrf_cpy.addParent(Umrf::Relation(convertToClassName(parent_relation.getName()), parent_relation.getSuffix()));
+      umrf_cpy.addParent(UmrfNode::Relation(convertToClassName(parent_relation.getName()), parent_relation.getSuffix()));
     }
 
     // Convert child UMRF names to ROS C++ compliant format
-    std::vector<Umrf::Relation> child_relations_cpy = umrf_cpy.getChildren();
+    std::vector<UmrfNode::Relation> child_relations_cpy = umrf_cpy.getChildren();
     umrf_cpy.clearChildren();
     for (const auto& child_relation : child_relations_cpy)
     {
-      umrf_cpy.addChild(Umrf::Relation(convertToClassName(child_relation.getName()), child_relation.getSuffix()));
+      umrf_cpy.addChild(UmrfNode::Relation(convertToClassName(child_relation.getName()), child_relation.getSuffix()));
     }
   }
 
   // Generate the UMRF graph
-  UmrfGraph umrf_graph(umrf_graph_name_, umrfs_copy, false);
+  UmrfGraph umrf_graph(umrf_graph_name_, umrfs_copy);
   apg_.generateGraph(umrf_graph, temoto_graphs_path_);
   unsigned int ignored_umrfs = 0;
 

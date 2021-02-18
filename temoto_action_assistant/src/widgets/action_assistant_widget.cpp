@@ -70,8 +70,8 @@ ActionAssistantWidget::ActionAssistantWidget(QWidget* parent
       std::ifstream ifs(umrf_json_path);
       std::string umrf_json_str;
       umrf_json_str.assign(std::istreambuf_iterator<char>(ifs), std::istreambuf_iterator<char>());
-      Umrf new_umrf = umrf_json_converter::fromUmrfJsonStr(umrf_json_str, true);
-      umrfs_.push_back(std::make_shared<Umrf>(new_umrf));
+      UmrfNode new_umrf = umrf_json_converter::fromUmrfJsonStr(umrf_json_str, true);
+      umrfs_.push_back(std::make_shared<UmrfNode>(new_umrf));
     }
   }
 

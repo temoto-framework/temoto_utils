@@ -28,7 +28,7 @@ namespace temoto_action_assistant
 // ******************************************************************************************
 // Constructor
 // ******************************************************************************************
-ParameterGroupEditWidget::ParameterGroupEditWidget(QWidget *parent, std::shared_ptr<Umrf> umrf)
+ParameterGroupEditWidget::ParameterGroupEditWidget(QWidget *parent, std::shared_ptr<UmrfNode> umrf)
 : QWidget(parent)
 , umrf_(umrf)
 {
@@ -129,7 +129,7 @@ void ParameterGroupEditWidget::focusGiven(QTreeWidgetItem* tree_item_ptr)
 // ******************************************************************************************
 //
 // ******************************************************************************************
-void ParameterGroupEditWidget::setUmrf( std::shared_ptr<Umrf> umrf)
+void ParameterGroupEditWidget::setUmrf( std::shared_ptr<UmrfNode> umrf)
 {
   umrf_ = umrf;
 }

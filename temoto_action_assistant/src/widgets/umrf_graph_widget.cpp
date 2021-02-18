@@ -29,7 +29,7 @@ namespace temoto_action_assistant
 // ******************************************************************************************
 // Constructor
 // ******************************************************************************************
-UmrfGraphWidget::UmrfGraphWidget(QWidget *parent, std::vector<std::shared_ptr<Umrf>>& umrfs)
+UmrfGraphWidget::UmrfGraphWidget(QWidget *parent, std::vector<std::shared_ptr<UmrfNode>>& umrfs)
 : QWidget(parent)
 , umrfs_(umrfs)
 , canvas_width_(400)
@@ -164,9 +164,9 @@ void UmrfGraphWidget::refreshGraph()
   for (auto& circle : circles_)
   {
     // Update the suffixes
-    std::vector<std::shared_ptr<Umrf>> duplicate_umrfs = getDuplicateUmrfs(circle.second.getUmrfName());
+    std::vector<std::shared_ptr<UmrfNode>> duplicate_umrfs = getDuplicateUmrfs(circle.second.getUmrfName());
     std::sort(duplicate_umrfs.begin(), duplicate_umrfs.end(),
-    [](const std::shared_ptr<Umrf>& u1, const std::shared_ptr<Umrf>& u2)
+    [](const std::shared_ptr<UmrfNode>& u1, const std::shared_ptr<UmrfNode>& u2)
     {
       return u1->getSuffix() < u2->getSuffix();
     });
@@ -368,7 +368,7 @@ void UmrfGraphWidget::disconnectCircles()
 
 void UmrfGraphWidget::removeCircle()
 {
-  Umrf::Relation erased_umrf_relation = circles_[clicked_circle_name_].umrf_->asRelation();
+  UmrfNode::Relation erased_umrf_relation = circles_[clicked_circle_name_].umrf_->asRelation();
 
   // Erase the UMRF from umrfs_ vector
   // TODO: At the moment the match between the umrf in umrfs_ vector and
@@ -376,7 +376,7 @@ void UmrfGraphWidget::removeCircle()
   // the pointed objects. This is for sure not pretty and could be done
   // in a more safer way. 
   auto umrf_iterator = std::find_if(umrfs_.begin(), umrfs_.end()
-  , [&](const std::shared_ptr<Umrf>& u) 
+  , [&](const std::shared_ptr<UmrfNode>& u) 
   {
     if (&(*u) == &(*circles_[clicked_circle_name_].umrf_))
       return true;
@@ -430,7 +430,7 @@ void UmrfGraphWidget::removeCircle()
   refreshGraph();
 }
 
-void UmrfGraphWidget::addUmrf(const Umrf& umrf)
+void UmrfGraphWidget::addUmrf(const UmrfNode& umrf)
 {
   const std::string unique_circle_name = getUniqueCircleName();
 
@@ -444,14 +444,14 @@ void UmrfGraphWidget::addUmrf(const Umrf& umrf)
     }
   }
 
-  Umrf local_umrf = umrf;
+  UmrfNode local_umrf = umrf;
   if (local_umrf.getName().empty())
   {
     local_umrf.setName(unique_circle_name);
   }
 
   local_umrf.setSuffix(getDuplicateUmrfs(local_umrf.getName()).size());
-  circles_.insert({unique_circle_name, CircleHelper(std::make_shared<Umrf>(local_umrf), unique_circle_name, 100, max_y_pos, 25)});
+  circles_.insert({unique_circle_name, CircleHelper(std::make_shared<UmrfNode>(local_umrf), unique_circle_name, 100, max_y_pos, 25)});
   umrfs_.push_back(circles_[unique_circle_name].umrf_);
  
   setNewSelectedCircle(unique_circle_name);
@@ -463,9 +463,9 @@ std::string UmrfGraphWidget::getUniqueCircleName()
   return "action_" + std::to_string(circle_uniqueness_counter_++);
 }
 
-std::vector<std::shared_ptr<Umrf>> UmrfGraphWidget::getDuplicateUmrfs(const std::string& umrf_name)
+std::vector<std::shared_ptr<UmrfNode>> UmrfGraphWidget::getDuplicateUmrfs(const std::string& umrf_name)
 {
-  std::vector<std::shared_ptr<Umrf>> duplicate_umrfs;
+  std::vector<std::shared_ptr<UmrfNode>> duplicate_umrfs;
 
   for(auto& u : umrfs_)
   {
@@ -491,13 +491,13 @@ CircleHelper::CircleHelper(const std::string& name, int x, int y, int radius)
 , border_color_(Qt::darkGray)
 , border_width_(2)
 {
-  Umrf umrf;
+  UmrfNode umrf;
   umrf.setName(name);
   umrf.setEffect("synchronous");
-  umrf_ = std::make_shared<Umrf>(umrf);
+  umrf_ = std::make_shared<UmrfNode>(umrf);
 }
 
-CircleHelper::CircleHelper(std::shared_ptr<Umrf> umrf, const std::string& name, int x, int y, int radius)
+CircleHelper::CircleHelper(std::shared_ptr<UmrfNode> umrf, const std::string& name, int x, int y, int radius)
 : umrf_(umrf)
 , name_(name)
 , x_(x)

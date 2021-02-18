@@ -47,7 +47,7 @@
 
 #include "header_widget.h"
 #include "setup_screen_widget.h"  // a base class for screens in the setup assistant
-#include "temoto_action_engine/umrf.h"
+#include "temoto_action_engine/umrf_node.h"
 #include "temoto_action_assistant/ta_package_generator.h"
 #include "temoto_action_assistant/threaded_action_indexer.h"
 
@@ -71,7 +71,7 @@ public:
    */
   GeneratePackageWidget( QWidget* parent
   , std::string& umrf_graph_name
-  , std::vector<std::shared_ptr<Umrf>>& umrfs
+  , std::vector<std::shared_ptr<UmrfNode>>& umrfs
   , std::string temoto_actions_path
   , std::string temoto_graphs_path
   , std::string file_template_path
@@ -90,7 +90,7 @@ public:
   QLineEdit* graphs_path_field_;
 
   /// Contains the data related to the action
-  std::vector<std::shared_ptr<Umrf>>& umrfs_;
+  std::vector<std::shared_ptr<UmrfNode>>& umrfs_;
 
 private Q_SLOTS:
 

@@ -27,7 +27,7 @@
 #endif
 
 #include "temoto_action_assistant/widgets/umrf_tree_data.h"
-#include "temoto_action_engine/umrf.h"
+#include "temoto_action_engine/umrf_node.h"
 
 namespace temoto_action_assistant
 {

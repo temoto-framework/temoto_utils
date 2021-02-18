@@ -34,7 +34,7 @@ public:
 
   bool hasUmrf(const std::string& umrf_name) const;
 
-  Umrf getUmrf(const std::string& umrf_name) const;
+  UmrfNode getUmrf(const std::string& umrf_name) const;
 
   ~ThreadedActionIndexer();
 
@@ -42,7 +42,7 @@ private:
   ActionIndexer action_indexer_;
   std::thread indexing_thread_;
   bool stop_indexing_ = false;
-  std::vector<Umrf> umrfs_;
+  std::vector<UmrfNode> umrfs_;
   mutable std::mutex umrfs_mutex_;
 
   void startIndexing();

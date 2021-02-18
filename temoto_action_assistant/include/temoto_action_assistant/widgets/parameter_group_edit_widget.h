@@ -27,7 +27,7 @@
 #endif
 
 #include "temoto_action_assistant/widgets/umrf_tree_data.h"
-#include "temoto_action_engine/umrf.h"
+#include "temoto_action_engine/umrf_node.h"
 #include <memory>
 
 namespace temoto_action_assistant
@@ -42,12 +42,12 @@ public:
   // ******************************************************************************************
 
   /// Constructor
-  ParameterGroupEditWidget(QWidget* parent, std::shared_ptr<Umrf> umrf);
+  ParameterGroupEditWidget(QWidget* parent, std::shared_ptr<UmrfNode> umrf);
 
   /// Focus given
   void focusGiven(QTreeWidgetItem* tree_item_ptr);
 
-  void setUmrf(std::shared_ptr<Umrf> umrf);
+  void setUmrf(std::shared_ptr<UmrfNode> umrf);
 
   // ******************************************************************************************
   // Qt Components
@@ -78,7 +78,7 @@ private:
   /// Points to the active element of the interface tree
   UmrfTreeData tree_data_;
   QTreeWidgetItem* tree_item_ptr_;
-  std::shared_ptr<Umrf> umrf_;
+  std::shared_ptr<UmrfNode> umrf_;
 };
 }
 

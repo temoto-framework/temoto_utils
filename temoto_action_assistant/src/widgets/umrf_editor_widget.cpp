@@ -50,7 +50,7 @@ namespace temoto_action_assistant
 // ******************************************************************************************
 UmrfEditorWidget::UmrfEditorWidget(QWidget* parent
 , std::string& umrf_graph_name
-, std::vector<std::shared_ptr<Umrf>>& umrfs
+, std::vector<std::shared_ptr<UmrfNode>>& umrfs
 , std::map<std::string, std::string>* custom_parameter_map
 , std::string umrf_parameters_path
 , std::shared_ptr<ThreadedActionIndexer> action_indexer)
@@ -648,7 +648,7 @@ void UmrfEditorWidget::focusGiven()
 // ******************************************************************************************
 //
 // ******************************************************************************************
-void UmrfEditorWidget::setActiveUmrf(std::shared_ptr<Umrf> umrf)
+void UmrfEditorWidget::setActiveUmrf(std::shared_ptr<UmrfNode> umrf)
 {
   active_umrf_ = umrf;
   edit_screen_content_->setCurrentIndex(0);
@@ -714,7 +714,7 @@ void UmrfEditorWidget::annotateToAction(const QPoint& pos)
 // ******************************************************************************************
 void UmrfEditorWidget::addAnnotatedAction()
 {
-  Umrf new_umrf;
+  UmrfNode new_umrf;
   new_umrf.setEffect("synchronous");
   new_umrf.setDescription(graph_description_field_->selectedText().toStdString());
   ugw_->addUmrf(new_umrf);
@@ -722,7 +722,7 @@ void UmrfEditorWidget::addAnnotatedAction()
 
 void UmrfEditorWidget::addExistingAction(QAction *action)
 {
-  Umrf new_umrf = action_indexer_->getUmrf(action->text().toStdString());
+  UmrfNode new_umrf = action_indexer_->getUmrf(action->text().toStdString());
   new_umrf.setDescription(graph_description_field_->selectedText().toStdString());
   new_umrf.setName(new_umrf.getPackageName());
   ugw_->addUmrf(new_umrf);

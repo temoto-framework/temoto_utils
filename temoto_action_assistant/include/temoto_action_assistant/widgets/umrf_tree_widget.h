@@ -25,7 +25,7 @@
 #endif
 
 #include "temoto_action_assistant/widgets/umrf_tree_data.h"
-#include "temoto_action_engine/umrf.h"
+#include "temoto_action_engine/umrf_node.h"
 #include <memory>
 #include "boost/any.hpp"
 
@@ -57,7 +57,7 @@ private:
   const QFont type_font_;
 
   /// Contains all the configuration data for the semantic frame
-  std::shared_ptr<Umrf> umrf_;
+  std::shared_ptr<UmrfNode> umrf_;
   std::map<std::string, std::string>* custom_parameter_map_;
   int uniqueness_counter_;
 

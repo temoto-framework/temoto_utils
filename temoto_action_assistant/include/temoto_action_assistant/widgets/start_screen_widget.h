@@ -46,7 +46,7 @@
 
 #include "temoto_action_assistant/widgets/setup_screen_widget.h"  // a base class for screens in the setup assistant
 #include "temoto_action_assistant/widgets/header_widget.h"  // title and instructions
-#include "temoto_action_engine/umrf.h"
+#include "temoto_action_engine/umrf_node.h"
 #include <memory>
 
 namespace temoto_action_assistant
@@ -70,7 +70,7 @@ public:
   /**
    * \brief Start screen user interface for MoveIt Configuration Assistant
    */
-  StartScreenWidget(QWidget* parent, std::vector<std::shared_ptr<Umrf>>& umrfs, const std::string& resources_path);
+  StartScreenWidget(QWidget* parent, std::vector<std::shared_ptr<UmrfNode>>& umrfs, const std::string& resources_path);
 
   ~StartScreenWidget();
 
@@ -88,7 +88,7 @@ public:
   QLabel* logo_image_label_;
 
   /// Contains all the configuration data for the setup assistant
-  std::vector<std::shared_ptr<Umrf>>& umrfs_;
+  std::vector<std::shared_ptr<UmrfNode>>& umrfs_;
 
 private Q_SLOTS:
 

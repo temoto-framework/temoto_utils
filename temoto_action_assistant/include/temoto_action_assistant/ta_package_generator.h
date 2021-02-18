@@ -18,7 +18,7 @@
 #define TEMOTO_ACTION_ENGINE__TA_PACKAGE_GENERATOR_H
 
 #include "file_template_parser/file_template_parser.h"
-#include "temoto_action_engine/umrf.h"
+#include "temoto_action_engine/umrf_node.h"
 #include "temoto_action_engine/umrf_graph.h"
 #include "temoto_action_engine/umrf_json_converter.h"
 
@@ -28,7 +28,7 @@ class ActionPackageGenerator
 {
 public:
   ActionPackageGenerator(const std::string& file_template_path);
-  void generatePackage(const Umrf& umrf, const std::string& package_path);
+  void generatePackage(const UmrfNode& umrf, const std::string& package_path);
   void generateGraph(const UmrfGraph& umrf_graph, const std::string& graphs_path);
 
 private:

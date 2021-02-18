@@ -62,7 +62,7 @@
 #include "temoto_action_assistant/threaded_action_indexer.h"
 #include <memory>
 #include "boost/any.hpp"
-#include "temoto_action_engine/umrf.h"
+#include "temoto_action_engine/umrf_node.h"
 
 namespace temoto_action_assistant
 {
@@ -78,7 +78,7 @@ public:
 
   UmrfEditorWidget(QWidget* parent
   , std::string& umrf_graph_name
-  , std::vector<std::shared_ptr<Umrf>>& umrfs
+  , std::vector<std::shared_ptr<UmrfNode>>& umrfs
   , std::map<std::string, std::string>* custom_parameter_map
   , std::string umrf_parameters_path
   , std::shared_ptr<ThreadedActionIndexer> action_indexer);
@@ -110,7 +110,7 @@ private Q_SLOTS:
 
   void unSubgroupParameter();
 
-  void setActiveUmrf(std::shared_ptr<Umrf> umrf);
+  void setActiveUmrf(std::shared_ptr<UmrfNode> umrf);
 
   void hideUmrfEditor();
 
@@ -133,9 +133,9 @@ private:
   const QFont type_font_;
 
   /// Contains all the configuration data for the semantic fram
-  std::shared_ptr<Umrf> active_umrf_;
+  std::shared_ptr<UmrfNode> active_umrf_;
   std::string& umrf_graph_name_;
-  std::vector<std::shared_ptr<Umrf>>& umrfs_;
+  std::vector<std::shared_ptr<UmrfNode>>& umrfs_;
   std::map<std::string, std::string>* custom_parameter_map_;
   int uniqueness_counter_;
   std::shared_ptr<ThreadedActionIndexer> action_indexer_;

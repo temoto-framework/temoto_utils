@@ -27,7 +27,7 @@ namespace temoto_action_assistant
 // ******************************************************************************************
 // Constructor
 // ******************************************************************************************
-NameEditWidget::NameEditWidget(QWidget *parent, std::shared_ptr<Umrf> umrf)
+NameEditWidget::NameEditWidget(QWidget *parent, std::shared_ptr<UmrfNode> umrf)
 : QWidget(parent)
 , umrf_(umrf)
 {
@@ -61,7 +61,7 @@ void NameEditWidget::modifyName()
 // ******************************************************************************************
 //
 // ******************************************************************************************
-void NameEditWidget::setUmrf( std::shared_ptr<Umrf> umrf)
+void NameEditWidget::setUmrf( std::shared_ptr<UmrfNode> umrf)
 {
   umrf_ = umrf;
   name_field_->setText(QString::fromStdString(umrf_->getName()));
