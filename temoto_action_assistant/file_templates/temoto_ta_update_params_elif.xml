@@ -1,0 +1,19 @@
+<?xml version="1.0" ?>
+
+<f_template extension=".test">
+
+  <arg name="param_type" default="INVALID_TYPE" />
+  <arg name="param_type_us" default="INVALID_TYPE" />
+  <body>
+
+<![CDATA[      else if (p_in.getType() == $(arg param_type))
+      {
+        data = boost::any_cast<$(arg param_type_us)>(p_in.getData());
+      }
+]]>
+
+  </body>
+
+</f_template>
+
+
