@@ -44,6 +44,7 @@ private:
   tp::TemplateContainer t_umrf_graph;
   tp::TemplateContainer t_macros_header;
   tp::TemplateContainer t_bridge_header;
+  tp::TemplateContainer t_bridge_header_elif;
 
   tp::TemplateContainer t_class_base;
   tp::TemplateContainer t_execute_action;

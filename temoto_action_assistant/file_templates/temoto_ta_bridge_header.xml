@@ -87,13 +87,13 @@ public:
       {
         throw CREATE_TEMOTO_ERROR_STACK("This action has no parameter '" + p_in.getName() + "'");
       }
-      $(arg update_parameters_content)
+$(arg update_parameters_content)
       else
       {
         throw CREATE_TEMOTO_ERROR_STACK("No matching data type");
       }
 
-      getUmrfNode().getInputParametersNc().setParameterData(p_in.getName(), data);
+      getUmrfNode().getInputParametersNc().setParameterData(p_in.getName(), param_data);
     }
   }
 

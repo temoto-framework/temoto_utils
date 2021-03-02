@@ -18,6 +18,7 @@
 #include <boost/filesystem.hpp>
 #include <boost/algorithm/string.hpp>
 #include <fstream>
+#include <set>
 
 namespace temoto_action_assistant
 {
@@ -46,6 +47,7 @@ ActionPackageGenerator::ActionPackageGenerator(const std::string& file_template_
 
   // Import the temoto_action.h template
   t_bridge_header  = tp::TemplateContainer(file_template_path_ + "file_templates/temoto_ta_bridge_header.xml");
+  t_bridge_header_elif = tp::TemplateContainer(file_template_path_ + "file_templates/temoto_ta_update_params_elif.xml");
 
   // Import the action implementation c++ code templates
   t_class_base     = tp::TemplateContainer(file_template_path_ + "file_templates/ta_class_base.xml");
@@ -138,15 +140,6 @@ void ActionPackageGenerator::generatePackage(const UmrfNode& umrf, const std::st
   t_packagexml.processAndSaveTemplate(ta_dst_path, "package");
 
   /*
-   * Generate the macros header
-   */
-  t_macros_header.setArgument("ta_package_name", ta_package_name);
-  std::ofstream macros_header_file;
-  macros_header_file.open (ta_dst_path + "/include/" + ta_package_name + "/macros.h");
-  macros_header_file << t_macros_header.processTemplate();
-  macros_header_file.close();
-
-  /*
    * Generate the temoto_action header
    */
   t_bridge_header.setArgument("ta_package_name", ta_package_name);
@@ -156,21 +149,22 @@ void ActionPackageGenerator::generatePackage(const UmrfNode& umrf, const std::st
   bridge_header_file.close();
 
   /*
-   * Generate action_test_standalone.launch 
-   */
-  t_testlaunch_standalone.setArgument("ta_package_name", ta_package_name);
-  t_testlaunch_standalone.processAndSaveTemplate(ta_dst_path + "launch/", "action_test_standalone");
-
-  /*
    * Generate action_test_separate.launch 
    */
   t_testlaunch_separate.setArgument("ta_package_name", ta_package_name);
   t_testlaunch_separate.processAndSaveTemplate(ta_dst_path + "launch/", "action_test_separate");
 
   /*
+   * Generate action_test_standalone.launch 
+   */
+  t_testlaunch_standalone.setArgument("ta_package_name", ta_package_name);
+  t_testlaunch_standalone.processAndSaveTemplate(ta_dst_path + "launch/", "action_test_standalone");
+
+  /*
    * Generate the action implementation c++ source file
    */
   std::string generated_content_cpp;
+  std::set<std::string> input_param_update_set;
 
   /*
    * Get input parameters
@@ -189,16 +183,20 @@ void ActionPackageGenerator::generatePackage(const UmrfNode& umrf, const std::st
     t_parameter_in.setArgument("param_name", input_param.getName());
     t_parameter_in.setArgument("param_name_us", parameter_name);
     t_parameter_in.setArgument("param_type", input_param.getType());
+    t_bridge_header_elif.setArgument("param_type", input_param.getType());
 
     if (action_parameter::PARAMETER_MAP.find(input_param.getType()) != action_parameter::PARAMETER_MAP.end())
     {
       t_parameter_in.setArgument("param_type_us", action_parameter::PARAMETER_MAP.at(input_param.getType()));
+      t_bridge_header_elif.setArgument("param_type_us", action_parameter::PARAMETER_MAP.at(input_param.getType()));
     }
     else
     {
       t_parameter_in.setArgument("param_type_us", input_param.getType());
+      t_bridge_header_elif.setArgument("param_type_us", input_param.getType());
     }
     generated_content_cpp += "  " + t_parameter_in.processTemplate();
+    input_param_update_set.insert(t_bridge_header_elif.processTemplate());
   }
 
   /*
@@ -272,6 +270,19 @@ void ActionPackageGenerator::generatePackage(const UmrfNode& umrf, const std::st
    * Save the generated c++ content
    */
   tp::saveStrToFile(t_class_base.processTemplate(), ta_dst_path + "/src", ta_package_name, ".cpp");
+
+  /*
+   * Generate the temoto_action header
+   */
+  t_bridge_header.setArgument("ta_package_name", ta_package_name);
+  std::string elif_blocks;
+  for (const auto& elif_block : input_param_update_set)
+  {
+    elif_blocks += elif_block;
+  }
+  t_bridge_header.setArgument("update_parameters_content", elif_blocks);
+  tp::saveStrToFile(t_bridge_header.processTemplate(), ta_dst_path + "/include/" + ta_package_name, "temoto_action", ".h");
+
 }
 
 void ActionPackageGenerator::generateGraph(const UmrfGraph& umrf_graph, const std::string& graphs_path)
