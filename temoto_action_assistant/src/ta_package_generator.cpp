@@ -38,7 +38,7 @@ ActionPackageGenerator::ActionPackageGenerator(const std::string& file_template_
   t_packagexml = tp::TemplateContainer(file_template_path_ + "file_templates/temoto_ta_packagexml.xml");
 
   // Import the action test templates
-  t_testlaunch_standalone = tp::TemplateContainer(file_template_path_ + "file_templates/temoto_ta_action_test_standalone.xml");
+  //t_testlaunch_standalone = tp::TemplateContainer(file_template_path_ + "file_templates/temoto_ta_action_test_standalone.xml");
   t_testlaunch_separate   = tp::TemplateContainer(file_template_path_ + "file_templates/temoto_ta_action_test_separate.xml");
   t_umrf_graph            = tp::TemplateContainer(file_template_path_ + "file_templates/temoto_ta_umrf_graphtxt.xml");
   
@@ -152,13 +152,13 @@ void ActionPackageGenerator::generatePackage(const UmrfNode& umrf, const std::st
    * Generate action_test_separate.launch 
    */
   t_testlaunch_separate.setArgument("ta_package_name", ta_package_name);
-  t_testlaunch_separate.processAndSaveTemplate(ta_dst_path + "launch/", "action_test_separate");
+  t_testlaunch_separate.processAndSaveTemplate(ta_dst_path + "launch/", "invoke_action");
 
   /*
    * Generate action_test_standalone.launch 
    */
-  t_testlaunch_standalone.setArgument("ta_package_name", ta_package_name);
-  t_testlaunch_standalone.processAndSaveTemplate(ta_dst_path + "launch/", "action_test_standalone");
+  // t_testlaunch_standalone.setArgument("ta_package_name", ta_package_name);
+  // t_testlaunch_standalone.processAndSaveTemplate(ta_dst_path + "launch/", "action_test_standalone");
 
   /*
    * Generate the action implementation c++ source file

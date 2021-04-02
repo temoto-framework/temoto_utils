@@ -7,8 +7,8 @@
 
 <![CDATA[<launch>
   <arg name="temoto_namespace" default="$(arg temoto_ws_name)"/>
-  <arg name="additional_wake_words" default="everybody"/>
-  <arg name="action_packages_path" default="$(find $(arg temoto_ws_name))/config/action_dst.yaml" />
+  <arg name="extra_wake_words" default="everybody"/>
+  <arg name="actions_path" default="$(find $(arg temoto_ws_name))/../temoto_actions" />
  
   <env name="ROSCONSOLE_FORMAT" value="[${function}] ${message}" />
   <env name="ROSCONSOLE_CONFIG_FILE" value="$(find $(arg temoto_ws_name))/config/console.conf" />  
@@ -16,8 +16,10 @@
   <group ns="$(arg temoto_namespace)">
     <node name="temoto_er_manager" pkg="temoto_er_manager" type="temoto_er_manager" output="screen" />
     <node name="temoto_component_manager" pkg="temoto_component_manager" type="temoto_component_manager" output="screen" />
-    <node name="temoto_action_engine" pkg="temoto_action_engine" type="action_engine_node" 
-          args="--a $(arg action_packages_path) --mw $(arg temoto_namespace) --w $(arg additional_wake_words)" output="screen" />
+    <node name="temoto_action_engine" pkg="temoto_action_engine" type="action_engine_node" output="screen"
+          args="--wake-word $(arg temoto_namespace) 
+                --actions-path $(arg actions_path) 
+                --extra-wake-words $(arg extra_wake_words)" />
   </group>
 </launch>
 ]]>
