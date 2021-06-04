@@ -7,7 +7,7 @@
 
   <!-- Run -->
   <node pkg="temoto_action_assistant" type="temoto_action_assistant" name="temoto_action_assistant"
-        output="screen"  required="true" args="
+        output="screen" required="true" args="
           --ta_path $(arg ta_path)
           --ug_path $(arg ug_path) 
           --ft_path $(arg ft_path) 

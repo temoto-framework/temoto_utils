@@ -6,8 +6,7 @@
   <arg name="param_name_us" default="INVALID_NAME" />
   <body>
 
-<![CDATA[$(arg param_type_us) $(arg param_name_us);
-]]>
+<![CDATA[$(arg param_type_us) $(arg param_name_us);]]>
 
   </body>
 </f_template>

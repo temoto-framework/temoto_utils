@@ -7,8 +7,7 @@
   <arg name="param_name_us" default="INVALID_NAME" />
   <body>
 
-<![CDATA[SET_PARAMETER("$(arg param_name)", "$(arg param_type)", $(arg param_name_us));
-]]>
+<![CDATA[SET_PARAMETER("$(arg param_name)", "$(arg param_type)", $(arg param_name_us));]]>
 
   </body>
 </f_template>

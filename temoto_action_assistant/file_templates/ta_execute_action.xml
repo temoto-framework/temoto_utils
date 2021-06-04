@@ -5,11 +5,20 @@
   <arg name="function_body" default="" />
   <body>
 
-<![CDATA[
-// REQUIRED BY TEMOTO
+<![CDATA[/*
+ * Function that gets invoked when the action is executed (REQUIRED)
+ */
 void executeTemotoAction()
 {
-$(arg function_body)
+  getInputParameters();
+  
+  /* * * * * * * * * * * * * * 
+   *                          
+   * ===> YOUR CODE HERE <===
+   *                          
+   * * * * * * * * * * * * * */
+
+  setOutputParameters();
 }]]>
 
   </body>

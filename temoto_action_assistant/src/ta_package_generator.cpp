@@ -50,13 +50,14 @@ ActionPackageGenerator::ActionPackageGenerator(const std::string& file_template_
   t_bridge_header_elif = tp::TemplateContainer(file_template_path_ + "file_templates/temoto_ta_update_params_elif.xml");
 
   // Import the action implementation c++ code templates
-  t_class_base     = tp::TemplateContainer(file_template_path_ + "file_templates/ta_class_base.xml");
-  t_execute_action = tp::TemplateContainer(file_template_path_ + "file_templates/ta_execute_action.xml");
-  t_parameter_in   = tp::TemplateContainer(file_template_path_ + "file_templates/ta_parameter_in.xml");
-  t_parameter_out  = tp::TemplateContainer(file_template_path_ + "file_templates/ta_parameter_out.xml");
-  t_parameter_decl = tp::TemplateContainer(file_template_path_ + "file_templates/ta_parameter_decl.xml");
-  t_comment        = tp::TemplateContainer(file_template_path_ + "file_templates/ta_comment_block.xml");
-  t_line_comment   = tp::TemplateContainer(file_template_path_ + "file_templates/ta_line_comment.xml");
+  t_class_base        = tp::TemplateContainer(file_template_path_ + "file_templates/ta_class_base.xml");
+  t_execute_action    = tp::TemplateContainer(file_template_path_ + "file_templates/ta_execute_action.xml");
+  t_get_input_params  = tp::TemplateContainer(file_template_path_ + "file_templates/ta_get_input_params.xml");
+  t_set_output_params = tp::TemplateContainer(file_template_path_ + "file_templates/ta_set_output_params.xml");
+  t_parameter_in      = tp::TemplateContainer(file_template_path_ + "file_templates/ta_parameter_in.xml");
+  t_parameter_out     = tp::TemplateContainer(file_template_path_ + "file_templates/ta_parameter_out.xml");
+  t_parameter_decl    = tp::TemplateContainer(file_template_path_ + "file_templates/ta_parameter_decl.xml");
+  t_line_comment      = tp::TemplateContainer(file_template_path_ + "file_templates/ta_line_comment.xml");
 
   file_templates_loaded_ = true;
 }
@@ -149,33 +150,22 @@ void ActionPackageGenerator::generatePackage(const UmrfNode& umrf, const std::st
   bridge_header_file.close();
 
   /*
-   * Generate action_test_separate.launch 
+   * Generate invoke_action.launch 
    */
   t_testlaunch_separate.setArgument("ta_package_name", ta_package_name);
   t_testlaunch_separate.processAndSaveTemplate(ta_dst_path + "launch/", "invoke_action");
 
-  /*
-   * Generate action_test_standalone.launch 
-   */
-  // t_testlaunch_standalone.setArgument("ta_package_name", ta_package_name);
-  // t_testlaunch_standalone.processAndSaveTemplate(ta_dst_path + "launch/", "action_test_standalone");
-
-  /*
+  /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
    * Generate the action implementation c++ source file
-   */
+   * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
   std::string generated_content_cpp;
   std::set<std::string> input_param_update_set;
 
   /*
-   * Get input parameters
+   * Generate the "getInputParameters()" function
    */
-  if (!umrf.getInputParameters().empty())
-  {
-    t_line_comment.setArgument("comment", "Input parameters");
-    t_line_comment.setArgument("whitespace", "  ");
-    generated_content_cpp += t_line_comment.processTemplate();
-  }
-
+  std::string gen_content_get_input_params;
   for (const auto& input_param : umrf.getInputParameters())
   {
     std::string parameter_name = "in_param_" + input_param.getName();
@@ -195,51 +185,15 @@ void ActionPackageGenerator::generatePackage(const UmrfNode& umrf, const std::st
       t_parameter_in.setArgument("param_type_us", input_param.getType());
       t_bridge_header_elif.setArgument("param_type_us", input_param.getType());
     }
-    generated_content_cpp += "  " + t_parameter_in.processTemplate();
+    gen_content_get_input_params += "  " + t_parameter_in.processTemplate() + "\n";
     input_param_update_set.insert(t_bridge_header_elif.processTemplate());
   }
+  t_get_input_params.setArgument("function_body", gen_content_get_input_params);
 
   /*
-   * Declare output parameters
+   * Generate the "setOutputParameters()" function
    */
-  if (!umrf.getOutputParameters().empty())
-  {
-    t_line_comment.setArgument("comment", "Declaration of output parameters");
-    t_line_comment.setArgument("whitespace", "\n  ");
-    generated_content_cpp += t_line_comment.processTemplate();
-  }
-
-  for (const auto& output_param : umrf.getOutputParameters())
-  {
-    std::string parameter_name = "out_param_" + output_param.getName();
-    boost::replace_all(parameter_name, "::", "_");
-    t_parameter_decl.setArgument("param_name_us", parameter_name);
-
-    if (action_parameter::PARAMETER_MAP.find(output_param.getType()) != action_parameter::PARAMETER_MAP.end())
-    {
-      t_parameter_decl.setArgument("param_type_us", action_parameter::PARAMETER_MAP.at(output_param.getType()));
-    }
-    else
-    {
-      t_parameter_decl.setArgument("param_type_us", output_param.getType());
-    }
-    generated_content_cpp += "  " + t_parameter_decl.processTemplate();
-  }
-
-  // Add a placeholder comment
-  t_comment.setArgument("comment", "YOUR CODE HERE");
-  generated_content_cpp += t_comment.processTemplate();
-
-  /*
-   * Set the output parameters
-   */ 
-  if (!umrf.getOutputParameters().empty())
-  {
-    t_line_comment.setArgument("comment", "Pass the output parameters to the action engine");
-    t_line_comment.setArgument("whitespace", "\n  ");
-    generated_content_cpp += t_line_comment.processTemplate();
-  }
-
+  std::string gen_content_set_output_params;
   for (const auto& output_param : umrf.getOutputParameters())
   {
     std::string parameter_name = "out_param_" + output_param.getName();
@@ -256,15 +210,76 @@ void ActionPackageGenerator::generatePackage(const UmrfNode& umrf, const std::st
     // {
     //   t_parameter_out.setArgument("param_type_us", output_param.getType());
     // }
-    generated_content_cpp += "  " + t_parameter_out.processTemplate();
+
+    gen_content_set_output_params += "  " + t_parameter_out.processTemplate() + "\n";
+  }
+  t_set_output_params.setArgument("function_body", gen_content_set_output_params);
+
+  /*
+   * Declare input parameters
+   */
+  std::string gen_content_input_param_decl;
+  if (!umrf.getInputParameters().empty())
+  {
+    t_line_comment.setArgument("comment", "Declaration of input parameters");
+    t_line_comment.setArgument("whitespace", "\n");
+    gen_content_input_param_decl += t_line_comment.processTemplate();
+
+    for (const auto& input_param : umrf.getInputParameters())
+    {
+      std::string parameter_name = "in_param_" + input_param.getName();
+      boost::replace_all(parameter_name, "::", "_");
+      t_parameter_decl.setArgument("param_name_us", parameter_name);
+
+      if (action_parameter::PARAMETER_MAP.find(input_param.getType()) != action_parameter::PARAMETER_MAP.end())
+      {
+        t_parameter_decl.setArgument("param_type_us", action_parameter::PARAMETER_MAP.at(input_param.getType()));
+      }
+      else
+      {
+        t_parameter_decl.setArgument("param_type_us", input_param.getType());
+      }
+      gen_content_input_param_decl += t_parameter_decl.processTemplate() + "\n";
+    }
   }
 
-  t_execute_action.setArgument("function_body", generated_content_cpp);
+  /*
+   * Declare output parameters
+   */
+  std::string gen_content_output_param_decl;
+  if (!umrf.getOutputParameters().empty())
+  {
+    t_line_comment.setArgument("comment", "Declaration of output parameters");
+    t_line_comment.setArgument("whitespace", "\n");
+    gen_content_output_param_decl += t_line_comment.processTemplate();
 
-  // Create action class base
+    for (const auto& output_param : umrf.getOutputParameters())
+    {
+      std::string parameter_name = "out_param_" + output_param.getName();
+      boost::replace_all(parameter_name, "::", "_");
+      t_parameter_decl.setArgument("param_name_us", parameter_name);
+
+      if (action_parameter::PARAMETER_MAP.find(output_param.getType()) != action_parameter::PARAMETER_MAP.end())
+      {
+        t_parameter_decl.setArgument("param_type_us", action_parameter::PARAMETER_MAP.at(output_param.getType()));
+      }
+      else
+      {
+        t_parameter_decl.setArgument("param_type_us", output_param.getType());
+      }
+      gen_content_output_param_decl += t_parameter_decl.processTemplate() + "\n";
+    }
+  }
+
+  /*
+   * Put it all together and generate the whole class
+   */
   t_class_base.setArgument("ta_class_name", ta_class_name);
   t_class_base.setArgument("ta_package_name", ta_package_name);
-  t_class_base.setArgument("ta_class_body", t_execute_action.processTemplate());
+  t_class_base.setArgument("fn_get_input_parameters", t_get_input_params.processTemplate());
+  t_class_base.setArgument("fn_set_output_parameters", t_set_output_params.processTemplate());
+  t_class_base.setArgument("fn_execute_action", t_execute_action.processTemplate());
+  t_class_base.setArgument("class_members", gen_content_input_param_decl + gen_content_output_param_decl);
 
   /*
    * Save the generated c++ content

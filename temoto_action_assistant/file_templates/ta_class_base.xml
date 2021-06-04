@@ -4,7 +4,10 @@
 
   <arg name="ta_class_name" default="err_noname_err" />
   <arg name="ta_package_name" default="err_noname_err" />
-  <arg name="ta_class_body" default="" />
+  <arg name="fn_execute_action" default="" />
+  <arg name="fn_get_input_parameters" default="" />
+  <arg name="fn_set_output_parameters" default="" />
+  <arg name="class_members" default="" />
   <body>
 
 <![CDATA[
@@ -37,18 +40,28 @@ class $(arg ta_class_name) : public TemotoAction
 {
 public:
 
-// Constructor. REQUIRED BY TEMOTO
+$(arg fn_execute_action)
+
+// Default Constructor (REQUIRED)
 $(arg ta_class_name)()
 {
   std::cout << __func__ << " constructed\n";
 }
-$(arg ta_class_body)
 
 // Destructor
 ~$(arg ta_class_name)()
 {
   TEMOTO_INFO("Action instance destructed");
 }
+
+$(arg fn_get_input_parameters)
+
+$(arg fn_set_output_parameters)
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
+ * Class members
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+$(arg class_members)
 
 }; // $(arg ta_class_name) class
 

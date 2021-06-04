@@ -89,18 +89,14 @@ void ParameterGroupEditWidget::modifyName()
   }
 
   boost::replace_all(new_group_name_full, parameter_group_name, new_group_name);
-  UmrfTreeData tree_item_group_pl = UmrfTreeData(type,
-    boost::any_cast<std::string>(std::string(new_group_name_full)));
-    tree_item_ptr_->setData(0, Qt::UserRole, QVariant::fromValue(tree_item_group_pl));
-
-  std::cout << " xxxx 1 " << parameter_group_name_full << " --- " << new_group_name_full << std::endl;
+  UmrfTreeData tree_item_group_pl = UmrfTreeData(type, new_group_name_full);
+  tree_item_ptr_->setData(0, Qt::UserRole, QVariant::fromValue(tree_item_group_pl));
 
   for (auto& parameter : *parameters)
   {
     ActionParameters::ParameterContainer& param = const_cast<ActionParameters::ParameterContainer&>(parameter);
     std::string param_name_new = param.getName();
     boost::replace_all(param_name_new, parameter_group_name_full, new_group_name_full);
-    std::cout << " xxxx 2 " << param.getName() << " --- " << param_name_new << std::endl;
     param.setName(param_name_new);
   }
 

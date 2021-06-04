@@ -1,0 +1,17 @@
+<?xml version="1.0" ?>
+
+<f_template extension=".test">
+
+  <arg name="function_body" default="" />
+  <body>
+
+<![CDATA[// Loads in the input parameters
+void getInputParameters()
+{
+$(arg function_body)}]]>
+
+  </body>
+
+</f_template>
+
+

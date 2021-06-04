@@ -48,6 +48,8 @@ private:
 
   tp::TemplateContainer t_class_base;
   tp::TemplateContainer t_execute_action;
+  tp::TemplateContainer t_get_input_params;
+  tp::TemplateContainer t_set_output_params;
   tp::TemplateContainer t_parameter_in;
   tp::TemplateContainer t_parameter_out;
   tp::TemplateContainer t_parameter_decl;

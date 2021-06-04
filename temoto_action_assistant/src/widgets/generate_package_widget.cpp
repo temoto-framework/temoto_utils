@@ -266,10 +266,9 @@ void GeneratePackageWidget::generatePackages()
     umrf_cpy.clearParents();
 
     // Clear the examples in the parameters
-    for (ActionParameters::ParameterContainer input_param : umrf_cpy.getInputParametersNc())
+    for (const auto& input_param : umrf_cpy.getInputParameters())
     {
       input_param.setExample("");
-      umrf_cpy.getInputParametersNc().setParameter(input_param, true);
     }
 
     // Generate the TeMoto action package
