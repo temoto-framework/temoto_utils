@@ -9,7 +9,7 @@
 project($(arg ta_name))
 
 # use c++11 standard
-add_compile_options(-std=c++11)
+add_compile_options(-std=c++14)
 option(TEMOTO_ENABLE_TRACING "Use tracer" OFF)
 
 if(TEMOTO_ENABLE_TRACING)

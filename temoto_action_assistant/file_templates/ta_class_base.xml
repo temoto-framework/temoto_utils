@@ -27,9 +27,8 @@
  *  See TeMoto documentation & tutorials at: 
  *    https://temoto-telerobotics.github.io
  *
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-/* REQUIRED BY TEMOTO */
 #include <class_loader/class_loader.hpp>
 #include "$(arg ta_package_name)/temoto_action.h"
 
