@@ -19,8 +19,8 @@
 #include <QHBoxLayout>
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem/operations.hpp>
-#include <fstream>
 #include "temoto_action_engine/umrf_json_converter.h"
+#include "temoto_action_engine/umrf_graph_fs.h"
 
 namespace temoto_action_assistant
 {
@@ -72,18 +72,9 @@ void TabDialog::parseUmrfParameterFiles(const std::string& umrf_parameters_path)
       {
         continue;
       }
-      std::ifstream umrf_param_fs(itr.path().string());
-      std::string umrf_json_str;
-      umrf_json_str.assign(std::istreambuf_iterator<char>(umrf_param_fs), std::istreambuf_iterator<char>());
-      rapidjson::Document json_doc;
-      json_doc.Parse(umrf_json_str.c_str());
-
-      if (json_doc.HasParseError())
-      {
-        std::cout << "The provided JSON string contains syntax errors." << std::endl;
-        continue;
-      }
-      ActionParameters::Parameters umrf_parameters = umrf_json_converter::parseParameters(json_doc, "");
+      
+      std::string umrf_param_json_str = temoto_action_engine::readFromFile(itr.path().string());
+      ActionParameters::Parameters umrf_parameters = umrf_json_converter::fromUmrfParametersJsonStr(umrf_param_json_str);
       addParameterType(umrf_parameters);
     }
     catch (std::exception& e)
