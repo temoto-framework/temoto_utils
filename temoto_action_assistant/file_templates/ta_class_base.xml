@@ -39,13 +39,21 @@ class $(arg ta_class_name) : public TemotoAction
 {
 public:
 
-$(arg fn_execute_action)
-
-// Default Constructor (REQUIRED)
-$(arg ta_class_name)()
+/*
+ * Function that gets invoked only once (when the action is initialized) throughout the action's lifecycle
+ */
+void initializeTemotoAction()
 {
-  std::cout << __func__ << " constructed\n";
+  /* * * * * * * * * * * * * * * * * * * * * * *
+   *                          
+   * ===> YOUR INITIALIZATION ROUTINES HERE <===
+   *                          
+   * * * * * * * * * * * * * * * * * * * * * * */
+
+  TEMOTO_INFO_STREAM("Action initialized");
 }
+
+$(arg fn_execute_action)
 
 // Destructor
 ~$(arg ta_class_name)()

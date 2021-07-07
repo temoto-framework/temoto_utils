@@ -42,39 +42,66 @@ public:
   }
 
   /**
+   * @brief Wraps the initializeTemotoAction and converts TeMoto specific errors to action engine errors.
+   * 
+   */
+  void initializeAction()
+  try
+  {
+    /* 
+     * Assign the class name. This cannot be done in constructor because class loader works
+     * only with default constructors.
+     */ 
+    class_name_ = getUmrfNodeConst().getFullName();
+    initializeTemotoAction();
+  }
+  catch(temoto_core::error::ErrorStack e)
+  {
+    /*
+     * TODO: Do something with TeMoto errors.
+     */
+    std::cout << e << std::endl;
+  }
+  catch(TemotoErrorStack e)
+  {
+    throw FORWARD_TEMOTO_ERROR_STACK(e);
+  }
+  catch(const std::exception& e)
+  {
+    throw CREATE_TEMOTO_ERROR_STACK(e.what());
+  }
+  catch(...)
+  {
+    throw CREATE_TEMOTO_ERROR_STACK("Caught an unhandled exception");
+  }
+
+  /**
    * @brief Wraps the executeTemotoAction and converts TeMoto specific errors to action engine errors.
    * 
    */
   void executeAction()
+  try
   {
-    try
-    {
-      /* 
-       * Assign the class name. This cannot be done in constructor because class loader works
-       * only with default constructors.
-       */ 
-      class_name_ = getUmrfNodeConst().getFullName();
-      executeTemotoAction();
-    }
-    catch(temoto_core::error::ErrorStack e)
-    {
-      /*
-       * TODO: Do something with TeMoto errors.
-       */
-      std::cout << e << std::endl;
-    }
-    catch(TemotoErrorStack e)
-    {
-      throw FORWARD_TEMOTO_ERROR_STACK(e);
-    }
-    catch(const std::exception& e)
-    {
-      throw CREATE_TEMOTO_ERROR_STACK(e.what());
-    }
-    catch(...)
-    {
-      throw CREATE_TEMOTO_ERROR_STACK("Caught an unhandled exception");
-    }
+    executeTemotoAction();
+  }
+  catch(temoto_core::error::ErrorStack e)
+  {
+    /*
+      * TODO: Do something with TeMoto errors.
+      */
+    std::cout << e << std::endl;
+  }
+  catch(TemotoErrorStack e)
+  {
+    throw FORWARD_TEMOTO_ERROR_STACK(e);
+  }
+  catch(const std::exception& e)
+  {
+    throw CREATE_TEMOTO_ERROR_STACK(e.what());
+  }
+  catch(...)
+  {
+    throw CREATE_TEMOTO_ERROR_STACK("Caught an unhandled exception");
   }
 
   virtual void updateParameters(const ActionParameters& parameters_in)
@@ -96,6 +123,12 @@ $(arg update_parameters_content)
       getUmrfNode().getInputParametersNc().setParameterData(p_in.getName(), param_data);
     }
   }
+
+  /**
+   * @brief Has to be implemented by an action.
+   * 
+   */
+  virtual void initializeTemotoAction() = 0;
 
   /**
    * @brief Has to be implemented by an action.

@@ -12,11 +12,11 @@ void executeTemotoAction()
 {
   getInputParameters();
   
-  /* * * * * * * * * * * * * * 
+  /* * * * * * * * * * * * * * * * * * * * * * *
    *                          
-   * ===> YOUR CODE HERE <===
+   *         ===> YOUR CODE HERE <===
    *                          
-   * * * * * * * * * * * * * */
+   * * * * * * * * * * * * * * * * * * * * * * */
 
   setOutputParameters();
 }]]>
