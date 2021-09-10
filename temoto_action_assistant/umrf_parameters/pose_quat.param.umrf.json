@@ -1,5 +1,5 @@
 {
-  "pose": {
+  "pose_quat": {
     "position": {
       "x": {
           "pvf_type": "number"
@@ -12,13 +12,16 @@
       }
     },
     "orientation": {
-      "roll": {
+      "x": {
           "pvf_type": "number"
       },
-      "pitch": {
+      "y": {
         "pvf_type": "number"
       },
-      "yaw": {
+      "z": {
+        "pvf_type": "number"
+      },
+      "w": {
         "pvf_type": "number"
       }
     }
