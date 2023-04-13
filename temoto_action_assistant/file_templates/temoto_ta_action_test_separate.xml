@@ -10,7 +10,7 @@
   <arg name="umrf_graph_file" default="$(arg ta_package_name).umrfg.json"/>
   <arg name="wake_word" default="temoto_ws"/>
 
-  <node name="parser_node" pkg="temoto_action_engine" type="parser_node" output="screen"
+  <node name="umrf_graph_publisher" pkg="temoto_action_engine" type="umrf_graph_publisher" output="screen"
         args="$(arg umrf_base_path)/$(arg umrf_graph_file) $(arg wake_word)"/>
 </launch>]]>
 
