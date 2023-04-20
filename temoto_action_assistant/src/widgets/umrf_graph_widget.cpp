@@ -29,9 +29,12 @@ namespace temoto_action_assistant
 // ******************************************************************************************
 // Constructor
 // ******************************************************************************************
-UmrfGraphWidget::UmrfGraphWidget(QWidget *parent, std::vector<std::shared_ptr<UmrfNode>>& umrfs)
+UmrfGraphWidget::UmrfGraphWidget(QWidget *parent
+, std::vector<std::shared_ptr<UmrfNode>>& umrfs
+, std::shared_ptr<ThreadedActionIndexer> action_indexer)
 : QWidget(parent)
 , umrfs_(umrfs)
+, action_indexer_(action_indexer)
 , canvas_width_(400)
 , canvas_height_(800)
 , selected_circle_("")
@@ -246,12 +249,24 @@ void UmrfGraphWidget::mousePressEvent(QMouseEvent* event)
   {
     QAction* add_action = new QAction(tr("&ADD Action"), this);
     connect(add_action, SIGNAL(triggered()), this, SLOT(addCircle()));
+
+    if (action_indexer_->getActionCount() > 0)
+    {
+      QMenu* sub_menu = menu.addMenu("ADD Existing Action");
+      connect(sub_menu, &QMenu::triggered, this, &UmrfGraphWidget::addNamedCircle);
+      for (const auto& umrf_name : action_indexer_->getUmrfNames())
+      {
+        QAction* action = new QAction(umrf_name.c_str(), this);
+        sub_menu->addAction(action);
+      }
+    }
+
     menu.addAction(add_action);
   }
   // If a circle was clicked with right button then connect/disconnect the selected cirle to it
   else if (!clicked_circle_name_.empty() && event->button() == Qt::RightButton)
   {
-    // TODO: the order of evaluoation obviously matters, but its not a reliable code design
+    // TODO: the order of evaluation obviously matters, but its not a reliable code design
     if (!selected_circle_.empty() && circles_[selected_circle_].isConnectedWith(circles_[clicked_circle_name_]))
     {
       QAction* disconnect_action = new QAction(tr("&Disconnect"), this);
@@ -344,6 +359,18 @@ void UmrfGraphWidget::addCircle()
 {
   std::string unique_circle_name = getUniqueCircleName();
   circles_.insert({unique_circle_name, CircleHelper(unique_circle_name, clicked_point_x_, clicked_point_y_, 25)});
+  umrfs_.push_back(circles_[unique_circle_name].umrf_);
+
+  setNewSelectedCircle(unique_circle_name);
+  update();
+}
+
+void UmrfGraphWidget::addNamedCircle(QAction *action)
+{
+  std::string unique_circle_name = getUniqueCircleName();
+  circles_.insert({unique_circle_name, CircleHelper(unique_circle_name, clicked_point_x_, clicked_point_y_, 25)});
+  circles_[unique_circle_name].umrf_ = std::make_shared<UmrfNode>(action_indexer_->getUmrf(action->text().toStdString()));
+  circles_[unique_circle_name].umrf_->setName(circles_[unique_circle_name].umrf_->getPackageName());
   umrfs_.push_back(circles_[unique_circle_name].umrf_);
 
   setNewSelectedCircle(unique_circle_name);

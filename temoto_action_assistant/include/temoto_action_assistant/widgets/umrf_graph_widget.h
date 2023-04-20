@@ -26,6 +26,7 @@
 #endif
 
 #include "temoto_action_engine/umrf_node.h"
+#include "temoto_action_assistant/threaded_action_indexer.h"
 #include <memory>
 #include <map>
 
@@ -87,8 +88,12 @@ public:
   // ******************************************************************************************
 
   /// Constructor
-  UmrfGraphWidget(QWidget* parent, std::vector<std::shared_ptr<UmrfNode>>& umrfs);
+  UmrfGraphWidget(QWidget* parent
+  , std::vector<std::shared_ptr<UmrfNode>>& umrfs
+  , std::shared_ptr<ThreadedActionIndexer> action_indexer);
+
   void addUmrf(const UmrfNode& umrf);
+
   void refreshGraph();
 
   /// Focus given
@@ -112,6 +117,7 @@ private Q_SLOTS:
   // Slot Event Functions
   // ******************************************************************************************
   void addCircle();
+  void addNamedCircle(QAction *action);
   void connectCircles();
   void disconnectCircles();
   void removeCircle();
@@ -143,6 +149,8 @@ private:
   int circle_uniqueness_counter_;
 
   std::vector<std::shared_ptr<UmrfNode>>& umrfs_;
+  std::shared_ptr<ThreadedActionIndexer> action_indexer_;
+
 };
 }
 

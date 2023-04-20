@@ -107,7 +107,7 @@ UmrfEditorWidget::UmrfEditorWidget(QWidget* parent
 
   QScrollArea* scroll_area = new QScrollArea();
   //scroll_area->setStyleSheet("background-color:white;");
-  ugw_ = new UmrfGraphWidget(scroll_area, umrfs_);
+  ugw_ = new UmrfGraphWidget(scroll_area, umrfs_, action_indexer_);
   connect(ugw_, &UmrfGraphWidget::activeUmrfChanged, this, &UmrfEditorWidget::setActiveUmrf);
   connect(ugw_, &UmrfGraphWidget::noUmrfSelected, this, &UmrfEditorWidget::hideUmrfEditor);
   scroll_area->setWidget(ugw_);
